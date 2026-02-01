@@ -1,0 +1,56 @@
+import PoppinsReg400 from '@assets/fonts/poppins-reg-400.woff2';
+import PoppinsReg500 from '@assets/fonts/poppins-reg-500.woff2';
+import PoppinsReg600 from '@assets/fonts/poppins-reg-600.woff2';
+import PoppinsReg700 from '@assets/fonts/poppins-reg-700.woff2';
+
+import { createTheme } from '@mui/material';
+
+export const theme = createTheme({
+  typography: {
+    fontFamily: 'Poppins, sans-serif',
+  },
+  components: {
+    MuiCssBaseline: {
+      styleOverrides: `
+        @font-face {
+          font-family: 'Poppins';
+          font-style: normal;
+          font-weight: 400;
+          font-display: swap;
+          src: url(${PoppinsReg400}) format('woff2');
+          unicodeRange: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304,
+          U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+        },
+        @font-face {
+          font-family: 'Poppins';
+          font-style: normal;
+          font-weight: 500;
+          font-display: swap;
+          src: url(${PoppinsReg500}) format('woff2');
+          unicodeRange: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, 
+          U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+        },
+        
+        @font-face {
+          font-family: 'Poppins';
+          font-style: normal;
+          font-weight: 600;
+          font-display: swap;
+          src: url(${PoppinsReg600}) format('woff2');
+          unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, 
+          U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+        }
+
+        @font-face {
+          font-family: 'Poppins';
+          font-style: normal;
+          font-weight: 700;
+          font-display: swap;
+          src: url(${PoppinsReg700}) format('woff2');
+          unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, 
+          U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+        }
+      `
+    },
+  },
+});
