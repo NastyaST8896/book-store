@@ -6,6 +6,22 @@ import PoppinsReg700 from '@assets/fonts/poppins-reg-700.woff2';
 import { createTheme } from '@mui/material';
 
 export const theme = createTheme({
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 320,
+      md: 834,
+      lg: 1440,
+      xl: 1536,
+    },
+  },
+  palette:{
+    primary: {
+      main: '#344966',
+      light: '#5d83b8',
+      dark: '#243247'
+    },
+  },
   typography: {
     fontFamily: 'Poppins, sans-serif',
   },
@@ -51,6 +67,35 @@ export const theme = createTheme({
           U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
         }
       `
+    },
+
+    MuiContainer: {
+      styleOverrides: {
+        root: {
+          '&.MuiContainer-maxWidthSm': {
+            maxWidth: '400px',
+          },
+          '&.MuiContainer-maxWidthMd': {
+            maxWidth: '1440px',
+          },
+          '@media (min-width: 320px)': {
+            padding: '0 15px',
+          },
+          '@media (min-width: 834px)': {
+            padding: '0 80px',
+          },
+        },
+      },
+    },
+
+    MuiFilledInput: {
+      styleOverrides: {
+        root: {
+          '&:before, &:hover:not(.Mui-disabled):before': {
+            borderBottom: 'none',
+          },
+        },
+      },
     },
   },
 });
