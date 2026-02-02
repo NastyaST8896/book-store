@@ -8,6 +8,8 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { theme } from './theme/theme.tsx';
 import App from './app.tsx';
 
+import '@assets/fonts/fonts.css';
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
