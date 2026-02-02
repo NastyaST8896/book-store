@@ -27,6 +27,15 @@ export const theme = createTheme({
     },
   },
   components: {
+
+    MuiCssBaseline: {
+      styleOverrides: {
+        body: {
+          margin: 0,
+        },
+      },
+    },
+
     MuiContainer: {
       styleOverrides: {
         root: {

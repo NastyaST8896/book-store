@@ -105,6 +105,10 @@ const StyledInput = styled(FilledInput)`
             padding: 12px 14px;
         }
     }
+
+    @media (max-width: 320px) {
+        padding: 10px 10px;
+    }
 `;
 
 const StyledLink = styled(Link)`
