@@ -2,7 +2,7 @@ import { BrowserRouter, Route, Routes } from 'react-router';
 
 import { ThemeProvider } from '@mui/material';
 
-import { MainLayout } from './ccomponents/layouts/main-layout';
+import { MainLayout } from './components/layouts/main-layout/index.ts';
 import { Home } from './pages/home';
 import { Login } from './pages/login';
 import { Register } from './pages/register';

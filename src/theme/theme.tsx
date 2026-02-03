@@ -19,29 +19,37 @@ export const theme = createTheme({
   },
   typography: {
     fontFamily: 'Poppins, sans-serif',
+    h1: {
+      fontSize: '40px',
+      fontWeight: '700',
+      color: '#0D1821',
+      '@media (max-width:1000px)': {
+        fontSize: '32px',
+      },
+    },
     subtitle1: {
       fontSize: '16px',
       fontWeight: '500',
-      '@media (max-width:600px)': {
+      '@media (max-width:1000px)': {
         fontSize: '14px',
       },
     },
+    subtitle2: {
+      fontSize: '20px',
+      fontWeight: '400',
+      color: '#344966',
+      '@media (max-width:834px)': {
+        fontSize: '16px',
+      },
+    }
   },
   components: {
-
-    MuiCssBaseline: {
-      styleOverrides: {
-        body: {
-          margin: 0,
-        },
-      },
-    },
 
     MuiContainer: {
       styleOverrides: {
         root: {
           '&.MuiContainer-maxWidthMd': {
-            maxWidth: '1440px',
+            maxWidth: '1280px',
           },
           '@media (min-width: 834px)': {
             padding: '0 15px',

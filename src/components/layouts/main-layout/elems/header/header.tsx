@@ -53,7 +53,7 @@ export const Header = () => {
           >
             <StyledButton variant="contained">
               <StyledHeaderLink to="/login">Log In</StyledHeaderLink>
-              /
+              / 
               <StyledHeaderLink to="/register">Sing Up</StyledHeaderLink>
             </StyledButton>
           </Grid>
@@ -69,12 +69,12 @@ const StyledButton = styled(Button)`
     width: 230px;
     height: 44px;
     text-transform: none;
-    align-items:normal;
 
     @media (max-width: 600px) {
         width: 140px;
         height: 38px;
         padding: 10px 17px;
+        align-items:normal;
     }
 `;
 
