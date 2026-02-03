@@ -21,6 +21,7 @@ export const theme = createTheme({
     fontFamily: 'Poppins, sans-serif',
     subtitle1: {
       fontSize: '16px',
+      fontWeight: '500',
       '@media (max-width:600px)': {
         fontSize: '14px',
       },

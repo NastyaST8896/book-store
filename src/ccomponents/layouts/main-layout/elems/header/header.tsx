@@ -1,7 +1,15 @@
 import { Link } from 'react-router';
 import styledc from 'styled-components';
 
-import { Button, Container, FilledInput, FormControl, Grid, InputAdornment, Typography} from '@mui/material';
+import { 
+  Button, 
+  Container, 
+  FilledInput, 
+  FormControl, 
+  Grid, 
+  InputAdornment, 
+  Typography
+} from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 import Logo from '../../../../../assets/img/logo.svg';
@@ -44,9 +52,10 @@ export const Header = () => {
             size={{ md: 'auto', sm: 4, xs:'auto' }}
           >
             <StyledButton variant="contained">
-              <StyledLink to="/login">Log In</StyledLink>
+              <StyledHeaderLink to="/login">Log In</StyledHeaderLink>
               /
-              <StyledLink to="/register">Sing Up</StyledLink></StyledButton>
+              <StyledHeaderLink to="/register">Sing Up</StyledHeaderLink>
+            </StyledButton>
           </Grid>
         </Grid>
       </header>
@@ -60,10 +69,12 @@ const StyledButton = styled(Button)`
     width: 230px;
     height: 44px;
     text-transform: none;
+    align-items:normal;
 
     @media (max-width: 600px) {
-        width: 135px;
+        width: 140px;
         height: 38px;
+        padding: 10px 17px;
     }
 `;
 
@@ -111,9 +122,16 @@ const StyledInput = styled(FilledInput)`
     }
 `;
 
-const StyledLink = styled(Link)`
+ const StyledHeaderLink = styled(Link)`
     text-decoration: none;
     color: #F0F4EF;
+    font-family: "Poppins";
+
+     @media (max-width: 600px) {
+        width: 135px;
+        height: 38px;
+        font-size: 12px;
+    }
 `;
 
 const StyledGridEnd = styled(Grid)`
