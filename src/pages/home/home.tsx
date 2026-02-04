@@ -1,4 +1,4 @@
-import { FreeBook } from "../../components/layouts/banners/free-book"
+import { FreeBook } from '../../components/layouts/banners/free-book';
 
 export const Home = () => {
   return (
@@ -6,5 +6,5 @@ export const Home = () => {
       <FreeBook />
       Catalog
     </main>
-  )
-}
+  );
+};
