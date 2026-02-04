@@ -12,7 +12,7 @@ export const FreeBook = () => {
         <StyledDivImgBooks>
           <StyledImgBooks src={Books} />
         </StyledDivImgBooks>
-        <StyledContainneregrid
+        <StyledContainerGrid
           container
           sx={{
             justifyContent: 'space-evenly',
@@ -49,7 +49,7 @@ export const FreeBook = () => {
           <StyledGrid size={4} sx={{ zIndex: '1' }}>
             <StyledImg src={ReadingGirl} alt="" />
           </StyledGrid>
-        </StyledContainneregrid>
+        </StyledContainerGrid>
       </StyledDiv>
     </StyledContainer>
   );
@@ -119,12 +119,12 @@ const StyledImg = styledc.img`
   }
 `;
 
-const StyledContainneregrid = styled(Grid)`
+const StyledContainerGrid = styled(Grid)`
     @media (max-width: 1000px) {
         justify-content: flex-start;
         align-items: center;
         position: relative;
-
+      
         @media (max-width: 1000px) {
             height: 289px;
         }

@@ -29,7 +29,8 @@
     "noUncheckedSideEffectImports": true,
     "baseUrl": "./src",
     "paths": {
-      "@assets/*": ["assets/*"]
+      "@assets/*": ["assets/*"],
+      "@common/*": ["components/common/*"]
     }
   },
   "include": [

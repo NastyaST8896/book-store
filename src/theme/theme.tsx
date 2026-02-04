@@ -60,16 +60,5 @@ export const theme = createTheme({
         },
       },
     },
-
-    MuiFilledInput: {
-      styleOverrides: {
-
-        root: {
-          '&:before, &:hover:not(.Mui-disabled):before': {
-            borderBottom: 'none',
-          },
-        },
-      },
-    },
   },
 });

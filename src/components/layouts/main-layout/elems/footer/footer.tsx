@@ -1,9 +1,10 @@
 import { Link } from 'react-router';
 import FooterLogo from '@assets/img/footer-logo.svg';
 import Map from '@assets/img/map.png';
+import { StyledContainer } from '@common/styled-container.tsx';
 import styledc from 'styled-components';
 
-import { Box, Container, Grid } from '@mui/material';
+import { Box, Grid } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 export const Footer = () => {
@@ -44,13 +45,10 @@ export const Footer = () => {
 const StyledFooter = styledc.footer`
     background-color: #0D1821;
     color: #F0F4EF;
-`;
-
-const StyledContainer = styled(Container)`
-    padding: 73px 80px;
-
+    padding: 74px 0;
+    
     @media (max-width: 1440px) {
-        padding: 72px 15px;
+        padding: 74px 0;
     }
 `;
 
@@ -61,7 +59,7 @@ const StyledMap = styledc.img`
 const StyledDiv = styledc.div`
     font-size:20px;
     font-weight: 400;
-    font-family: "Poppins";
+    
 
     @media (max-width: 834px) {
         font-size: 16px;
@@ -74,7 +72,6 @@ const StyledLink = styled(Link)`
     color: #F0F4EF;
     font-size: 20px;
     font-weight: 400;
-    font-family: "Poppins";
 
     @media (max-width: 834px) {
         font-size: 16px;

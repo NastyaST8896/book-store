@@ -9,6 +9,7 @@ export default defineConfig({
     alias: {
       '@mui/styled-engine': '@mui/styled-engine-sc',
       '@assets': path.resolve(__dirname, './src/assets'),
+      '@common': path.resolve(__dirname, './src/components/common'),
     }
   }
 });

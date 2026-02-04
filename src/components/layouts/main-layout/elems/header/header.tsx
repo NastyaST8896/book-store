@@ -1,25 +1,24 @@
 import { Link } from 'react-router';
+import Logo from '@assets/img/logo.svg';
+import Search from '@assets/img/search.svg';
+import { StyledContainer } from '@common/styled-container.tsx';
 import styledc from 'styled-components';
 
-import { 
-  Button, 
-  Container, 
-  FilledInput, 
-  FormControl, 
-  Grid, 
-  InputAdornment, 
+import {
+  Button,
+  FilledInput,
+  FormControl,
+  Grid,
+  InputAdornment,
   Typography
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
-import Logo from '../../../../../assets/img/logo.svg';
-import Search from '../../../../../assets/img/search.svg';
-
 export const Header = () => {
 
   return (
-    <StyledContainer maxWidth="md">
-      <header>
+    <StyledHeader>
+      <StyledContainer maxWidth="md">
         <Grid
           container
           spacing={1}
@@ -29,16 +28,17 @@ export const Header = () => {
           }}
         >
           <Grid size={2}>
-            <StyledIcon src={Logo} alt="book room"/>
+            <StyledIcon src={Logo} alt="book room" />
           </Grid>
           <Grid size={{ md: 1, sm: 1 }} sx={{ fontFamily: 'Poppins' }}>
-            <Typography  variant='subtitle1' fontWeight={500}>
+            <Typography variant="subtitle1" fontWeight={500}>
               Catalog
             </Typography>
           </Grid>
-          <StyledGridEnd size={{ md: 6, sm:4, xs: 12 }}>
+          <StyledGridEnd size={{ md: 6, sm: 4, xs: 12 }}>
             <FormControl fullWidth sx={{ m: 1 }}>
               <StyledInput
+                disableUnderline={true}
                 startAdornment={
                   <InputAdornment position="start">
                     <img src={Search} alt="Search" />
@@ -49,95 +49,93 @@ export const Header = () => {
             </FormControl>
           </StyledGridEnd>
           <Grid
-            size={{ md: 'auto', sm: 4, xs:'auto' }}
+            size={{ md: 'auto', sm: 4, xs: 'auto' }}
           >
             <StyledButton variant="contained">
               <StyledHeaderLink to="/login">Log In</StyledHeaderLink>
-              / 
-              <StyledHeaderLink to="/register">Sing Up</StyledHeaderLink>
+              /
+              <StyledHeaderLink to="/register">Sign Up</StyledHeaderLink>
             </StyledButton>
           </Grid>
         </Grid>
-      </header>
-    </StyledContainer>
-
+      </StyledContainer>
+    </StyledHeader>
   );
 };
 
-const StyledButton = styled(Button)`
-    border-radius: 16px;
-    width: 230px;
-    height: 44px;
-    text-transform: none;
-
-    @media (max-width: 600px) {
-        width: 140px;
-        height: 38px;
-        padding: 10px 17px;
-        align-items:normal;
-    }
+const StyledHeader = styledc.header`
+  padding: 24px 0;
 `;
 
-const StyledContainer = styled(Container)`
-    margin-top: 24px;
+const StyledButton = styled(Button)`
+  border-radius: 16px;
+  width: 230px;
+  height: 44px;
+  text-transform: none;
+
+  @media (max-width: 600px) {
+    width: 140px;
+    height: 38px;
+    padding: 10px 17px;
+    align-items: normal;
+  }
 `;
 
 const StyledInput = styled(FilledInput)`
-    height: 64px;
-    background-color: #F0F4EF;
-    border-radius: 16px;
-    text-align: center;
-    padding: 20px;
+  height: 64px;
+  background-color: #F0F4EF;
+  border-radius: 16px;
+  text-align: center;
+  padding: 20px;
 
-    &:after {
-        border-bottom: none;
-    }
+  &:after {
+    border-bottom: none;
+  }
 
-    & .MuiInputAdornment-root {
-        margin: 0;
-    }
+  & .MuiInputAdornment-root {
+    margin: 0;
+  }
+
+  & .MuiInputBase-input {
+    padding: 20px 24px;
+  }
+
+  @media (max-width: 834px) {
+    max-width: 247px;
+    width: 100%;
+  }
+
+  @media (max-width: 770px) {
+    max-width: 770px;
+    width: 100%;
+    font-size: 14px;
+    height: 47px;
 
     & .MuiInputBase-input {
-        padding: 20px 24px;
+      padding: 12px 14px;
     }
+  }
 
-    @media (max-width: 834px) {
-        max-width: 247px;
-        width: 100%;
-    }
-
-    @media (max-width: 770px) {
-        max-width: 770px;
-        width: 100%;
-        font-size: 14px;
-        height: 47px;
-
-        & .MuiInputBase-input {
-            padding: 12px 14px;
-        }
-    }
-
-    @media (max-width: 320px) {
-        padding: 10px 10px;
-    }
+  @media (max-width: 320px) {
+    padding: 10px 10px;
+  }
 `;
 
- const StyledHeaderLink = styled(Link)`
-    text-decoration: none;
-    color: #F0F4EF;
-    font-family: "Poppins";
+const StyledHeaderLink = styled(Link)`
+  text-decoration: none;
+  color: #F0F4EF;
 
-     @media (max-width: 600px) {
-        width: 135px;
-        height: 38px;
-        font-size: 12px;
-    }
+  @media (max-width: 600px) {
+    width: 135px;
+    height: 38px;
+    font-size: 12px;
+  }
 `;
 
 const StyledGridEnd = styled(Grid)`
-    @media (max-width: 770px) {
-        order: 2;
-    }
+  @media (max-width: 770px) {
+    order: 2;
+  }
 `;
 
 const StyledIcon = styledc.img`
