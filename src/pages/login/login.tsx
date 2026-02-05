@@ -1,9 +1,9 @@
 import Mail from '@assets/img/mail.png';
+import ReadingMan from '@assets/img/reading-man.svg';
 import View from '@assets/img/view.png';
 import { StyledButton } from '@common/styled-button.tsx';
 import { StyledContainer } from '@common/styled-container.tsx';
 import styledc from 'styled-components';
-import ReadingMan from '@assets/img/reading-man.svg';
 
 import {
   Box,

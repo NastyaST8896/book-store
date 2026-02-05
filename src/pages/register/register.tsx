@@ -12,7 +12,17 @@ import {
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
+import { useAppDispatch } from '../../redux/hooks.ts';
+import { registerUser } from '../../redux/thunks/auth-thunk.ts';
+
 export const Register = () => {
+  const dispatch = useAppDispatch();
+
+  const handleRegisterButtonClick = () => {
+    dispatch(registerUser({email:'me.st@gmail.com', password:'Post12'}));
+    console.log('Register button clicked');
+  };
+
   return (
     <StyledMain>
       <StyledContainer maxWidth="md">
@@ -90,7 +100,7 @@ export const Register = () => {
               </Box>
             </Box>
 
-            <StyledButton sx={{ width: '166px' }} variant="contained">
+            <StyledButton sx={{ width: '166px' }} variant="contained" onClick={handleRegisterButtonClick}>
               Sign Up
             </StyledButton>
           </Box>
