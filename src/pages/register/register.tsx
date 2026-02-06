@@ -14,77 +14,85 @@ import { styled } from '@mui/material/styles';
 
 import { useAppDispatch } from '../../redux/hooks.ts';
 import { registerUser } from '../../redux/thunks/auth-thunk.ts';
+import { useState } from 'react';
 
 export const Register = () => {
   const dispatch = useAppDispatch();
+  const [User, setUser] = useState({email:"", password:""})
 
   const handleRegisterButtonClick = () => {
-    dispatch(registerUser({email:'me.st@gmail.com', password:'Post12'}));
-    console.log('Register button clicked');
+    dispatch(registerUser({ email: User.email, password: User.password }));
+    setUser({email:"", password:""})
   };
 
+  const handleEmailInputChange = (event:  React.ChangeEvent<HTMLInputElement>) => {
+    setUser({...User, email: event.target.value });
+  }
+
+  const handlePasswordInputChange = (event:  React.ChangeEvent<HTMLInputElement>) => {
+    setUser({...User, password: event.target.value });
+  }
   return (
     <StyledMain>
       <StyledContainer maxWidth="md">
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', }}>
-          <Box sx={{ maxWidth: '413px', display: 'flex', flexDirection: 'column', gap: '60px' }}>
+        <StyledRegisterBox>
+          <StyledFormBox>
             <Typography variant="h1">Sign Up</Typography>
 
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
-              <Box sx={{ maxWidth: '413px', width: '100%' }}>
-                <StyledBox
-                  sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2, height: '64px' }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', height: '64px' }}>
+            <StyledFormInputBox>
+              <Box>
+                <StyledInputBox>
+                  <StyledImgBox>
                     <img src={Mail} alt="mail" />
-                  </Box>
+                  </StyledImgBox>
+
                   <TextField
-                    sx={{ height: '58px' }}
                     id="email-input"
                     label="Email"
                     variant="standard"
+                    value={User.email}
+                    onChange={handleEmailInputChange}
                     slotProps={{
                       input: {
                         disableUnderline: true
                       }
                     }}
                   />
-                </StyledBox>
-                <FormHelperText sx={{ marginLeft: '16px' }} id="filled-weight-helper-text">Enter your
-                  email</FormHelperText>
+                </StyledInputBox>
+
+                <FormHelperText> Enter your email </FormHelperText>
               </Box>
 
               <Box>
-                <StyledBox
-                  sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2, height: '64px' }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', height: '64px' }}>
+                <StyledInputBox>
+                  <StyledImgBox>
                     <img src={View} alt="view" />
-                  </Box>
+                  </StyledImgBox>
                   <TextField
                     type="password"
-                    sx={{ height: '58px' }}
                     id="password-input"
                     label="Password"
                     variant="standard"
+                    value={User.password}
+                    onChange={handlePasswordInputChange}
                     slotProps={{
                       input: {
                         disableUnderline: true,
                       },
                     }}
                   />
-                </StyledBox>
-                <FormHelperText sx={{ marginLeft: '16px' }} id="filled-weight-helper-text">Enter your
-                  password</FormHelperText>
+                </StyledInputBox>
+                <FormHelperText> Enter your password </FormHelperText>
               </Box>
 
               <Box>
-                <StyledBox
-                  sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2, height: '64px' }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', height: '64px' }}>
+                <StyledInputBox>
+                  <StyledImgBox>
                     <img src={View} alt="view" />
-                  </Box>
+                  </StyledImgBox>
+
                   <TextField
                     type="password"
-                    sx={{ height: '58px' }}
                     id="password-replay-input"
                     label="Password replay"
                     variant="standard"
@@ -94,19 +102,24 @@ export const Register = () => {
                       }
                     }}
                   />
-                </StyledBox>
-                <FormHelperText sx={{ marginLeft: '16px' }} id="filled-weight-helper-text">Repeat your password without
-                  errors</FormHelperText>
-              </Box>
-            </Box>
+                </StyledInputBox>
 
-            <StyledButton sx={{ width: '166px' }} variant="contained" onClick={handleRegisterButtonClick}>
+                <FormHelperText> 
+                  Repeat your password without errors
+                </FormHelperText>
+              </Box>
+            </StyledFormInputBox>
+
+            <StyledSignUpButton
+            variant="contained" 
+            onClick={handleRegisterButtonClick}
+            >
               Sign Up
-            </StyledButton>
-          </Box>
+            </StyledSignUpButton>
+          </StyledFormBox>
 
           <img src={ReadingMan} alt="Reading man" />
-        </Box>
+        </StyledRegisterBox >
       </StyledContainer>
     </StyledMain>
   );
@@ -116,14 +129,44 @@ const StyledMain = styledc.main`
   padding: 90px 0;
 `;
 
-const StyledBox = styled(Box)`
+const StyledRegisterBox = styled(Box)`
+  display: flex; 
+  align-items: center;
+  justify-content: space-between;
+`;
+
+const StyledFormBox = styled(Box)`
+  display: flex; 
+  flex-direction: column; 
+  gap: 60px;
   max-width: 413px;
   width: 100%;
-  display: flex;
+`;
+
+const StyledFormInputBox = styled(StyledFormBox)`
+  gap: 30px;
+`;
+
+const StyledInputBox = styled(Box)`
+  display: flex; 
+  gap: 2; 
+  height: 64px;
+  max-width: 413px;
+  width: 100%;
   align-items: start;
   gap: 24px;
   height: 64px;
   background: #F0F4EF;
   padding: 6px 24px;
   border-radius: 16px;
+`;
+
+const StyledImgBox = styled(Box)`
+  display: flex; 
+  align-items: center; 
+  height: 55px;
+`;
+
+const StyledSignUpButton = styled(StyledButton)`
+  width: 166px;
 `;
