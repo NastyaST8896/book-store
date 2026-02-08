@@ -1,125 +1,87 @@
-import Mail from '@assets/img/mail.png';
+import { type ChangeEventHandler, type SubmitEventHandler, useState } from 'react';
 import ReadingMan from '@assets/img/reading-man.svg';
-import View from '@assets/img/view.png';
 import { StyledButton } from '@common/styled-button.tsx';
 import { StyledContainer } from '@common/styled-container.tsx';
+import { StyledInput } from '@common/styled-input.tsx';
 import styledc from 'styled-components';
 
-import {
-  Box,
-  FormHelperText,
-  TextField, Typography,
-} from '@mui/material';
+import { Box, type BoxProps, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
-import { useAppDispatch } from '../../redux/hooks.ts';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks.ts';
 import { registerUser } from '../../redux/thunks/auth-thunk.ts';
-import { useState } from 'react';
 
 export const Register = () => {
   const dispatch = useAppDispatch();
-  const [User, setUser] = useState({email:"", password:""})
 
-  const handleRegisterButtonClick = () => {
-    dispatch(registerUser({ email: User.email, password: User.password }));
-    setUser({email:"", password:""})
+  const auth = useAppSelector(state => state.auth);
+
+  const [user, setUser] = useState({ email: '', password: '', repeatPassword: '' });
+
+  const handleSubmit: SubmitEventHandler = (event) => {
+    event.preventDefault();
+
+    dispatch(registerUser({ email: user.email, password: user.password }))
+      .unwrap()
+      .then(() => setUser({ email: '', password: '', repeatPassword: '' }));
   };
 
-  const handleEmailInputChange = (event:  React.ChangeEvent<HTMLInputElement>) => {
-    setUser({...User, email: event.target.value });
-  }
+  const handleEmailInputChange: ChangeEventHandler<HTMLInputElement> = (event) => {
+    setUser({ ...user, email: event.target.value });
+  };
 
-  const handlePasswordInputChange = (event:  React.ChangeEvent<HTMLInputElement>) => {
-    setUser({...User, password: event.target.value });
-  }
+  const handlePasswordInputChange: ChangeEventHandler<HTMLInputElement> = (event) => {
+    setUser({ ...user, password: event.target.value });
+  };
+
+  const handleRepeatPasswordInputChange: ChangeEventHandler<HTMLInputElement> = (event) => {
+    setUser({ ...user, repeatPassword: event.target.value });
+  };
+
   return (
     <StyledMain>
       <StyledContainer maxWidth="md">
         <StyledRegisterBox>
-          <StyledFormBox>
+          <StyledFormBox component="form" noValidate="novalidate" onSubmit={handleSubmit}>
             <Typography variant="h1">Sign Up</Typography>
 
             <StyledFormInputBox>
-              <Box>
-                <StyledInputBox>
-                  <StyledImgBox>
-                    <img src={Mail} alt="mail" />
-                  </StyledImgBox>
+              <StyledInput
+                type="email"
+                label="Email"
+                helperText="Enter your email"
+                value={user.email}
+                onChange={handleEmailInputChange}
+              />
 
-                  <TextField
-                    id="email-input"
-                    label="Email"
-                    variant="standard"
-                    value={User.email}
-                    onChange={handleEmailInputChange}
-                    slotProps={{
-                      input: {
-                        disableUnderline: true
-                      }
-                    }}
-                  />
-                </StyledInputBox>
+              <StyledInput
+                type="password"
+                label="Password"
+                helperText="Enter your password"
+                value={user.password}
+                onChange={handlePasswordInputChange}
+              />
 
-                <FormHelperText> Enter your email </FormHelperText>
-              </Box>
-
-              <Box>
-                <StyledInputBox>
-                  <StyledImgBox>
-                    <img src={View} alt="view" />
-                  </StyledImgBox>
-                  <TextField
-                    type="password"
-                    id="password-input"
-                    label="Password"
-                    variant="standard"
-                    value={User.password}
-                    onChange={handlePasswordInputChange}
-                    slotProps={{
-                      input: {
-                        disableUnderline: true,
-                      },
-                    }}
-                  />
-                </StyledInputBox>
-                <FormHelperText> Enter your password </FormHelperText>
-              </Box>
-
-              <Box>
-                <StyledInputBox>
-                  <StyledImgBox>
-                    <img src={View} alt="view" />
-                  </StyledImgBox>
-
-                  <TextField
-                    type="password"
-                    id="password-replay-input"
-                    label="Password replay"
-                    variant="standard"
-                    slotProps={{
-                      input: {
-                        disableUnderline: true
-                      }
-                    }}
-                  />
-                </StyledInputBox>
-
-                <FormHelperText> 
-                  Repeat your password without errors
-                </FormHelperText>
-              </Box>
+              <StyledInput
+                type="password"
+                label="Repeat Password"
+                helperText="Repeat your password without errors"
+                value={user.repeatPassword}
+                onChange={handleRepeatPasswordInputChange}
+              />
             </StyledFormInputBox>
 
             <StyledSignUpButton
-            variant="contained" 
-            onClick={handleRegisterButtonClick}
+              type="submit"
+              variant="contained"
+              disabled={auth.loading}
             >
               Sign Up
             </StyledSignUpButton>
           </StyledFormBox>
 
           <img src={ReadingMan} alt="Reading man" />
-        </StyledRegisterBox >
+        </StyledRegisterBox>
       </StyledContainer>
     </StyledMain>
   );
@@ -130,14 +92,14 @@ const StyledMain = styledc.main`
 `;
 
 const StyledRegisterBox = styled(Box)`
-  display: flex; 
+  display: flex;
   align-items: center;
   justify-content: space-between;
 `;
 
-const StyledFormBox = styled(Box)`
-  display: flex; 
-  flex-direction: column; 
+const StyledFormBox = styled(Box)<BoxProps & { noValidate?: string }>`
+  display: flex;
+  flex-direction: column;
   gap: 60px;
   max-width: 413px;
   width: 100%;
@@ -145,26 +107,6 @@ const StyledFormBox = styled(Box)`
 
 const StyledFormInputBox = styled(StyledFormBox)`
   gap: 30px;
-`;
-
-const StyledInputBox = styled(Box)`
-  display: flex; 
-  gap: 2; 
-  height: 64px;
-  max-width: 413px;
-  width: 100%;
-  align-items: start;
-  gap: 24px;
-  height: 64px;
-  background: #F0F4EF;
-  padding: 6px 24px;
-  border-radius: 16px;
-`;
-
-const StyledImgBox = styled(Box)`
-  display: flex; 
-  align-items: center; 
-  height: 55px;
 `;
 
 const StyledSignUpButton = styled(StyledButton)`

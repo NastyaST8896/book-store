@@ -13,8 +13,11 @@ import {
   Typography
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { useAppSelector } from '../../../../../redux/hooks.ts';
 
 export const Header = () => {
+
+  const auth = useAppSelector((state) => state.auth);
 
   return (
     <StyledHeader>
@@ -51,11 +54,16 @@ export const Header = () => {
           <Grid
             size={{ md: 'auto', sm: 4, xs: 'auto' }}
           >
-            <StyledButton variant="contained">
-              <StyledHeaderLink to="/login">Log In</StyledHeaderLink>
-              /
-              <StyledHeaderLink to="/register">Sign Up</StyledHeaderLink>
-            </StyledButton>
+            {auth.isAuth
+              ? 'Authenticated'
+              : (
+                <StyledButton variant="contained">
+                  <StyledHeaderLink to="/login">Log In</StyledHeaderLink>
+                  /
+                  <StyledHeaderLink to="/register">Sign Up</StyledHeaderLink>
+                </StyledButton>
+              )
+            }
           </Grid>
         </Grid>
       </StyledContainer>

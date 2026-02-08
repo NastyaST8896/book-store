@@ -1,79 +1,75 @@
-import Mail from '@assets/img/mail.png';
+import { type ChangeEventHandler, type SubmitEventHandler, useState } from 'react';
+import { useNavigate } from 'react-router';
 import ReadingMan from '@assets/img/reading-man.svg';
-import View from '@assets/img/view.png';
 import { StyledButton } from '@common/styled-button.tsx';
 import { StyledContainer } from '@common/styled-container.tsx';
+import { StyledInput } from '@common/styled-input.tsx';
 import styledc from 'styled-components';
 
-import {
-  Box,
-  FormHelperText,
-  TextField, Typography,
-} from '@mui/material';
+import { Box, type BoxProps, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
+import { useAppDispatch } from '../../redux/hooks.ts';
+import { loginUser } from '../../redux/thunks/auth-thunk.ts';
+
 export const Login = () => {
+  const dispatch = useAppDispatch();
+  const [user, setUser] = useState({ email: '', password: ''});
+
+  const navigate = useNavigate();
+
+  const handleSubmit: SubmitEventHandler = (event) => {
+    event.preventDefault();
+
+    dispatch(loginUser({ email: user.email, password: user.password }))
+      .unwrap()
+      .then(() => setUser({ email: '', password: ''}))
+      .then(() => navigate('/'));
+  };
+
+  const handleEmailInputChange: ChangeEventHandler<HTMLInputElement> = (event) => {
+    setUser({ ...user, email: event.target.value });
+  };
+
+  const handlePasswordInputChange: ChangeEventHandler<HTMLInputElement> = (event) => {
+    setUser({ ...user, password: event.target.value });
+  };
+
   return (
     <StyledMain>
       <StyledContainer maxWidth="md">
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', }}>
-          <Box sx={{ maxWidth: '413px', display: 'flex', flexDirection: 'column', gap: '60px' }}>
+        <StyledRegisterBox>
+          <StyledFormBox component="form" noValidate="novalidate" onSubmit={handleSubmit}>
             <Typography variant="h1">Log In</Typography>
 
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
-              <Box sx={{ maxWidth: '413px', width: '100%' }}>
-                <StyledBox
-                  sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2, height: '64px' }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', height: '64px' }}>
-                    <img src={Mail} alt="mail" />
-                  </Box>
-                  <TextField
-                    sx={{ height: '58px' }}
-                    id="email-input"
-                    label="Email"
-                    variant="standard"
-                    slotProps={{
-                      input: {
-                        disableUnderline: true
-                      }
-                    }}
-                  />
-                </StyledBox>
-                <FormHelperText sx={{ marginLeft: '16px' }} id="filled-weight-helper-text">Enter your
-                  email</FormHelperText>
-              </Box>
+            <StyledFormInputBox>
+              <StyledInput
+                type="email"
+                label="Email"
+                helperText="Enter your email"
+                value={user.email}
+                onChange={handleEmailInputChange}
+              />
 
-              <Box>
-                <StyledBox
-                  sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2, height: '64px' }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', height: '64px' }}>
-                    <img src={View} alt="view" />
-                  </Box>
-                  <TextField
-                    type="password"
-                    sx={{ height: '58px' }}
-                    id="password-input"
-                    label="Password"
-                    variant="standard"
-                    slotProps={{
-                      input: {
-                        disableUnderline: true,
-                      },
-                    }}
-                  />
-                </StyledBox>
-                <FormHelperText sx={{ marginLeft: '16px' }} id="filled-weight-helper-text">Enter your
-                  password</FormHelperText>
-              </Box>
-            </Box>
+              <StyledInput
+                type="password"
+                label="Password"
+                helperText="Enter your password"
+                value={user.password}
+                onChange={handlePasswordInputChange}
+              />
+            </StyledFormInputBox>
 
-            <StyledButton sx={{ width: '166px' }} variant="contained">
+            <StyledSignUpButton
+              type="submit"
+              variant="contained"
+            >
               Log In
-            </StyledButton>
-          </Box>
+            </StyledSignUpButton>
+          </StyledFormBox>
 
           <img src={ReadingMan} alt="Reading man" />
-        </Box>
+        </StyledRegisterBox>
       </StyledContainer>
     </StyledMain>
   );
@@ -83,14 +79,24 @@ const StyledMain = styledc.main`
   padding: 90px 0;
 `;
 
-const StyledBox = styled(Box)`
+const StyledRegisterBox = styled(Box)`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+const StyledFormBox = styled(Box)<BoxProps & { noValidate?: string }>`
+  display: flex;
+  flex-direction: column;
+  gap: 60px;
   max-width: 413px;
   width: 100%;
-  display: flex;
-  align-items: start;
-  gap: 24px;
-  height: 64px;
-  background: #F0F4EF;
-  padding: 6px 24px;
-  border-radius: 16px;
+`;
+
+const StyledFormInputBox = styled(StyledFormBox)`
+  gap: 30px;
+`;
+
+const StyledSignUpButton = styled(StyledButton)`
+  width: 166px;
 `;

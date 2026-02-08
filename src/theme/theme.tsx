@@ -14,8 +14,18 @@ export const theme = createTheme({
     primary: {
       main: '#344966',
       light: '#5d83b8',
-      dark: '#243247'
+      dark: '#243247',
     },
+    appColor: {
+      dark: '#0D1821',
+      darkBlue: '#344966',
+      darkGreen: '#8D9F4F',
+      darkGrey: '#B9BAC3',
+      green: '#BFCC94',
+      light: '#F0F4EF',
+      lightGrey: '#D6D8E7',
+      white: '#FFFFFF'
+    }
   },
   typography: {
     fontFamily: 'Poppins, sans-serif',
