@@ -37,6 +37,12 @@ export const theme = createTheme({
         fontSize: '32px',
       },
     },
+
+    h2: {
+      fontSize: '20px',
+      fontWeight: '400',
+    },
+
     subtitle1: {
       fontSize: '16px',
       fontWeight: '500',

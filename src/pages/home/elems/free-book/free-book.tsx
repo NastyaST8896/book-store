@@ -2,7 +2,7 @@ import Books from '@assets/img/books.svg';
 import ReadingGirl from '@assets/img/reading-girl.svg';
 import styledc from 'styled-components';
 
-import { Box, Button, Container, Grid,Typography } from '@mui/material';
+import { Box, Button, Container, Grid, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 export const FreeBook = () => {
@@ -56,7 +56,7 @@ export const FreeBook = () => {
 };
 
 const StyledContainer = styled(Container)`
-    margin-top: 40px
+  margin-top: 40px
 `;
 
 const StyledDiv = styledc.div`
@@ -66,21 +66,21 @@ const StyledDiv = styledc.div`
 `;
 
 const StyledButton = styled(Button)`
-    border-radius: 16px;
-    width: 230px;
-    height: 44px;
-    text-transform: none;
-    align-items: center;
-    font-weight: 500;
-    font-size: 16px;
+  border-radius: 16px;
+  width: 230px;
+  height: 44px;
+  text-transform: none;
+  align-items: center;
+  font-weight: 500;
+  font-size: 16px;
 
-    @media (max-width: 600px) {
-        width: 200px;
-        height: 38px;
-        padding: 10px 50px;
-        font-size: 12px;
+  @media (max-width: 600px) {
+    width: 200px;
+    height: 38px;
+    padding: 10px 50px;
+    font-size: 12px;
 
-    }
+  }
 `;
 
 const StyledDivImgBooks = styledc.div`
@@ -102,14 +102,14 @@ const StyledImgBooks = styledc.img`
 `;
 
 const StyledGrid = styled(Grid)`
-    margin-right: 40px;
-    @media (max-width: 1000px) {
-        width: 340px;
-        height: 336px;
-        position: absolute;
-        bottom: 0;
-        right: 40px;
-    }
+  margin-right: 40px;
+  @media (max-width: 1000px) {
+    width: 340px;
+    height: 336px;
+    position: absolute;
+    bottom: 0;
+    right: 40px;
+  }
 `;
 
 const StyledImg = styledc.img`
@@ -120,13 +120,13 @@ const StyledImg = styledc.img`
 `;
 
 const StyledContainerGrid = styled(Grid)`
+  @media (max-width: 1000px) {
+    justify-content: flex-start;
+    align-items: center;
+    position: relative;
+
     @media (max-width: 1000px) {
-        justify-content: flex-start;
-        align-items: center;
-        position: relative;
-      
-        @media (max-width: 1000px) {
-            height: 289px;
-        }
+      height: 289px;
     }
+  }
 `;

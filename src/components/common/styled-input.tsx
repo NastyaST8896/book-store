@@ -47,6 +47,7 @@ export const StyledInput = (props: StyledInputProps) => {
         </StyledImgBox>
 
         <StyledTextField
+          fullWidth
           autoComplete="off"
           label={label}
           variant="standard"
@@ -69,7 +70,6 @@ export const StyledInput = (props: StyledInputProps) => {
 const StyledInputBox = styled(Box)(({ theme }) => `
   display: flex;
   height: 64px;
-  max-width: 413px;
   width: 100%;
   align-items: start;
   gap: 24px;
