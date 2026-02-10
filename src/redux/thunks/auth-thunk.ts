@@ -9,11 +9,11 @@ type UserDataType = {
 };
 
 export const registerUser = createAsyncThunk<
-void, UserDataType, { state: RootState }
+  void, UserDataType
 >(
   'auth/registerUser',
-  async (userData, { getState }) => {
-    const api = getApiClient(getState);
+  async (userData) => {
+    const api = getApiClient();
 
     const response = await api.post('/auth/register', userData);
 
@@ -22,11 +22,11 @@ void, UserDataType, { state: RootState }
 );
 
 export const loginUser = createAsyncThunk<
-{ accessToken: string, refreshToken:object }, UserDataType, { state: RootState }
+  { accessToken: string; refreshToken: string }, UserDataType
 >(
   'auth/loginUser',
-  async (userData, { getState }) => {
-    const api = getApiClient(getState);
+  async (userData) => {
+    const api = getApiClient();
 
     const response = await api.post('/auth/login', userData);
 
@@ -34,15 +34,33 @@ export const loginUser = createAsyncThunk<
   },
 );
 
+export const checkAuthUser = createAsyncThunk<
+  { fullName: string; email: string }, void, { state: RootState }
+>(
+  'auth/checkAuthUser',
+  async (_, { dispatch }) => {
+    const api = getApiClient(dispatch);
+
+    const response = await api.get('/auth/check-auth');
+
+    return response.data;
+  },
+);
+
 export const refreshTokenUser = createAsyncThunk<
-{ accessToken: string }, string, { state: RootState }
+  { accessToken: string; refreshToken: string }, void, { state: RootState }
 >(
   'auth/refreshTokenUser',
-  async (_, { getState }) => {
-    const refreshToken = getState().auth.refreshToken
-    const api = getApiClient(getState);
+  async (_, { dispatch, rejectWithValue }) => {
+    const refreshToken = localStorage.getItem('refreshToken');
 
-    const response = await api.post('/auth/refresh', {refreshToken});
+    if (!refreshToken) {
+      return rejectWithValue({});
+    }
+
+    const api = getApiClient(dispatch);
+
+    const response = await api.post('/auth/refresh', { refreshToken });
 
     return response.data;
   },

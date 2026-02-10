@@ -1,70 +1,77 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import { loginUser, refreshTokenUser, registerUser } from '../thunks/auth-thunk.ts';
+import { checkAuthUser, loginUser, refreshTokenUser, registerUser } from '../thunks/auth-thunk.ts';
 
 type AuthState = {
   loading: boolean;
-  accessToken: string | null;
-  refreshToken: object | null;
   isAuth: boolean;
+  user: { fullName: string; email: string; } | null;
 };
 
 const initialState: AuthState = {
   loading: false,
-  accessToken: null,
-  refreshToken: null,
   isAuth: false,
+  user: null,
 };
-
 
 export const authSlice = createSlice({
   name: 'auth',
   initialState,
-  reducers: {
-    initialAuth: (state) => {
-      const storageRefreshToken = JSON.parse(localStorage.getItem('refreshToken')!);
-      const storageAccessToken = JSON.parse(localStorage.getItem('accessToken')!)
-      state.refreshToken = storageRefreshToken;
-      state.accessToken = storageAccessToken
-    }
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
+      // registerUser
       .addCase(registerUser.pending, (state) => {
         state.loading = true;
         // state.error = null;
       })
-      .addCase(registerUser.fulfilled, (state,) => {
+      .addCase(registerUser.fulfilled, (state) => {
         state.loading = false;
         // state.users.push(action.payload);
       })
       .addCase(registerUser.rejected, (state) => {
         state.loading = false;
       })
+
+      // loginUser
       .addCase(loginUser.pending, (state) => {
         state.loading = true;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.accessToken = action.payload.accessToken;
         state.isAuth = true;
-        if(state.refreshToken !== action.payload.refreshToken){
-          state.refreshToken = action.payload.refreshToken;
-          state.accessToken = action.payload.accessToken;
-          localStorage.setItem('refreshToken', JSON.stringify(action.payload.refreshToken));
-          localStorage.setItem('accessToken', JSON.stringify(action.payload.accessToken));
-        }
+
+        localStorage.setItem('accessToken', action.payload.accessToken);
+        localStorage.setItem('refreshToken', action.payload.refreshToken);
       })
       .addCase(loginUser.rejected, (state) => {
         state.loading = false;
       })
 
+      // checkAuthUser
+      .addCase(checkAuthUser.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(checkAuthUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isAuth = true;
+        state.user = action.payload;
+      })
+      .addCase(checkAuthUser.rejected, (state) => {
+        state.loading = false;
+      })
+
+      // refreshTokenUser
       .addCase(refreshTokenUser.fulfilled, (state, action) => {
-        state.accessToken = action.payload.accessToken
+        state.isAuth = true;
+        localStorage.setItem('accessToken', action.payload.accessToken);
+        localStorage.setItem('refreshToken', action.payload.refreshToken);
+      })
+      .addCase(refreshTokenUser.rejected, (state, action) => {
       });
   }
 });
 
-export const { initialAuth } = authSlice.actions;
+// export const { } = authSlice.actions;
 
 export const authReducer = authSlice.reducer;

@@ -9,17 +9,21 @@ import { Profile } from './pages/profile';
 import { Register } from './pages/register';
 import { theme } from './theme/theme.tsx';
 import { useEffect } from 'react';
-import { initialAuth } from './redux/slices/auth-slice'
-import { useAppRootDispatch } from './redux/hooks';
-import { getUser } from 'redux/thunks/auth-thunk.ts';
+import { checkAuthUser } from './redux/thunks/auth-thunk.ts';
+import { useAppDispatch, useAppSelector } from './redux/hooks.ts';
 
 export const App = () => {
-   const dispatch = useAppRootDispatch();
+  const dispatch = useAppDispatch();
 
-   useEffect(() => {
-         dispatch(getUser({ accessToken: JSON.stringify() }))
-              .unwrap()
-    },[dispatch]);
+  // const loading = useAppSelector((state) => state.auth.loading);
+
+  useEffect(() => {
+    dispatch(checkAuthUser());
+  }, [dispatch]);
+
+  // if (loading) {
+  //   return <div>...loading</div>;
+  // }
 
   return (
     <ThemeProvider theme={theme}>
