@@ -1,16 +1,18 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import { loginUser, registerUser } from '../thunks/auth-thunk.ts';
+import { loginUser, refreshTokenUser, registerUser } from '../thunks/auth-thunk.ts';
 
 type AuthState = {
   loading: boolean;
   accessToken: string | null;
+  refreshToken: object | null;
   isAuth: boolean;
 };
 
 const initialState: AuthState = {
   loading: false,
   accessToken: null,
+  refreshToken: null,
   isAuth: false,
 };
 
@@ -18,7 +20,14 @@ const initialState: AuthState = {
 export const authSlice = createSlice({
   name: 'auth',
   initialState,
-  reducers: {},
+  reducers: {
+    initialAuth: (state) => {
+      const storageRefreshToken = JSON.parse(localStorage.getItem('refreshToken')!);
+      const storageAccessToken = JSON.parse(localStorage.getItem('accessToken')!)
+      state.refreshToken = storageRefreshToken;
+      state.accessToken = storageAccessToken
+    }
+  },
   extraReducers: (builder) => {
     builder
       .addCase(registerUser.pending, (state) => {
@@ -39,13 +48,23 @@ export const authSlice = createSlice({
         state.loading = false;
         state.accessToken = action.payload.accessToken;
         state.isAuth = true;
+        if(state.refreshToken !== action.payload.refreshToken){
+          state.refreshToken = action.payload.refreshToken;
+          state.accessToken = action.payload.accessToken;
+          localStorage.setItem('refreshToken', JSON.stringify(action.payload.refreshToken));
+          localStorage.setItem('accessToken', JSON.stringify(action.payload.accessToken));
+        }
       })
       .addCase(loginUser.rejected, (state) => {
         state.loading = false;
+      })
+
+      .addCase(refreshTokenUser.fulfilled, (state, action) => {
+        state.accessToken = action.payload.accessToken
       });
   }
 });
 
-// export const { } = authSlice.actions;
+export const { initialAuth } = authSlice.actions;
 
 export const authReducer = authSlice.reducer;

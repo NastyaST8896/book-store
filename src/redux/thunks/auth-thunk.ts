@@ -8,7 +8,9 @@ type UserDataType = {
   password: string;
 };
 
-export const registerUser = createAsyncThunk<void, UserDataType, { state: RootState }>(
+export const registerUser = createAsyncThunk<
+void, UserDataType, { state: RootState }
+>(
   'auth/registerUser',
   async (userData, { getState }) => {
     const api = getApiClient(getState);
@@ -19,12 +21,28 @@ export const registerUser = createAsyncThunk<void, UserDataType, { state: RootSt
   },
 );
 
-export const loginUser = createAsyncThunk<{ accessToken: string }, UserDataType, { state: RootState }>(
+export const loginUser = createAsyncThunk<
+{ accessToken: string, refreshToken:object }, UserDataType, { state: RootState }
+>(
   'auth/loginUser',
   async (userData, { getState }) => {
     const api = getApiClient(getState);
 
     const response = await api.post('/auth/login', userData);
+
+    return response.data;
+  },
+);
+
+export const refreshTokenUser = createAsyncThunk<
+{ accessToken: string }, string, { state: RootState }
+>(
+  'auth/refreshTokenUser',
+  async (_, { getState }) => {
+    const refreshToken = getState().auth.refreshToken
+    const api = getApiClient(getState);
+
+    const response = await api.post('/auth/refresh', {refreshToken});
 
     return response.data;
   },

@@ -58,9 +58,9 @@ export const Header = () => {
               ? 'Authenticated'
               : (
                 <StyledButton variant="contained">
-                  <StyledHeaderLink to="/login">Log In</StyledHeaderLink>
+                  <StyledLink to="/login">Log In</StyledLink>
                   /
-                  <StyledHeaderLink to="/register">Sign Up</StyledHeaderLink>
+                  <StyledLink to="/register">Sign Up</StyledLink>
                 </StyledButton>
               )
             }
@@ -129,7 +129,7 @@ const StyledInput = styled(FilledInput)`
   }
 `;
 
-const StyledHeaderLink = styled(Link)`
+const StyledLink = styled(Link)`
   text-decoration: none;
   color: #F0F4EF;
 
