@@ -1,77 +1,97 @@
+import { useState } from 'react';
+import DefaultAvatar from '@assets/img/dafault-avatar.svg';
+import { CameraIcon } from '@common/icons/camera-icon';
 import { StyledContainer } from '@common/styled-container.tsx';
-import { StyledInput } from '@common/styled-input.tsx';
+import { StyledInput, type StyledInputProps } from '@common/styled-input.tsx';
 import styledc from 'styled-components';
 
-import { Box, Button, Typography, IconButton } from '@mui/material';
+import { Box, Button, Grid, IconButton, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
+
 import { useAppSelector } from '../../redux/hooks';
-import DefaultAvatar from '@assets/img/dafault-avatar.svg'
-import { CameraIcon } from '@common/icons/camera-icon';
-import { useState } from 'react';
 
 export const Profile = () => {
-  const [isUserInformationDirty, setIsUserInformationDirty] = useState(false);
-  const [isUserPasswordDirty, setIsUserPasswordDirty] = useState(false);
-  const [oldPasswordType, setOldPasswordType] = useState('password');
-  const [newPasswordType, setNewPasswordType] = useState('password');
-  const [repeatPasswordType, setRepeatPasswordType] = useState('password');
-
-  type InputType = "password" | "text";
   const auth = useAppSelector(state => state.auth);
 
+  const [isUserInfoEdit, setIsUserInfoEdit] = useState(false);
+
+  const [userFullName, setUserFullName] = useState(auth.user?.fullName);
+
+  const handleUserNameChange: StyledInputProps['onChange'] = (event) => {
+    setUserFullName(event.target.value);
+  };
+
   const handleInformationStyledButton = () => {
-     setIsUserInformationDirty(true)
-  }
+    if (isUserInfoEdit) {
+      setUserFullName(auth.user?.fullName);
+    }
+
+    setIsUserInfoEdit((prevState) => !prevState);
+  };
+
+  const [isUserPasswordDirty, setIsUserPasswordDirty] = useState(false);
+  const [oldPasswordType, setOldPasswordType] = useState<StyledInputProps['type']>('password');
+  const [newPasswordType, setNewPasswordType] = useState<StyledInputProps['type']>('password');
+  const [repeatPasswordType, setRepeatPasswordType] = useState<StyledInputProps['type']>('password');
+
+
   const handlePasswordStyledButton = () => {
-     setIsUserPasswordDirty(true)
-  }
+    setIsUserPasswordDirty(true);
+  };
 
   const handleInputOldPasswordType = () => {
     if (oldPasswordType === 'password') {
-      setOldPasswordType('text')
+      setOldPasswordType('text');
     } else if (oldPasswordType === 'text') {
-      setOldPasswordType('password')
+      setOldPasswordType('password');
     }
-  }
+  };
 
-    const handleNewPasswordType = () => {
+  const handleNewPasswordType = () => {
     if (newPasswordType === 'password') {
-      setNewPasswordType('text')
+      setNewPasswordType('text');
     } else if (newPasswordType === 'text') {
-      setNewPasswordType('password')
+      setNewPasswordType('password');
     }
-  }
+  };
 
-    const handleRepeatPasswordType = () => {
+  const handleRepeatPasswordType = () => {
     if (repeatPasswordType === 'password') {
-      setRepeatPasswordType('text')
+      setRepeatPasswordType('text');
     } else if (repeatPasswordType === 'text') {
-      setRepeatPasswordType('password')
+      setRepeatPasswordType('password');
     }
-  }
+  };
 
   return (
     <>
-    {/* { auth.isAuth ? ( */}
+      {/* { auth.isAuth ? ( */}
       <StyledMain>
         <StyledContainer>
-          <StyledMainBox>
-            <StyledAvatarBox>
-              <img src={DefaultAvatar} alt="" />
-              <StyledIconButton>
-                <CameraIcon />
-              </StyledIconButton>
-            </StyledAvatarBox>
+          <Grid container={true}>
+            <Grid size={3}>
+              <StyledAvatarBox>
+                <img src={DefaultAvatar} alt="" />
 
-            <StyledProfileInformationBox>
+                <StyledIconButton>
+                  <CameraIcon />
+                </StyledIconButton>
+              </StyledAvatarBox>
+            </Grid>
+
+            <Grid size={1} />
+
+            <Grid size={6} sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '40px',
+            }}>
               <StylePersonalInformationBox>
                 <StyledInformationHeaderBox>
                   <Typography variant="h2">Personal information</Typography>
 
-                  <StyledButton 
-                  onClick={handleInformationStyledButton}
-                  >
-                    Change information
+                  <StyledButton onClick={handleInformationStyledButton}>
+                    {isUserInfoEdit ? 'Cancel' : 'Change information'}
                   </StyledButton>
                 </StyledInformationHeaderBox>
 
@@ -79,19 +99,16 @@ export const Profile = () => {
                   type="text"
                   isPasswordInput={false}
                   label="Your name"
-                  // helperText="Enter your password"
-                  value="name"
-                  // onChange={handlePasswordInputChange}
-                  disabled={isUserInformationDirty ? false : true}
+                  value={userFullName}
+                  disabled={!isUserInfoEdit}
+                  onChange={handleUserNameChange}
                 />
 
                 <StyledInput
                   type="email"
                   label="Your email"
-                  // helperText="Enter your email"
-                  value="email"
-                  // onChange={handleEmailInputChange}
-                  disabled={isUserInformationDirty? false : true}
+                  value={auth.user?.email}
+                  disabled={true}
                 />
               </StylePersonalInformationBox>
 
@@ -99,15 +116,15 @@ export const Profile = () => {
                 <StyledInformationHeaderBox>
                   <Typography variant="h2">Password</Typography>
 
-                  <StyledButton 
-                  onClick={handlePasswordStyledButton}
+                  <StyledButton
+                    onClick={handlePasswordStyledButton}
                   >
                     Change password
                   </StyledButton>
                 </StyledInformationHeaderBox>
 
                 <StyledInput
-                  type={oldPasswordType as InputType}
+                  type={oldPasswordType}
                   isPasswordInput={true}
                   label="Old password"
                   // helperText="Enter your password"
@@ -117,21 +134,21 @@ export const Profile = () => {
                   onClick={handleInputOldPasswordType}
                 />
 
-                { isUserPasswordDirty && (
+                {isUserPasswordDirty && (
                   <>
                     <StyledInput
-                      type={newPasswordType as InputType}
+                      type={newPasswordType}
                       isPasswordInput={true}
                       label="New password"
                       helperText="Enter your password"
-                      value=''
+                      value=""
                       // onChange={handleEmailInputChange}
                       disabled={isUserPasswordDirty ? false : true}
                       onClick={handleNewPasswordType}
                     />
 
                     <StyledInput
-                      type={repeatPasswordType as InputType}
+                      type={repeatPasswordType}
                       isPasswordInput={true}
                       label="Password replay"
                       helperText="Repeat your password without errors"
@@ -141,21 +158,21 @@ export const Profile = () => {
                       onClick={handleRepeatPasswordType}
                     />
                   </>
-                  )
+                )
                 }
-                
+
               </StyledPasswordBox>
 
-              {(isUserInformationDirty || isUserPasswordDirty) && (
+              {(isUserInfoEdit || isUserPasswordDirty) && (
                 <StyledConfirmButton>
                   Confirm
                 </StyledConfirmButton>
               )}
-            </StyledProfileInformationBox>
-          </StyledMainBox>
+            </Grid>
+          </Grid>
         </StyledContainer>
       </StyledMain>
-    {/* ) : ( */}
+      {/* ) : ( */}
       {/* <>
         <Typography variant="h1">Log in to your account or register</Typography>
         <StyledButton variant="contained">
@@ -175,8 +192,6 @@ const StyledMain = styledc.main`
 
 const StyledMainBox = styled(Box)`
   display: flex;
-  justify-content: flex-start;
-  align-items: flex-start;
   gap: 128px;
 
   @media (max-width: 1000px) {
@@ -195,7 +210,7 @@ const StyledProfileInformationBox = styled(Box)`
 `;
 
 const StyledButton = styled(Button)`
-  color:  ${({ theme }) => theme.palette.appColor.darkGreen};
+  color: ${({ theme }) => theme.palette.appColor.darkGreen};
   font-weight: 500;
   font-size: 12px;
   padding: 0;
@@ -204,7 +219,7 @@ const StyledButton = styled(Button)`
   text-transform: none;
 
   &:hover {
-    color:  ${({ theme }) => theme.palette.appColor.green}
+    color: ${({ theme }) => theme.palette.appColor.green}
   }
 `;
 

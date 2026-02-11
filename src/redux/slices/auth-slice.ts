@@ -11,7 +11,7 @@ type AuthState = {
 const initialState: AuthState = {
   loading: false,
   isAuth: false,
-  user: null,
+  user: { fullName: 'Roman', email: 'test@gmail.com' },
 };
 
 export const authSlice = createSlice({

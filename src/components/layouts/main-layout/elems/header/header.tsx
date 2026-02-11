@@ -7,7 +7,6 @@ import styledc from 'styled-components';
 import {
   Button,
   FilledInput,
-  FormControl,
   Grid,
   InputAdornment,
   Typography
@@ -21,7 +20,7 @@ export const Header = () => {
 
   return (
     <StyledHeader>
-      <StyledContainer maxWidth="md">
+      <StyledContainer>
         <Grid
           container
           spacing={1}
@@ -30,30 +29,28 @@ export const Header = () => {
             alignItems: 'center',
           }}
         >
-          <Grid size={2}>
+          <Grid size={{ xl: 1, lg: 2 }}>
             <StyledIcon src={Logo} alt="book room" />
           </Grid>
-          <Grid size={{ md: 1, sm: 1 }} sx={{ fontFamily: 'Poppins' }}>
+
+          <StyledGridEnd size={{ lg: 7, md: 6, sm: 4, xs: 12 }}>
             <Typography variant="subtitle1" fontWeight={500}>
               Catalog
             </Typography>
-          </Grid>
-          <StyledGridEnd size={{ md: 6, sm: 4, xs: 12 }}>
-            <FormControl fullWidth sx={{ m: 1 }}>
-              <StyledInput
-                disableUnderline={true}
-                startAdornment={
-                  <InputAdornment position="start">
-                    <img src={Search} alt="Search" />
-                  </InputAdornment>
-                }
-                placeholder="Search"
-              />
-            </FormControl>
+
+            <StyledInput
+              fullWidth={true}
+              disableUnderline={true}
+              startAdornment={
+                <InputAdornment position="start">
+                  <img src={Search} alt="Search" />
+                </InputAdornment>
+              }
+              placeholder="Search"
+            />
           </StyledGridEnd>
-          <Grid
-            size={{ md: 'auto', sm: 4, xs: 'auto' }}
-          >
+
+          <Grid size={{ md: 'auto', sm: 4, xs: 'auto' }}>
             {auth.isAuth
               ? 'Authenticated'
               : (
@@ -141,6 +138,10 @@ const StyledLink = styled(Link)`
 `;
 
 const StyledGridEnd = styled(Grid)`
+  display: flex;
+  align-items: center;
+  gap: 36px;
+
   @media (max-width: 770px) {
     order: 2;
   }

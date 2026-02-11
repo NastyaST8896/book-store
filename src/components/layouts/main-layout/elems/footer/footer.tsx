@@ -10,7 +10,7 @@ import { styled } from '@mui/material/styles';
 export const Footer = () => {
   return (
     <StyledFooter>
-      <StyledContainer maxWidth="md">
+      <StyledContainer>
         <StyledGrid
           container
           spacing={{ sm: 'auto' }}

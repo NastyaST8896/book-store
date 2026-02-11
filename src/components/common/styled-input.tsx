@@ -1,13 +1,13 @@
 import React, { type ChangeEventHandler, type ReactElement } from 'react';
+import { AvatarIcon } from '@common/icons/avatar-icon.tsx';
 import { HideIcon } from '@common/icons/hide-icon.tsx';
 import { MailIcon } from '@common/icons/mail-icon.tsx';
 import { ViewIcon } from '@common/icons/view-icon.tsx';
 
 import { Box, FormHelperText, IconButton, TextField } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { AvatarIcon } from '@common/icons/avatar-icon.tsx';
 
-type StyledInputProps = {
+export type StyledInputProps = {
   type?: 'text' | 'search' | 'email' | 'password';
   helperText?: string;
   value?: string;
@@ -20,24 +20,25 @@ type StyledInputProps = {
 
 export const StyledInput = (props: StyledInputProps) => {
   const {
-    type = 'text',
-    helperText,
-    value,
-    onChange,
-    label,
     disabled = false,
+    helperText,
     isPasswordInput,
-    onClick
+    label,
+    onChange,
+    onClick,
+    type = 'text',
+    value,
   } = props;
 
   let icon: ReactElement | null;
 
   const selectionIcon = () => {
-    if(isPasswordInput) {
+    if (isPasswordInput) {
       return <ViewIcon />;
     }
-    return <AvatarIcon />
-  }
+
+    return <AvatarIcon />;
+  };
 
   switch (type) {
     case 'email':
@@ -57,9 +58,9 @@ export const StyledInput = (props: StyledInputProps) => {
     <Box>
       <StyledInputBox className="input-box">
         <StyledImgBox>
-          <IconButton 
-          disabled={isPasswordInput ? false : true} 
-          onClick={onClick}
+          <IconButton
+            disabled={!isPasswordInput}
+            onClick={onClick}
           >
             {icon}
           </IconButton>
@@ -73,11 +74,11 @@ export const StyledInput = (props: StyledInputProps) => {
           variant="standard"
           value={value}
           type={type}
-          isPasswordInput={isPasswordInput}
+          // isPasswordInput={isPasswordInput}
           onChange={onChange}
           slotProps={{
             input: {
-              disableUnderline: true
+              disableUnderline: true,
             }
           }}
         />
@@ -126,7 +127,12 @@ const StyledTextField = styled(TextField)(({ theme }) => `
     &.Mui-focused {
       color: ${theme.palette.appColor.darkBlue};
       transform: translate(0, 2px) scale(0.75);
-    }
+    }  
+
+    &.MuiFormLabel-filled {
+      color: ${theme.palette.appColor.darkBlue};
+      top: 0px;
+    } 
 
     &.Mui-disabled {
       color: ${theme.palette.appColor.darkBlue};
