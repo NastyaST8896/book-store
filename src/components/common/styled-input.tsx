@@ -1,10 +1,11 @@
-import { type ChangeEventHandler, type ReactElement } from 'react';
+import React, { type ChangeEventHandler, type ReactElement } from 'react';
 import { HideIcon } from '@common/icons/hide-icon.tsx';
 import { MailIcon } from '@common/icons/mail-icon.tsx';
 import { ViewIcon } from '@common/icons/view-icon.tsx';
 
-import { Box, FormHelperText, TextField } from '@mui/material';
+import { Box, FormHelperText, IconButton, TextField } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { AvatarIcon } from '@common/icons/avatar-icon.tsx';
 
 type StyledInputProps = {
   type?: 'text' | 'search' | 'email' | 'password';
@@ -12,6 +13,9 @@ type StyledInputProps = {
   value?: string;
   label?: string;
   onChange?: ChangeEventHandler<HTMLInputElement>;
+  disabled?: boolean;
+  isPasswordInput?: boolean
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
 };
 
 export const StyledInput = (props: StyledInputProps) => {
@@ -20,10 +24,20 @@ export const StyledInput = (props: StyledInputProps) => {
     helperText,
     value,
     onChange,
-    label
+    label,
+    disabled = false,
+    isPasswordInput,
+    onClick
   } = props;
 
   let icon: ReactElement | null;
+
+  const selectionIcon = () => {
+    if(isPasswordInput) {
+      return <ViewIcon />;
+    }
+    return <AvatarIcon />
+  }
 
   switch (type) {
     case 'email':
@@ -33,7 +47,7 @@ export const StyledInput = (props: StyledInputProps) => {
       icon = <HideIcon />;
       break;
     case 'text':
-      icon = <ViewIcon />;
+      icon = selectionIcon();
       break;
     default:
       icon = null;
@@ -43,16 +57,23 @@ export const StyledInput = (props: StyledInputProps) => {
     <Box>
       <StyledInputBox className="input-box">
         <StyledImgBox>
-          {icon}
+          <IconButton 
+          disabled={isPasswordInput ? false : true} 
+          onClick={onClick}
+          >
+            {icon}
+          </IconButton>
         </StyledImgBox>
 
         <StyledTextField
+          disabled={disabled}
           fullWidth
           autoComplete="off"
           label={label}
           variant="standard"
           value={value}
           type={type}
+          isPasswordInput={isPasswordInput}
           onChange={onChange}
           slotProps={{
             input: {
@@ -92,6 +113,10 @@ const StyledImgBox = styled(Box)`
 const StyledTextField = styled(TextField)(({ theme }) => `
   & .MuiInputBase-input {
     color: ${theme.palette.appColor.darkBlue};
+
+     &.Mui-disabled {
+      -webkit-text-fill-color: ${theme.palette.appColor.darkBlue};
+    }
   }
 
   & .MuiInputLabel-root {
@@ -101,6 +126,10 @@ const StyledTextField = styled(TextField)(({ theme }) => `
     &.Mui-focused {
       color: ${theme.palette.appColor.darkBlue};
       transform: translate(0, 2px) scale(0.75);
+    }
+
+    &.Mui-disabled {
+      color: ${theme.palette.appColor.darkBlue};
     }
   }
 `);
