@@ -65,3 +65,16 @@ export const refreshTokenUser = createAsyncThunk<
     return response.data;
   },
 );
+
+export const changeUser = createAsyncThunk<
+  { fullName: string }, { fullName: string }, { state: RootState }
+>(
+  'auth/changeUser',
+  async (userName) => {
+    const api = getApiClient();
+
+    const response = await api.post('/auth/change', userName);
+
+    return response.data;
+  },
+);

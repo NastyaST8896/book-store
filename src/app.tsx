@@ -11,6 +11,7 @@ import { theme } from './theme/theme.tsx';
 import { useEffect } from 'react';
 import { checkAuthUser } from './redux/thunks/auth-thunk.ts';
 import { useAppDispatch, useAppSelector } from './redux/hooks.ts';
+import { PrivateRoute } from './components/private-rote.tsx'
 
 export const App = () => {
   const dispatch = useAppDispatch();
@@ -33,7 +34,12 @@ export const App = () => {
             <Route index element={<Home />} />
             <Route path="login" element={<Login />} />
             <Route path="register" element={<Register />} />
-            <Route path="profile" element={<Profile />} />
+            <Route path="profile" element={
+              <PrivateRoute>
+                <Profile />
+              </PrivateRoute>
+            }
+            />
           </Route>
         </Routes>
       </BrowserRouter>

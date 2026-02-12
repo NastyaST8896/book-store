@@ -1,17 +1,17 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import { checkAuthUser, loginUser, refreshTokenUser, registerUser } from '../thunks/auth-thunk.ts';
+import { checkAuthUser, loginUser, refreshTokenUser, registerUser, changeUser } from '../thunks/auth-thunk.ts';
 
 type AuthState = {
   loading: boolean;
   isAuth: boolean;
-  user: { fullName: string; email: string; } | null;
+  user: { fullName: string; email: string; };
 };
 
 const initialState: AuthState = {
   loading: false,
   isAuth: false,
-  user: { fullName: 'Roman', email: 'test@gmail.com' },
+  user: { fullName: 'Your Name', email: 'Your Email' },
 };
 
 export const authSlice = createSlice({
@@ -55,7 +55,10 @@ export const authSlice = createSlice({
       .addCase(checkAuthUser.fulfilled, (state, action) => {
         state.loading = false;
         state.isAuth = true;
-        state.user = action.payload;
+        if(action.payload.fullName) {
+          state.user.fullName = action.payload.fullName;
+        }
+        state.user.email = action.payload.email;
       })
       .addCase(checkAuthUser.rejected, (state) => {
         state.loading = false;
@@ -67,11 +70,24 @@ export const authSlice = createSlice({
         localStorage.setItem('accessToken', action.payload.accessToken);
         localStorage.setItem('refreshToken', action.payload.refreshToken);
       })
-      .addCase(refreshTokenUser.rejected, (state, action) => {
+      .addCase(refreshTokenUser.rejected, (state) => {
+      })
+
+      // changeUser
+      .addCase(changeUser.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(changeUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isAuth = true;
+        state.user.fullName = action.payload.fullName;
+      })
+      .addCase(changeUser.rejected, (state) => {
+        state.loading = false;
       });
   }
 });
 
-// export const { } = authSlice.actions;
+// export const {} = authSlice.actions;
 
 export const authReducer = authSlice.reducer;

@@ -3,13 +3,18 @@ import Logo from '@assets/img/logo.svg';
 import Search from '@assets/img/search.svg';
 import { StyledContainer } from '@common/styled-container.tsx';
 import styledc from 'styled-components';
+import { StyledRoundButton } from '@common/ styled-round-button';
+import { CartIcon } from '@common/icons/cart-icon';
+import { HeartIcon } from '@common/icons/heart-icon';
+import { ProfileIcon } from '@common/icons/profile-icon'
 
 import {
   Button,
   FilledInput,
   Grid,
   InputAdornment,
-  Typography
+  Typography,
+  Box
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { useAppSelector } from '../../../../../redux/hooks.ts';
@@ -52,8 +57,19 @@ export const Header = () => {
 
           <Grid size={{ md: 'auto', sm: 4, xs: 'auto' }}>
             {auth.isAuth
-              ? 'Authenticated'
-              : (
+              ? (
+                <StyledBox>
+                  <StyledAuthLink to="#">
+                    <StyledRoundButton icon={<CartIcon />} />
+                  </StyledAuthLink>
+                  <StyledAuthLink to="#">
+                    <StyledRoundButton icon={<HeartIcon />} />
+                  </StyledAuthLink>
+                  <StyledAuthLink to="/profile">
+                    <StyledRoundButton icon={<ProfileIcon />} />
+                  </StyledAuthLink>
+                </StyledBox>
+              ) : (
                 <StyledButton variant="contained">
                   <StyledLink to="/login">Log In</StyledLink>
                   /
@@ -151,4 +167,14 @@ const StyledIcon = styledc.img`
   @media (max-width: 600px) {
       max-width: 100%;
   }
+`;
+
+const StyledBox = styled(Box)`
+  display: flex;
+  justify-content: space-between;
+  width: 200px;
+`;
+
+const StyledAuthLink = styled(Link)`
+  width: 48px;
 `;
