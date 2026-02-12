@@ -3,39 +3,60 @@ import ReadingMan from '@assets/img/reading-man.svg';
 import { StyledButton } from '@common/styled-button.tsx';
 import { StyledContainer } from '@common/styled-container.tsx';
 import { StyledInput } from '@common/styled-input.tsx';
+import { useAppDispatch, useAppSelector } from '@redux/hooks.ts';
+import { registerUser } from '@redux/thunks/auth-thunk.ts';
 import styledc from 'styled-components';
 
 import { Box, type BoxProps, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
-import { useAppDispatch, useAppSelector } from '../../redux/hooks.ts';
-import { registerUser } from '../../redux/thunks/auth-thunk.ts';
+import { checkValidEmail } from '../../utils';
+
 
 export const Register = () => {
-  const dispatch = useAppDispatch();
-
   const auth = useAppSelector(state => state.auth);
 
+  const dispatch = useAppDispatch();
+
   const [user, setUser] = useState({ email: '', password: '', repeatPassword: '' });
+  const [emailError, setEmailError] = useState('');
 
-  const handleSubmit: SubmitEventHandler = (event) => {
-    event.preventDefault();
-
-    dispatch(registerUser({ email: user.email, password: user.password }))
-      .unwrap()
-      .then(() => setUser({ email: '', password: '', repeatPassword: '' }));
+  const clearErrors = () => {
+    setEmailError('');
   };
 
   const handleEmailInputChange: ChangeEventHandler<HTMLInputElement> = (event) => {
     setUser({ ...user, email: event.target.value });
   };
-
   const handlePasswordInputChange: ChangeEventHandler<HTMLInputElement> = (event) => {
     setUser({ ...user, password: event.target.value });
   };
-
   const handleRepeatPasswordInputChange: ChangeEventHandler<HTMLInputElement> = (event) => {
     setUser({ ...user, repeatPassword: event.target.value });
+  };
+
+  const handleSubmit: SubmitEventHandler = (event) => {
+    event.preventDefault();
+
+    clearErrors();
+
+    if (!checkValidEmail(user.email)) {
+      setEmailError('Incorrect email');
+
+      return;
+    }
+
+    dispatch(registerUser({ email: user.email, password: user.password }))
+      .unwrap()
+      .then(() => {
+        setUser({ email: '', password: '', repeatPassword: '' });
+        setEmailError('');
+      })
+      .catch((e) => {
+        if (e.response.data.message === 'This email has already taken') {
+          setEmailError(e.response.data.message);
+        }
+      });
   };
 
   return (
@@ -48,6 +69,7 @@ export const Register = () => {
             <StyledFormInputBox>
               <StyledInput
                 type="email"
+                errorText={emailError}
                 label="Email"
                 helperText="Enter your email"
                 value={user.email}

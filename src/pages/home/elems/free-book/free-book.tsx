@@ -47,7 +47,7 @@ export const FreeBook = () => {
             </StyledButton>
           </Grid>
           <StyledGrid size={4} sx={{ zIndex: '1' }}>
-            <StyledImg src={ReadingGirl} alt="" />
+            <StyledImg src={ReadingGirl} alt="reading girl" />
           </StyledGrid>
         </StyledContainerGrid>
       </StyledDiv>

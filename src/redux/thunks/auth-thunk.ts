@@ -8,21 +8,35 @@ type UserDataType = {
   password: string;
 };
 
+type LoginUserResponseType = {
+  accessToken: string;
+  refreshToken: string;
+  user: {
+    email: string;
+    fullName: string | null;
+  };
+};
+
 export const registerUser = createAsyncThunk<
   void, UserDataType
 >(
   'auth/registerUser',
-  async (userData) => {
-    const api = getApiClient();
+  async (userData, { rejectWithValue }) => {
+    try {
+      const api = getApiClient();
 
-    const response = await api.post('/auth/register', userData);
+      const response = await api.post('/auth/register', userData);
 
-    return response.data;
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
   },
 );
 
 export const loginUser = createAsyncThunk<
-  { accessToken: string; refreshToken: string }, UserDataType
+  LoginUserResponseType,
+  UserDataType
 >(
   'auth/loginUser',
   async (userData) => {

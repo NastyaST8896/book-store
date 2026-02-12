@@ -30,7 +30,8 @@
     "baseUrl": "./src",
     "paths": {
       "@assets/*": ["assets/*"],
-      "@common/*": ["components/common/*"]
+      "@common/*": ["components/common/*"],
+      "@redux/*": ["redux/*"]
     }
   },
   "include": [

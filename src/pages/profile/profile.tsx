@@ -1,73 +1,53 @@
 import { useState } from 'react';
 import DefaultAvatar from '@assets/img/dafault-avatar.svg';
+import { StyledRoundButton } from '@common/ styled-round-button';
 import { CameraIcon } from '@common/icons/camera-icon';
 import { StyledContainer } from '@common/styled-container.tsx';
 import { StyledInput, type StyledInputProps } from '@common/styled-input.tsx';
+import { useAppDispatch, useAppSelector } from '@redux/hooks.ts';
+import { changeUser } from '@redux/thunks/auth-thunk.ts';
 import styledc from 'styled-components';
-import {StyledRoundButton} from '@common/ styled-round-button';
 
 import { Box, Button, Grid, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
-import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { changeUser } from '../../redux/thunks/auth-thunk';
-
 export const Profile = () => {
   const auth = useAppSelector(state => state.auth);
-  const dispath = useAppDispatch()
 
-  const [isUserInfoEdit, setIsUserInfoEdit] = useState(false);
+  const dispatch = useAppDispatch();
 
+  // UserInfo: fullName
+  const [isUserInfoDirty, setIsUserInfoDirty] = useState(false);
   const [userFullName, setUserFullName] = useState(auth.user?.fullName);
+  const [helperErrorFullNameText, setHelperErrorFullNameText] = useState('');
 
-  const handleUserNameChange: StyledInputProps['onChange'] = (event) => {
-    setUserFullName(event.target.value);
-  };
-
-  const handleInformationStyledButton = () => {
-    if (isUserInfoEdit) {
-      setUserFullName(auth.user?.fullName);
-    }
-
-    setIsUserInfoEdit((prevState) => !prevState);
-  };
-
-
-
-
-
-  const [helperErrorText, setHelperErrorText] = useState('')
-
-  const handleConfirmButtonClick = () => {
-    if(userFullName.trim()) {
-      dispath(changeUser({fullName: userFullName}));
-      if(isUserInfoEdit) setIsUserInfoEdit(false);
-      return
-    }
-    setHelperErrorText('Email is not correct');
-  }
-
-
-
-
+  //UserPassword
   const [isUserPasswordDirty, setIsUserPasswordDirty] = useState(false);
   const [oldPasswordType, setOldPasswordType] = useState<StyledInputProps['type']>('password');
   const [newPasswordType, setNewPasswordType] = useState<StyledInputProps['type']>('password');
   const [repeatPasswordType, setRepeatPasswordType] = useState<StyledInputProps['type']>('password');
 
+  const handleInformationStyledButton = () => {
+    if (isUserInfoDirty) {
+      setUserFullName(auth.user?.fullName);
+    }
+
+    setIsUserInfoDirty((prevState) => !prevState);
+  };
+  const handleUserNameChange: StyledInputProps['onChange'] = (event) => {
+    setUserFullName(event.target.value);
+  };
 
   const handlePasswordStyledButton = () => {
     setIsUserPasswordDirty(true);
   };
-
-  const handleInputOldPasswordType = () => {
+  const handleOldPasswordType = () => {
     if (oldPasswordType === 'password') {
       setOldPasswordType('text');
     } else if (oldPasswordType === 'text') {
       setOldPasswordType('password');
     }
   };
-
   const handleNewPasswordType = () => {
     if (newPasswordType === 'password') {
       setNewPasswordType('text');
@@ -75,7 +55,6 @@ export const Profile = () => {
       setNewPasswordType('password');
     }
   };
-
   const handleRepeatPasswordType = () => {
     if (repeatPasswordType === 'password') {
       setRepeatPasswordType('text');
@@ -84,32 +63,40 @@ export const Profile = () => {
     }
   };
 
+  const handleConfirmButtonClick = () => {
+    if (userFullName.trim()) {
+      dispatch(changeUser({ fullName: userFullName }));
+
+      if (isUserInfoDirty) {
+        setIsUserInfoDirty(false);
+      }
+
+      return;
+    }
+
+    setHelperErrorFullNameText('Email is not correct');
+  };
+
   return (
     <StyledMain>
       <StyledContainer>
-        <Grid container={true}>
-          <Grid size={3}>
-            <StyledAvatarBox>
-              <img src={DefaultAvatar} alt="" />
-              <StyledRoundButtonBox>
-                <StyledRoundButton icon={<CameraIcon />} />
-              </StyledRoundButtonBox>
-            </StyledAvatarBox>
-          </Grid>
+        <Grid container gap={3}>
+          <StyledAvatarGrid size={3}>
+            <img src={DefaultAvatar} alt="default avatar" />
+            <StyledRoundButtonBox>
+              <StyledRoundButton icon={<CameraIcon />} />
+            </StyledRoundButtonBox>
+          </StyledAvatarGrid>
 
-          <Grid size={1} />
+          <Grid size={{ lg: 1, md: 0 }} />
 
-          <Grid size={6} sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '40px',
-          }}>
-            <StylePersonalInformationBox>
+          <StyledProfileInformationGrid size={{ lg: 6, sm: 12 }}>
+            <StyledBox>
               <StyledInformationHeaderBox>
                 <Typography variant="h2">Personal information</Typography>
 
                 <StyledButton onClick={handleInformationStyledButton}>
-                  {isUserInfoEdit ? 'Cancel' : 'Change information'}
+                  {isUserInfoDirty ? 'Cancel' : 'Change information'}
                 </StyledButton>
               </StyledInformationHeaderBox>
 
@@ -118,9 +105,9 @@ export const Profile = () => {
                 isPasswordInput={false}
                 label="Your name"
                 value={userFullName}
-                disabled={!isUserInfoEdit}
+                disabled={!isUserInfoDirty}
                 onChange={handleUserNameChange}
-                helperText={helperErrorText}
+                helperText={helperErrorFullNameText}
               />
 
               <StyledInput
@@ -129,9 +116,9 @@ export const Profile = () => {
                 value={auth.user?.email}
                 disabled={true}
               />
-            </StylePersonalInformationBox>
+            </StyledBox>
 
-            <StyledPasswordBox>
+            <StyledBox>
               <StyledInformationHeaderBox>
                 <Typography variant="h2">Password</Typography>
 
@@ -149,8 +136,8 @@ export const Profile = () => {
                 // helperText="Enter your password"
                 value="password"
                 // onChange={handlePasswordInputChange}
-                disabled={isUserPasswordDirty ? false : true}
-                onClick={handleInputOldPasswordType}
+                disabled={!isUserPasswordDirty}
+                onClick={handleOldPasswordType}
               />
 
               {isUserPasswordDirty && (
@@ -162,7 +149,7 @@ export const Profile = () => {
                     helperText="Enter your password"
                     value=""
                     // onChange={handleEmailInputChange}
-                    disabled={isUserPasswordDirty ? false : true}
+                    disabled={!isUserPasswordDirty}
                     onClick={handleNewPasswordType}
                   />
 
@@ -173,21 +160,21 @@ export const Profile = () => {
                     helperText="Repeat your password without errors"
                     value=""
                     // onChange={handleEmailInputChange}
-                    disabled={isUserPasswordDirty ? false : true}
+                    disabled={!isUserPasswordDirty}
                     onClick={handleRepeatPasswordType}
                   />
                 </>
               )
               }
 
-            </StyledPasswordBox>
+            </StyledBox>
 
-            {(isUserInfoEdit || isUserPasswordDirty) && (
+            {(isUserInfoDirty || isUserPasswordDirty) && (
               <StyledConfirmButton onClick={handleConfirmButtonClick}>
                 Confirm
               </StyledConfirmButton>
             )}
-          </Grid>
+          </StyledProfileInformationGrid>
         </Grid>
       </StyledContainer>
     </StyledMain>
@@ -198,27 +185,21 @@ const StyledMain = styledc.main`
   padding: 36px 0 100px 0;
 `;
 
-const StyledMainBox = styled(Box)`
-  display: flex;
-  gap: 128px;
-
-  @media (max-width: 1000px) {
-    gap: 20px;
-  }
-
-  @media (max-width: 600px) {
-    flex-direction: column;
-  }
-`;
-
-const StyledProfileInformationBox = styled(Box)`
+const StyledProfileInformationGrid = styled(Grid)`
   display: flex;
   flex-direction: column;
   gap: 40px;
+  max-width: 522px;
+  width: 100%;
+
+  @media (max-width: 770px) {
+    max-width: none;
+    width: 100%;
+  }
 `;
 
-const StyledButton = styled(Button)`
-  color: ${({ theme }) => theme.palette.appColor.darkGreen};
+const StyledButton = styled(Button)(({ theme }) => `
+  color: ${theme.palette.appColor.darkGreen};
   font-weight: 500;
   font-size: 12px;
   padding: 0;
@@ -227,24 +208,14 @@ const StyledButton = styled(Button)`
   text-transform: none;
 
   &:hover {
-    color: ${({ theme }) => theme.palette.appColor.green}
+    color: ${theme.palette.appColor.green}
   }
-`;
+`);
 
-const StylePersonalInformationBox = styled(Box)`
+const StyledBox = styled(Box)`
   display: flex;
   flex-direction: column;
   gap: 20px;
-  max-width: 522px;
-  width: 100%;
-`;
-
-const StyledPasswordBox = styled(Box)`
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  max-width: 522px;
-  width: 100%;
 `;
 
 const StyledInformationHeaderBox = styled(Box)`
@@ -253,30 +224,31 @@ const StyledInformationHeaderBox = styled(Box)`
   justify-content: space-between;
 `;
 
-const StyledConfirmButton = styled(Button)`
+const StyledConfirmButton = styled(Button)(({ theme }) => `
   border-radius: 16px;
   max-width: 170px;
   width: 100%;
   text-transform: none;
-  background-color: ${({ theme }) => theme.palette.appColor.darkBlue};
-  color: ${({ theme }) => theme.palette.appColor.white};
+  background-color: ${theme.palette.appColor.darkBlue};
+  color: ${theme.palette.appColor.white};
   padding: 10px 50px;
 
   &:hover {
-    background-color: ${({ theme }) => theme.palette.appColor.dark};
+    background-color: ${theme.palette.appColor.dark};
   }
-`;
+`);
 
-const StyledAvatarBox = styled(Box)`
+const StyledAvatarGrid = styled(Grid)(({ theme }) => `
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 305px;
+  max-width: 305px;
+  width: 100%;
   height: 305px;
   border-radius: 16px;
-  background-color: ${({ theme }) => theme.palette.appColor.light};
+  background-color: ${theme.palette.appColor.light};
   position: relative
-`;
+`);
 
 const StyledRoundButtonBox = styled(Box)`
   position: absolute;

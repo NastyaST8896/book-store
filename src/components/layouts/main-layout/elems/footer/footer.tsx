@@ -60,7 +60,6 @@ const StyledDiv = styledc.div`
     font-size:20px;
     font-weight: 400;
     
-
     @media (max-width: 834px) {
         font-size: 16px;
         font-weight: 500;

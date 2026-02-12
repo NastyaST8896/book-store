@@ -1,20 +1,22 @@
-export const HideIcon = () => {
+import React from 'react';
+
+export const HideIcon: React.FC<React.SVGProps<SVGSVGElement>> = () => {
   return (
-    <svg 
-    width="24" 
-    height="24" 
-    viewBox="0 0 24 24" 
-    fill="none" 
-    xmlns="http://www.w3.org/2000/svg"
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
     >
-      <path 
-      d="M5.67969 3L21.6797 19" 
-      stroke="#B9BAC3" 
-      strokeWidth="2" 
-      strokeLinecap="round" 
+      <path
+        d="M5.67969 3L21.6797 19"
+        stroke="#B9BAC3"
+        strokeWidth="2"
+        strokeLinecap="round"
       />
       <path
-        fillRule="evenodd" 
+        fillRule="evenodd"
         clipRule="evenodd"
         d="M14.0546 4.79037C14.2347 4.26826 14.8039 3.99097 15.326 
         4.17103C18.4478 5.24762 21.0835 7.6528 22.8918 10.8025C23.3668 11.6298 
@@ -31,7 +33,7 @@ export const HideIcon = () => {
         0.467746 14.3104C-0.155911 13.2241 -0.155916 11.8888 0.467735 
         10.8025C2.16221 7.85119 4.58162 5.55509 7.44748 4.391C7.95917 4.18316 
         8.54246 4.42947 8.7503 4.94115Z"
-        fill="#B9BAC3" 
+        fill="#B9BAC3"
       />
       <path
         d="M14.5892 11.8251C14.748 12.457 14.6968 13.1233 14.4434 
@@ -40,8 +42,8 @@ export const HideIcon = () => {
         14.7181C9.13007 14.2663 8.82045 13.6741 8.71743 13.0308C8.61441 12.3875 
         8.7236 11.7282 9.02848 11.1524C9.33337 10.5767 9.81738 10.1159 10.4074 
         9.83956C10.9973 9.56327 11.6612 9.48653 12.2987 9.62095"
-        stroke="#B9BAC3" 
-        strokeWidth="2" 
+        stroke="#B9BAC3"
+        strokeWidth="2"
       />
     </svg>
   );

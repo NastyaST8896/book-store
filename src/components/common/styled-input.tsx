@@ -8,37 +8,26 @@ import { Box, FormHelperText, IconButton, TextField } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 export type StyledInputProps = {
-  type?: 'text' | 'search' | 'email' | 'password';
+  disabled?: boolean;
+  errorText?: string;
   helperText?: string;
-  value?: string;
+  isPasswordInput?: boolean
   label?: string;
   onChange?: ChangeEventHandler<HTMLInputElement>;
-  disabled?: boolean;
-  isPasswordInput?: boolean
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
+  type?: 'text' | 'search' | 'email' | 'password';
+  value?: string;
 };
 
-export const StyledInput = (props: StyledInputProps) => {
-  const {
-    disabled = false,
-    helperText,
-    isPasswordInput,
-    label,
-    onChange,
-    onClick,
-    type = 'text',
-    value,
-  } = props;
+const getIconForInputTypeText = (isPasswordInput: StyledInputProps['isPasswordInput']) => {
+  if (isPasswordInput) {
+    return <ViewIcon />;
+  }
 
-  let icon: ReactElement | null;
-
-  const selectionIcon = () => {
-    if (isPasswordInput) {
-      return <ViewIcon />;
-    }
-
-    return <AvatarIcon />;
-  };
+  return <AvatarIcon />;
+};
+const getIconForInputType = (type: StyledInputProps['type'], isPasswordInput: StyledInputProps['isPasswordInput']) => {
+  let icon;
 
   switch (type) {
     case 'email':
@@ -48,11 +37,30 @@ export const StyledInput = (props: StyledInputProps) => {
       icon = <HideIcon />;
       break;
     case 'text':
-      icon = selectionIcon();
+      icon = getIconForInputTypeText(isPasswordInput);
       break;
     default:
       icon = null;
   }
+
+  return icon;
+};
+
+
+export const StyledInput = (props: StyledInputProps) => {
+  const {
+    disabled = false,
+    errorText,
+    helperText,
+    isPasswordInput,
+    label,
+    onChange,
+    onClick,
+    type = 'text',
+    value,
+  } = props;
+
+  const icon: ReactElement | null  = getIconForInputType(type, isPasswordInput);
 
   return (
     <Box>
@@ -84,7 +92,9 @@ export const StyledInput = (props: StyledInputProps) => {
         />
       </StyledInputBox>
 
-      {helperText && <StyledFormHelperText>{helperText}</StyledFormHelperText>}
+      {(errorText || helperText) && (
+        <StyledFormHelperText error={!!errorText}>{errorText || helperText}</StyledFormHelperText>
+      )}
     </Box>
   );
 };

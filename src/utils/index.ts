@@ -1,0 +1,1 @@
+export { checkValidEmail } from './email-validator';

@@ -1,17 +1,19 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import { checkAuthUser, loginUser, refreshTokenUser, registerUser, changeUser } from '../thunks/auth-thunk.ts';
+import { changeUser, checkAuthUser, loginUser, refreshTokenUser, registerUser } from '../thunks/auth-thunk.ts';
 
 type AuthState = {
-  loading: boolean;
   isAuth: boolean;
+  isAuthChecked: boolean;
+  loading: boolean;
   user: { fullName: string; email: string; };
 };
 
 const initialState: AuthState = {
-  loading: false,
   isAuth: false,
-  user: { fullName: 'Your Name', email: 'Your Email' },
+  isAuthChecked: false,
+  loading: false,
+  user: { fullName: '', email: '' },
 };
 
 export const authSlice = createSlice({
@@ -40,6 +42,8 @@ export const authSlice = createSlice({
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
         state.isAuth = true;
+        state.user.email = action.payload.user.email;
+        state.user.fullName = action.payload.user.fullName || '';
 
         localStorage.setItem('accessToken', action.payload.accessToken);
         localStorage.setItem('refreshToken', action.payload.refreshToken);
@@ -55,13 +59,15 @@ export const authSlice = createSlice({
       .addCase(checkAuthUser.fulfilled, (state, action) => {
         state.loading = false;
         state.isAuth = true;
-        if(action.payload.fullName) {
-          state.user.fullName = action.payload.fullName;
-        }
-        state.user.email = action.payload.email;
+        state.isAuthChecked = true;
+        state.user = {
+          fullName: action.payload.fullName || '',
+          email: action.payload.email
+        };
       })
       .addCase(checkAuthUser.rejected, (state) => {
         state.loading = false;
+        state.isAuthChecked = true;
       })
 
       // refreshTokenUser
@@ -70,7 +76,7 @@ export const authSlice = createSlice({
         localStorage.setItem('accessToken', action.payload.accessToken);
         localStorage.setItem('refreshToken', action.payload.refreshToken);
       })
-      .addCase(refreshTokenUser.rejected, (state) => {
+      .addCase(refreshTokenUser.rejected, () => {
       })
 
       // changeUser
@@ -79,7 +85,6 @@ export const authSlice = createSlice({
       })
       .addCase(changeUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.isAuth = true;
         state.user.fullName = action.payload.fullName;
       })
       .addCase(changeUser.rejected, (state) => {

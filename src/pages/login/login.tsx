@@ -1,22 +1,23 @@
 import { type ChangeEventHandler, type SubmitEventHandler, useState } from 'react';
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import ReadingMan from '@assets/img/reading-man.svg';
 import { StyledButton } from '@common/styled-button.tsx';
 import { StyledContainer } from '@common/styled-container.tsx';
 import { StyledInput } from '@common/styled-input.tsx';
+import { useAppDispatch } from '@redux/hooks.ts';
+import { loginUser } from '@redux/thunks/auth-thunk.ts';
 import styledc from 'styled-components';
 
 import { Box, type BoxProps, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
-
-import { useAppDispatch } from '../../redux/hooks.ts';
-import { loginUser } from '../../redux/thunks/auth-thunk.ts';
 
 export const Login = () => {
   const dispatch = useAppDispatch();
   const [user, setUser] = useState({ email: '', password: ''});
 
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || '/';
 
   const handleSubmit: SubmitEventHandler = (event) => {
     event.preventDefault();
@@ -24,7 +25,7 @@ export const Login = () => {
     dispatch(loginUser({ email: user.email, password: user.password }))
       .unwrap()
       .then(() => setUser({ email: '', password: ''}))
-      .then(() => navigate('/'));
+      .then(() => navigate(from, { replace: true }));
   };
 
   const handleEmailInputChange: ChangeEventHandler<HTMLInputElement> = (event) => {

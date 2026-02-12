@@ -1,23 +1,24 @@
 import { Link } from 'react-router';
 import Logo from '@assets/img/logo.svg';
 import Search from '@assets/img/search.svg';
-import { StyledContainer } from '@common/styled-container.tsx';
-import styledc from 'styled-components';
 import { StyledRoundButton } from '@common/ styled-round-button';
 import { CartIcon } from '@common/icons/cart-icon';
 import { HeartIcon } from '@common/icons/heart-icon';
-import { ProfileIcon } from '@common/icons/profile-icon'
+import { ProfileIcon } from '@common/icons/profile-icon';
+import { StyledContainer } from '@common/styled-container.tsx';
+import { useAppSelector } from '@redux/hooks';
+import styledc from 'styled-components';
 
 import {
+  Box,
   Button,
   FilledInput,
   Grid,
   InputAdornment,
-  Typography,
-  Box
+  Typography
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { useAppSelector } from '../../../../../redux/hooks.ts';
+
 
 export const Header = () => {
 

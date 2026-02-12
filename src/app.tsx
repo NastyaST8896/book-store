@@ -1,4 +1,6 @@
+import { useEffect } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router';
+import { PrivateRoute } from '@common/private-rote.tsx';
 
 import { ThemeProvider } from '@mui/material';
 
@@ -7,24 +9,22 @@ import { Home } from './pages/home';
 import { Login } from './pages/login';
 import { Profile } from './pages/profile';
 import { Register } from './pages/register';
-import { theme } from './theme/theme.tsx';
-import { useEffect } from 'react';
-import { checkAuthUser } from './redux/thunks/auth-thunk.ts';
 import { useAppDispatch, useAppSelector } from './redux/hooks.ts';
-import { PrivateRoute } from './components/private-rote.tsx'
+import { checkAuthUser } from './redux/thunks/auth-thunk.ts';
+import { theme } from './theme/theme.tsx';
 
 export const App = () => {
   const dispatch = useAppDispatch();
 
-  // const loading = useAppSelector((state) => state.auth.loading);
+  const isAuthChecked = useAppSelector((state) => state.auth.isAuthChecked);
 
   useEffect(() => {
     dispatch(checkAuthUser());
   }, [dispatch]);
 
-  // if (loading) {
-  //   return <div>...loading</div>;
-  // }
+  if (!isAuthChecked) {
+    return <div>...Loading</div>;
+  }
 
   return (
     <ThemeProvider theme={theme}>
@@ -46,5 +46,3 @@ export const App = () => {
     </ThemeProvider>
   );
 };
-
-export default App;

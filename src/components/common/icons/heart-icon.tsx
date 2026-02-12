@@ -1,22 +1,25 @@
-export const HeartIcon = () => {
+import React from 'react';
+
+export const HeartIcon: React.FC<React.SVGProps<SVGSVGElement>> = () => {
   return (
-    <svg 
-    width="26" 
-    height="26" 
-    viewBox="0 0 26 26" 
-    fill="none" 
-    xmlns="http://www.w3.org/2000/svg"
+    <svg
+      width="26"
+      height="26"
+      viewBox="0 0 26 26"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
     >
-      <path d="M3.00333 4.08683C0.44355 6.64661 0.443552 10.7968 3.00333 
-      13.3566L12.9319 23.2852L13.0002 23.217L13.0685 23.2853L22.9971 
-      13.3567C25.5568 10.7969 25.5568 6.64669 22.9971 4.08691C20.4373 1.52713 
-      16.287 1.52713 13.7273 4.08691L13.3538 4.46039C13.1585 4.65565 12.8419 
-      4.65565 12.6467 4.46039L12.2731 4.08683C9.71334 1.52705 5.56311 1.52705 
-      3.00333 4.08683Z" 
-      stroke="#F0F4EF" 
-      strokeWidth="2" 
-      strokeLinecap="round" 
-      strokeLinejoin="round" 
+      <path
+        d="M3.00333 4.08683C0.44355 6.64661 0.443552 10.7968 3.00333
+        13.3566L12.9319 23.2852L13.0002 23.217L13.0685 23.2853L22.9971
+        13.3567C25.5568 10.7969 25.5568 6.64669 22.9971 4.08691C20.4373 1.52713
+        16.287 1.52713 13.7273 4.08691L13.3538 4.46039C13.1585 4.65565 12.8419
+        4.65565 12.6467 4.46039L12.2731 4.08683C9.71334 1.52705 5.56311 1.52705
+        3.00333 4.08683Z"
+        stroke="#F0F4EF"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );
