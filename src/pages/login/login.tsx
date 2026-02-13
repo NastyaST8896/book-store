@@ -11,21 +11,46 @@ import styledc from 'styled-components';
 import { Box, type BoxProps, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
+import { checkValidEmail } from '../../utils';
+
 export const Login = () => {
   const dispatch = useAppDispatch();
-  const [user, setUser] = useState({ email: '', password: ''});
+  const [user, setUser] = useState({ email: '', password: '' });
+  const [loginError, setLoginError] = useState('');
+  const [emailError, setEmailError] = useState('');
 
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || '/';
 
+   const clearErrors = () => {
+    setLoginError('');
+    setEmailError('');
+  };
+
   const handleSubmit: SubmitEventHandler = (event) => {
     event.preventDefault();
+    
+    clearErrors();
+
+    if (!user.email.trim() || !checkValidEmail(user.email)) {
+      setEmailError('Incorrect email');
+
+      return;
+    }
 
     dispatch(loginUser({ email: user.email, password: user.password }))
       .unwrap()
-      .then(() => setUser({ email: '', password: ''}))
-      .then(() => navigate(from, { replace: true }));
+      .then(() => {
+        setUser({ email: '', password: '' });
+        clearErrors();
+      })
+      .then(() => navigate(from, { replace: true }))
+      .catch((e) => {
+        if (e.response.data.message === 'Incorrect password or email') {
+          setLoginError('Incorrect password or email')
+        }
+      });
   };
 
   const handleEmailInputChange: ChangeEventHandler<HTMLInputElement> = (event) => {
@@ -47,6 +72,7 @@ export const Login = () => {
               <StyledInput
                 type="email"
                 label="Email"
+                errorText={emailError || loginError}
                 helperText="Enter your email"
                 value={user.email}
                 onChange={handleEmailInputChange}
@@ -55,6 +81,7 @@ export const Login = () => {
               <StyledInput
                 type="password"
                 label="Password"
+                errorText={loginError}
                 helperText="Enter your password"
                 value={user.password}
                 onChange={handlePasswordInputChange}
@@ -86,7 +113,7 @@ const StyledRegisterBox = styled(Box)`
   justify-content: space-between;
 `;
 
-const StyledFormBox = styled(Box)<BoxProps & { noValidate?: string }>`
+const StyledFormBox = styled(Box) <BoxProps & { noValidate?: string }>`
   display: flex;
   flex-direction: column;
   gap: 60px;

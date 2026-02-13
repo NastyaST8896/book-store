@@ -40,7 +40,7 @@ export const Register = () => {
 
     clearErrors();
 
-    if (!checkValidEmail(user.email)) {
+    if ( !user.email.trim() || !checkValidEmail(user.email)) {
       setEmailError('Incorrect email');
 
       return;
@@ -50,10 +50,14 @@ export const Register = () => {
       .unwrap()
       .then(() => {
         setUser({ email: '', password: '', repeatPassword: '' });
-        setEmailError('');
+        clearErrors();
       })
       .catch((e) => {
         if (e.response.data.message === 'This email has already taken') {
+          setEmailError(e.response.data.message);
+        }
+
+        if(e.response.data.message === 'Incorrect email address') {
           setEmailError(e.response.data.message);
         }
       });

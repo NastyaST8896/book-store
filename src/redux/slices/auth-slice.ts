@@ -1,19 +1,25 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import { changeUser, checkAuthUser, loginUser, refreshTokenUser, registerUser } from '../thunks/auth-thunk.ts';
+import { 
+  changeUserName, 
+  changeUserPassword, 
+  checkAuthUser, loginUser, 
+  refreshTokenUser, 
+  registerUser 
+} from '../thunks/auth-thunk.ts';
 
 type AuthState = {
   isAuth: boolean;
   isAuthChecked: boolean;
   loading: boolean;
-  user: { fullName: string; email: string; };
+  user: { fullName: string; email: string; } | null;
 };
 
 const initialState: AuthState = {
-  isAuth: false,
+  // isAuth: false,
   isAuthChecked: false,
   loading: false,
-  user: { fullName: '', email: '' },
+  user: null,
 };
 
 export const authSlice = createSlice({
@@ -79,15 +85,26 @@ export const authSlice = createSlice({
       .addCase(refreshTokenUser.rejected, () => {
       })
 
-      // changeUser
-      .addCase(changeUser.pending, (state) => {
+      // changeUserName
+      .addCase(changeUserName.pending, (state) => {
         state.loading = true;
       })
-      .addCase(changeUser.fulfilled, (state, action) => {
+      .addCase(changeUserName.fulfilled, (state, action) => {
         state.loading = false;
         state.user.fullName = action.payload.fullName;
       })
-      .addCase(changeUser.rejected, (state) => {
+      .addCase(changeUserName.rejected, (state) => {
+        state.loading = false;
+      })
+
+      // changeUserPassword
+      .addCase(changeUserPassword.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(changeUserPassword.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(changeUserPassword.rejected, (state) => {
         state.loading = false;
       });
   }

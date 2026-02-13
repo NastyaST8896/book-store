@@ -7,7 +7,23 @@ type StyledIconButtonProps = {
   icon: React.JSX.Element,
 };
 
-export const StyledRoundButton = (props: StyledIconButtonProps) => {
+type Props = {
+  icon: React.JSX.Element,
+  asLink?: boolean;
+} & (LinkProps | ButtonProps)
+
+type LinkProps = {
+  asLink: true;
+  to: string;
+}
+
+type ButtonProps = {
+  asLink?: false;
+}
+
+
+
+export const StyledRoundButton = (props: Props) => {
   const { icon } = props;
 
   return (

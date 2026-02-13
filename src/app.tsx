@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router';
-import { PrivateRoute } from '@common/private-rote.tsx';
+import { PrivateRoute } from '@common/private-route.tsx';
 
 import { ThemeProvider } from '@mui/material';
 

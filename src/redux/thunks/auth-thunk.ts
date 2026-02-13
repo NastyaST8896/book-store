@@ -2,6 +2,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 
 import { getApiClient } from '../api.ts';
 import type { RootState } from '../store.ts';
+import axios from 'axios';
 
 type UserDataType = {
   email: string;
@@ -39,12 +40,17 @@ export const loginUser = createAsyncThunk<
   UserDataType
 >(
   'auth/loginUser',
-  async (userData) => {
-    const api = getApiClient();
+  async (userData, {rejectWithValue}) => {
+    try {
+      const api = getApiClient();
 
-    const response = await api.post('/auth/login', userData);
+      const response = await api.post('/auth/login', userData);
 
-    return response.data;
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+   
   },
 );
 
@@ -76,18 +82,50 @@ export const refreshTokenUser = createAsyncThunk<
 
     const response = await api.post('/auth/refresh', { refreshToken });
 
+    const me = await getUser();
+    
+
     return response.data;
   },
 );
 
-export const changeUser = createAsyncThunk<
-  { fullName: string }, { fullName: string }, { state: RootState }
+type AuthResponseType = {
+  user: {},
+}
+
+type UserRequestParams = {
+  name: string;
+}
+
+const getUser = (params:UserRequestParams) => {
+  return axios.get<AuthResponseType>('/auth/get-me')
+}
+
+export const changeUserName = createAsyncThunk<
+  { fullName: string }, 
+  { fullName: string }, 
+  { state: RootState }
 >(
-  'auth/changeUser',
-  async (userName) => {
+  'auth/changeUserName',
+  async (userData) => {
     const api = getApiClient();
 
-    const response = await api.post('/auth/change', userName);
+    const response = await api.post('/auth/change-name', userData);
+
+    return response.data;
+  },
+);
+
+export const changeUserPassword = createAsyncThunk<
+  { status: string }, 
+  { oldPassword: string, newPassword: string }, 
+  { state: RootState }
+>(
+  'auth/changeUserPassword',
+  async (userData) => {
+    const api = getApiClient();
+
+    const response = await api.post('/auth/change-password', userData);
 
     return response.data;
   },

@@ -19,14 +19,19 @@ export type StyledInputProps = {
   value?: string;
 };
 
-const getIconForInputTypeText = (isPasswordInput: StyledInputProps['isPasswordInput']) => {
+const getIconForInputTypeText = (
+  isPasswordInput: StyledInputProps['isPasswordInput']
+) => {
   if (isPasswordInput) {
     return <ViewIcon />;
   }
 
   return <AvatarIcon />;
 };
-const getIconForInputType = (type: StyledInputProps['type'], isPasswordInput: StyledInputProps['isPasswordInput']) => {
+const getIconForInputType = (
+  type: StyledInputProps['type'],
+  isPasswordInput: StyledInputProps['isPasswordInput']
+) => {
   let icon;
 
   switch (type) {
@@ -60,7 +65,7 @@ export const StyledInput = (props: StyledInputProps) => {
     value,
   } = props;
 
-  const icon: ReactElement | null  = getIconForInputType(type, isPasswordInput);
+  const icon: ReactElement | null = getIconForInputType(type, isPasswordInput);
 
   return (
     <Box>
@@ -77,7 +82,7 @@ export const StyledInput = (props: StyledInputProps) => {
         <StyledTextField
           disabled={disabled}
           fullWidth
-          autoComplete="off"
+          autoComplete="new-password"
           label={label}
           variant="standard"
           value={value}
@@ -93,7 +98,9 @@ export const StyledInput = (props: StyledInputProps) => {
       </StyledInputBox>
 
       {(errorText || helperText) && (
-        <StyledFormHelperText error={!!errorText}>{errorText || helperText}</StyledFormHelperText>
+        <StyledFormHelperText error={!!errorText}>
+          {errorText || helperText}
+        </StyledFormHelperText>
       )}
     </Box>
   );
@@ -104,7 +111,7 @@ const StyledInputBox = styled(Box)(({ theme }) => `
   height: 64px;
   width: 100%;
   align-items: start;
-  gap: 24px;
+  gap: 16px;
   background: #F0F4EF;
   padding: 6px 24px;
   border-radius: 16px;
