@@ -1,16 +1,14 @@
 import { Link } from 'react-router';
 import FooterLogo from '@assets/img/footer-logo.svg';
 import Map from '@assets/img/map.png';
-import { StyledContainer } from '@common/styled-container.tsx';
-import styledc from 'styled-components';
 
-import { Box, Grid } from '@mui/material';
+import { Box, Container, Grid } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 export const Footer = () => {
   return (
     <StyledFooter>
-      <StyledContainer>
+      <Container maxWidth="md">
         <StyledGrid
           container
           spacing={{ sm: 'auto' }}
@@ -37,26 +35,26 @@ export const Footer = () => {
             </div>
           </Grid>
         </StyledGrid>
-      </StyledContainer>
+      </Container>
     </StyledFooter>
   );
 };
 
-const StyledFooter = styledc.footer`
-    background-color: #0D1821;
-    color: #F0F4EF;
+const StyledFooter = styled('footer')(({ theme }) => `
+    background-color: ${theme.palette.appColor.dark};
+    color: ${theme.palette.appColor.light};
     padding: 74px 0;
     
     @media (max-width: 1440px) {
         padding: 74px 0;
     }
-`;
+`);
 
-const StyledMap = styledc.img`
+const StyledMap = styled('img')`
       max-width: 100%;
 `;
 
-const StyledDiv = styledc.div`
+const StyledDiv = styled('div')`
     font-size:20px;
     font-weight: 400;
     
@@ -66,9 +64,9 @@ const StyledDiv = styledc.div`
     }
 `;
 
-const StyledLink = styled(Link)`
+const StyledLink = styled(Link)(({ theme }) => `
     text-decoration: none;
-    color: #F0F4EF;
+    color: ${theme.palette.appColor.light};
     font-size: 20px;
     font-weight: 400;
 
@@ -76,7 +74,7 @@ const StyledLink = styled(Link)`
         font-size: 16px;
         font-weight: 500;
     }
-`;
+`);
 
 const StyledGrid = styled(Grid)`
     @media (max-width: 770px) {

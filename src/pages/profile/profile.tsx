@@ -1,180 +1,146 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { type SubmitHandler, useForm } from 'react-hook-form';
 import DefaultAvatar from '@assets/img/dafault-avatar.svg';
-import { StyledRoundButton } from '@common/ styled-round-button';
+import { AvatarIcon } from '@common/icons/avatar-icon';
 import { CameraIcon } from '@common/icons/camera-icon';
-import { StyledContainer } from '@common/styled-container.tsx';
-import { StyledInput, type StyledInputProps } from '@common/styled-input.tsx';
-import { useAppDispatch, useAppSelector } from '@redux/hooks.ts';
-import { changeUserName, changeUserPassword } from '@redux/thunks/auth-thunk.ts';
-import styledc from 'styled-components';
+import { HideIcon } from '@common/icons/hide-icon';
+import { MailIcon } from '@common/icons/mail-icon';
+import { ViewIcon } from '@common/icons/view-icon';
+import { StyledRoundButton } from '@common/styled-round-button';
+import {  useAppSelector } from '@redux/hooks';
 
-import { Box, Button, Grid, Typography } from '@mui/material';
+// import { changeUserName, changeUserPassword } from '@redux/thunks/auth-thunk';
+import { Box, Button, Container, Grid, type GridProps, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
+
+import type { ProfileFormType, } from '../../utils/types';
+import { createRequiredValidator,profileValidateRepeatPassword, validatePassword  } from '../../utils/validators';
+
+import { FormStyledInput } from './elements/form-styled-input';
+
+const requiredNameValidator = createRequiredValidator('Name is required');
+const requiredEmailValidator = createRequiredValidator('Email is required');
 
 export const Profile = () => {
   const auth = useAppSelector(state => state.auth);
 
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
 
-  // UserInfo: fullName
+  const [showOldPassword, setShowOldPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showRepeatPassword, setShowRepeatPassword] = useState(false);
+
   const [isUserInfoDirty, setIsUserInfoDirty] = useState(false);
-  const [userFullName, setUserFullName] = useState(auth.user?.fullName);
-  const [helperErrorFullNameText, setHelperErrorFullNameText] = useState('');
-
-
-
-  //UserPassword
   const [isUserPasswordDirty, setIsUserPasswordDirty] = useState(false);
 
-  const [oldPassword, setOldPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [repeatPassword, setRepeatPassword] = useState('');
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    clearErrors,
+    setValue
+  } = useForm<ProfileFormType>({
+    defaultValues: {
+      fullName: auth.user?.fullName || '',
+      email: auth.user?.email,
+      oldPassword: '',
+      newPassword: '',
+      repeatPassword: ''
+    },
+  });
 
-  // hide\show passport
-  const [
-    oldPasswordType,
-    setOldPasswordType
-  ] = useState<StyledInputProps['type']>('password');
-  const [
-    newPasswordType,
-    setNewPasswordType
-  ] = useState<StyledInputProps['type']>('password');
-  const [
-    repeatPasswordType,
-    setRepeatPasswordType
-  ] = useState<StyledInputProps['type']>('password');
+  useEffect(() => {
+    if (!isUserInfoDirty) {
+      clearErrors('fullName');
+    }
+  }, [clearErrors, isUserInfoDirty]);
 
-  // change password 
-  const [
-    helperErrorOldPasswordText,
-    sethelperErrorOldPasswordText
-  ] = useState('');
-  const [
-    helperErrorNewPasswordText,
-    sethelperErrorNewPasswordText
-  ] = useState('');
-  const [
-    helperErrorRepeatPasswordText,
-    sethelperErrorRepeatPasswordText
-  ] = useState('');
-
-
-  const clearErrors = () => {
-    setHelperErrorFullNameText('');
-    sethelperErrorOldPasswordText('');
-    sethelperErrorNewPasswordText('');
-    sethelperErrorRepeatPasswordText('');
+  const handleToggleOldPassword = () => {
+    setShowOldPassword((prevState) => !prevState);
   };
+
+  const handleToggleNewPassword = () => {
+    setShowNewPassword((prevState) => !prevState);
+  };
+
+  const handleToggleRepeatPassword = () => {
+    setShowRepeatPassword((prevState) => !prevState);
+  };
+
 
   const handleInformationStyledButton = () => {
     if (isUserInfoDirty) {
-      setUserFullName(auth.user?.fullName);
+      setValue('fullName', auth.user?.fullName || '');
     }
 
     setIsUserInfoDirty((prevState) => !prevState);
   };
-  const handleUserNameChange: StyledInputProps['onChange'] = (event) => {
-    setUserFullName(event.target.value);
-  };
-
 
   const handlePasswordStyledButton = () => {
     if (isUserPasswordDirty) {
-      setOldPassword('');
-      setNewPassword('');
-      setRepeatPassword('');
+      setValue('oldPassword', '');
+      setValue('newPassword', '');
+      setValue('repeatPassword', '');
     }
 
     setIsUserPasswordDirty((prevState) => !prevState);
   };
 
-  const handleOldPasswordType = () => {
-    if (oldPasswordType === 'password') {
-      setOldPasswordType('text');
-    } else if (oldPasswordType === 'text') {
-      setOldPasswordType('password');
+
+  const onSubmit: SubmitHandler<ProfileFormType> = (data) => {
+    console.log(data);
+
+    if (data.fullName.trim()) {
+      // dispatch(changeName)
     }
-  };
-  const handleNewPasswordType = () => {
-    if (newPasswordType === 'password') {
-      setNewPasswordType('text');
-    } else if (newPasswordType === 'text') {
-      setNewPasswordType('password');
-    }
-  };
-  const handleRepeatPasswordType = () => {
-    if (repeatPasswordType === 'password') {
-      setRepeatPasswordType('text');
-    } else if (repeatPasswordType === 'text') {
-      setRepeatPasswordType('password');
+
+    if (data.newPassword.trim()) {
+      // dispatch(changePassword)
     }
   };
 
-  const handleOldPasswordChange: StyledInputProps['onChange'] = (event) => {
-    setOldPassword(event.target.value)
-  };
-  const handleNewPasswordChange: StyledInputProps['onChange'] = (event) => {
-    setNewPassword(event.target.value)
-  };
-  const handleRepeatPasswordChange: StyledInputProps['onChange'] = (event) => {
-    setRepeatPassword(event.target.value)
-  };
+  // if (isUserPasswordDirty) {
+  //   if (!oldPassword.trim()) {
+  //     sethelperErrorOldPasswordText('Please fill out this field');
+  //
+  //     return;
+  //   }
+  //
+  //   if (!newPassword.trim()) {
+  //     sethelperErrorNewPasswordText('Please fill out this field');
+  //
+  //     return;
+  //   }
+  //
+  //   if (!repeatPassword.trim()) {
+  //     sethelperErrorRepeatPasswordText('Please fill out this field');
+  //
+  //     return;
+  //   }
+  //
+  //   if (!(newPassword === repeatPassword)) {
+  //     sethelperErrorRepeatPasswordText('Password doesn`t match the new password');
+  //
+  //     return;
+  //   }
+  // }
 
-
-  const handleConfirmButtonClick = () => {
-
-    clearErrors();
-
-    if (isUserInfoDirty) {
-      if (!userFullName.trim()) {
-        setHelperErrorFullNameText('Name is not correct');
-
-        return
-      }
-    }
-
-    if (isUserPasswordDirty) {
-      if (!oldPassword.trim()) {
-        sethelperErrorOldPasswordText('Please fill out this field');
-
-        return
-      }
-
-      if (!newPassword.trim()) {
-        sethelperErrorNewPasswordText('Please fill out this field');
-
-        return
-      }
-
-      if (!repeatPassword.trim()) {
-        sethelperErrorRepeatPasswordText('Please fill out this field');
-
-        return
-      }
-
-      if (!(newPassword === repeatPassword)) {
-        sethelperErrorRepeatPasswordText('Password doesn`t match the new password');
-
-        return
-      }
-    }
-
-    if (isUserInfoDirty) {
-      setIsUserInfoDirty(false);
-    }
-
-    if(userFullName) {
-      dispatch(changeUserName({ fullName: userFullName }));
-    }
-
-    if(oldPassword && newPassword) {
-      dispatch(changeUserPassword({ oldPassword, newPassword }));
-    }
-  };
+  // if (isUserInfoDirty) {
+  //   setIsUserInfoDirty(false);
+  // }
+  //
+  // if (userFullName) {
+  //   dispatch(changeUserName({ fullName: userFullName }));
+  // }
+  //
+  // if (oldPassword && newPassword) {
+  //   dispatch(changeUserPassword({ oldPassword, newPassword }));
+  // }
+  // };
 
   return (
     <StyledMain>
-      <StyledContainer>
+      <Container maxWidth="md">
         <Grid container gap={3}>
           <StyledAvatarGrid size={3}>
             <img src={DefaultAvatar} alt="default avatar" />
@@ -185,30 +151,39 @@ export const Profile = () => {
 
           <Grid size={{ lg: 1, md: 0 }} />
 
-          <StyledProfileInformationGrid size={{ lg: 6, sm: 12 }}>
+          <StyledProfileInformationGrid
+            size={{ lg: 6, sm: 12 }}
+            component="form"
+            noValidate="novalidate"
+            onSubmit={handleSubmit(onSubmit)}
+          >
             <StyledBox>
               <StyledInformationHeaderBox>
                 <Typography variant="h2">Personal information</Typography>
 
                 <StyledButton onClick={handleInformationStyledButton}>
-                  {isUserInfoDirty ? "Cancel" : "Change information"}
+                  {isUserInfoDirty ? 'Cancel' : 'Change information'}
                 </StyledButton>
               </StyledInformationHeaderBox>
 
-              <StyledInput
+              <FormStyledInput
+                name="fullName"
+                control={control}
+                rules={{ validate: isUserInfoDirty ? requiredNameValidator : undefined }}
+                icon={ <AvatarIcon /> }
                 type="text"
-                isPasswordInput={false}
                 label="Your name"
-                value={userFullName}
                 disabled={!isUserInfoDirty}
-                onChange={handleUserNameChange}
-                errorText={helperErrorFullNameText}
+                errorText={errors.fullName?.message}
               />
 
-              <StyledInput
+              <FormStyledInput
+                name="email"
+                control={control}
+                rules={{ validate: isUserInfoDirty ? requiredEmailValidator : undefined }}
+                icon={ <MailIcon /> }
                 type="email"
                 label="Your email"
-                value={auth.user?.email}
                 disabled={true}
               />
             </StyledBox>
@@ -220,70 +195,78 @@ export const Profile = () => {
                 <StyledButton
                   onClick={handlePasswordStyledButton}
                 >
-                  {isUserPasswordDirty ? "Cancel" : "Change password"}
+                  {isUserPasswordDirty ? 'Cancel' : 'Change password'}
                 </StyledButton>
               </StyledInformationHeaderBox>
 
-              <StyledInput
-                type={oldPasswordType}
-                isPasswordInput={true}
+              <FormStyledInput
+                name="oldPassword"
+                control={control}
+                rules={{ validate: isUserPasswordDirty ? validatePassword : undefined }}
+                icon={ showOldPassword
+                  ? <ViewIcon onClick={handleToggleOldPassword} />
+                  : <HideIcon onClick={handleToggleOldPassword} />
+                }
+                type={ showOldPassword ? 'text' : 'password' }
                 label="Old password"
-                errorText={helperErrorOldPasswordText}
-                helperText={isUserPasswordDirty ? "Enter your password" : ""}
-                value={oldPassword}
-                onChange={handleOldPasswordChange}
-                disabled={!isUserPasswordDirty}
-                onClick={handleOldPasswordType}
+                disabled={!isUserInfoDirty}
+                helperText={isUserPasswordDirty ? 'Enter your old password' : ''}
+                errorText={errors.oldPassword?.message}
+
               />
 
               {isUserPasswordDirty && (
                 <>
-                  <StyledInput
-                    type={newPasswordType}
-                    isPasswordInput={true}
+                  <FormStyledInput
+                    name="newPassword"
+                    control={control}
+                    rules={{ validate: isUserPasswordDirty ? validatePassword : undefined }}
+                    icon={ showNewPassword
+                      ? <ViewIcon onClick={handleToggleNewPassword} />
+                      : <HideIcon onClick={handleToggleNewPassword} />
+                    }
+                    type={ showNewPassword ? 'text' : 'password' }
                     label="New password"
-                    errorText={helperErrorNewPasswordText}
-                    helperText="Enter your password"
-                    value={newPassword}
-                    onChange={handleNewPasswordChange}
                     disabled={!isUserPasswordDirty}
-                    onClick={handleNewPasswordType}
+                    helperText={isUserPasswordDirty ? 'Enter your new password' : ''}
+                    errorText={errors.newPassword?.message}
                   />
 
-                  <StyledInput
-                    type={repeatPasswordType}
-                    isPasswordInput={true}
+                  <FormStyledInput
+                    name="repeatPassword"
+                    control={control}
+                    rules={{ validate: isUserPasswordDirty ? profileValidateRepeatPassword : undefined }}
+                    icon={ showRepeatPassword
+                      ? <ViewIcon onClick={handleToggleRepeatPassword} />
+                      : <HideIcon onClick={handleToggleRepeatPassword} />
+                    }
+                    type={ showRepeatPassword ? 'text' : 'password' }
                     label="Password replay"
-                    errorText={helperErrorRepeatPasswordText}
-                    helperText="Repeat your password without errors"
-                    value={repeatPassword}
-                    onChange={handleRepeatPasswordChange}
                     disabled={!isUserPasswordDirty}
-                    onClick={handleRepeatPasswordType}
+                    helperText={isUserPasswordDirty ? 'Repeat your password without errors' : ''}
+                    errorText={errors.repeatPassword?.message}
                   />
                 </>
-              )
-              }
-
+              )}
             </StyledBox>
 
             {(isUserInfoDirty || isUserPasswordDirty) && (
-              <StyledConfirmButton onClick={handleConfirmButtonClick}>
+              <StyledConfirmButton type="submit">
                 Confirm
               </StyledConfirmButton>
             )}
           </StyledProfileInformationGrid>
         </Grid>
-      </StyledContainer>
+      </Container>
     </StyledMain>
   );
 };
 
-const StyledMain = styledc.main`
+const StyledMain = styled('main')`
   padding: 36px 0 100px 0;
 `;
 
-const StyledProfileInformationGrid = styled(Grid)`
+const StyledProfileInformationGrid = styled(Grid)<GridProps & { noValidate?: string }>`
   display: flex;
   flex-direction: column;
   gap: 40px;

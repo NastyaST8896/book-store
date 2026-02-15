@@ -1,4 +1,4 @@
-import { FreeBook } from './elems/free-book';
+import { FreeBook } from './elements';
 
 export const Home = () => {
   return (

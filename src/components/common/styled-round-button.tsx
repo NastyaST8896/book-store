@@ -5,25 +5,20 @@ import { styled } from '@mui/material/styles';
 
 type StyledIconButtonProps = {
   icon: React.JSX.Element,
-};
-
-type Props = {
-  icon: React.JSX.Element,
   asLink?: boolean;
-} & (LinkProps | ButtonProps)
+} & (LinkProps | ButtonProps);
 
 type LinkProps = {
   asLink: true;
   to: string;
-}
+};
 
 type ButtonProps = {
   asLink?: false;
-}
+};
 
 
-
-export const StyledRoundButton = (props: Props) => {
+export const StyledRoundButton = (props: StyledIconButtonProps) => {
   const { icon } = props;
 
   return (

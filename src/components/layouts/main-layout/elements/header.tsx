@@ -1,17 +1,16 @@
 import { Link } from 'react-router';
 import Logo from '@assets/img/logo.svg';
 import Search from '@assets/img/search.svg';
-import { StyledRoundButton } from '@common/ styled-round-button';
+import { StyledRoundButton } from '@common/styled-round-button.tsx';
 import { CartIcon } from '@common/icons/cart-icon';
 import { HeartIcon } from '@common/icons/heart-icon';
 import { ProfileIcon } from '@common/icons/profile-icon';
-import { StyledContainer } from '@common/styled-container.tsx';
 import { useAppSelector } from '@redux/hooks';
-import styledc from 'styled-components';
 
 import {
   Box,
   Button,
+  Container,
   FilledInput,
   Grid,
   InputAdornment,
@@ -21,12 +20,11 @@ import { styled } from '@mui/material/styles';
 
 
 export const Header = () => {
-
   const auth = useAppSelector((state) => state.auth);
 
   return (
     <StyledHeader>
-      <StyledContainer>
+      <Container maxWidth="md">
         <Grid
           container
           spacing={1}
@@ -57,7 +55,7 @@ export const Header = () => {
           </StyledGridEnd>
 
           <Grid size={{ md: 'auto', sm: 4, xs: 'auto' }}>
-            {auth.isAuth
+            {auth.user
               ? (
                 <StyledBox>
                   <StyledAuthLink to="#">
@@ -80,12 +78,12 @@ export const Header = () => {
             }
           </Grid>
         </Grid>
-      </StyledContainer>
+      </Container>
     </StyledHeader>
   );
 };
 
-const StyledHeader = styledc.header`
+const StyledHeader = styled('header')`
   padding: 24px 0;
 `;
 
@@ -103,9 +101,9 @@ const StyledButton = styled(Button)`
   }
 `;
 
-const StyledInput = styled(FilledInput)`
+const StyledInput = styled(FilledInput)(({ theme }) => `
   height: 64px;
-  background-color: #F0F4EF;
+  background-color: ${theme.palette.appColor.light};
   border-radius: 16px;
   text-align: center;
   padding: 20px;
@@ -141,18 +139,18 @@ const StyledInput = styled(FilledInput)`
   @media (max-width: 320px) {
     padding: 10px 10px;
   }
-`;
+`);
 
-const StyledLink = styled(Link)`
+const StyledLink = styled(Link)(({ theme }) => `
   text-decoration: none;
-  color: #F0F4EF;
+  color: ${theme.palette.appColor.light};
 
   @media (max-width: 600px) {
     width: 135px;
     height: 38px;
     font-size: 12px;
   }
-`;
+`);
 
 const StyledGridEnd = styled(Grid)`
   display: flex;
@@ -164,7 +162,7 @@ const StyledGridEnd = styled(Grid)`
   }
 `;
 
-const StyledIcon = styledc.img`
+const StyledIcon = styled('img')`
   @media (max-width: 600px) {
       max-width: 100%;
   }

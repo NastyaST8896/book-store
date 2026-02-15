@@ -1,5 +1,8 @@
 import { createTheme } from '@mui/material';
 
+import { baseStyles } from './base-styles.ts';
+import { fonts } from './fonts.ts';
+
 export const theme = createTheme({
   breakpoints: {
     values: {
@@ -60,12 +63,14 @@ export const theme = createTheme({
     }
   },
   components: {
-
+    MuiCssBaseline: {
+      styleOverrides: [baseStyles, fonts].join(' '),
+    },
     MuiContainer: {
       styleOverrides: {
         root: {
           '&.MuiContainer-maxWidthMd': {
-            maxWidth: '1280px',
+            maxWidth: '1440px',
           },
           '@media (min-width: 834px)': {
             padding: '0 15px',

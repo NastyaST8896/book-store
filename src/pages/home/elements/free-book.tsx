@@ -1,13 +1,12 @@
 import Books from '@assets/img/books.svg';
 import ReadingGirl from '@assets/img/reading-girl.svg';
-import styledc from 'styled-components';
 
 import { Box, Button, Container, Grid, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 export const FreeBook = () => {
   return (
-    <StyledContainer maxWidth="md">
+    <Container maxWidth="md">
       <StyledDiv>
         <StyledDivImgBooks>
           <StyledImgBooks src={Books} />
@@ -51,19 +50,16 @@ export const FreeBook = () => {
           </StyledGrid>
         </StyledContainerGrid>
       </StyledDiv>
-    </StyledContainer>
+    </Container>
   );
 };
 
-const StyledContainer = styled(Container)`
-  margin-top: 40px
-`;
-
-const StyledDiv = styledc.div`
-  background-color: #f0f4ef;
+const StyledDiv = styled('div') (({ theme }) => `
+  margin-top: 40px;
+  background-color: ${theme.palette.appColor.light};;
   position: relative;
   border-radius: 16px;
-`;
+`);
 
 const StyledButton = styled(Button)`
   border-radius: 16px;
@@ -83,7 +79,7 @@ const StyledButton = styled(Button)`
   }
 `;
 
-const StyledDivImgBooks = styledc.div`
+const StyledDivImgBooks = styled('div')`
   position: absolute;
   bottom: 0;
   left: 0;
@@ -94,10 +90,10 @@ const StyledDivImgBooks = styledc.div`
   }
 `;
 
-const StyledImgBooks = styledc.img`
+const StyledImgBooks = styled('img')`
   @media (max-width: 1000px) {
     max-width: 100%;
-    object-fit: contained;
+    object-fit: contain;
   }
 `;
 
@@ -112,10 +108,10 @@ const StyledGrid = styled(Grid)`
   }
 `;
 
-const StyledImg = styledc.img`
+const StyledImg = styled('img')`
 @media (max-width: 1000px) {
     max-width: 100%;
-    object-fit: contained;
+    object-fit: contain;
   }
 `;
 

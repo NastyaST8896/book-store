@@ -1,25 +1,21 @@
+import type { UserType } from '@redux/slices/auth-slice.ts';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
+// import axios from 'axios';
+import type { Nullable } from '../../utils/types.ts';
 import { getApiClient } from '../api.ts';
 import type { RootState } from '../store.ts';
-import axios from 'axios';
 
-type UserDataType = {
-  email: string;
-  password: string;
-};
+type UserDataPayload = Pick<UserType, 'email' | 'password'>;
 
 type LoginUserResponseType = {
   accessToken: string;
   refreshToken: string;
-  user: {
-    email: string;
-    fullName: string | null;
-  };
+  user: Pick<UserType, 'email'> & { fullName: Nullable<string> };
 };
 
 export const registerUser = createAsyncThunk<
-  void, UserDataType
+  void, UserDataPayload
 >(
   'auth/registerUser',
   async (userData, { rejectWithValue }) => {
@@ -37,10 +33,10 @@ export const registerUser = createAsyncThunk<
 
 export const loginUser = createAsyncThunk<
   LoginUserResponseType,
-  UserDataType
+  UserDataPayload
 >(
   'auth/loginUser',
-  async (userData, {rejectWithValue}) => {
+  async (userData, { rejectWithValue }) => {
     try {
       const api = getApiClient();
 
@@ -50,7 +46,6 @@ export const loginUser = createAsyncThunk<
     } catch (error) {
       return rejectWithValue(error);
     }
-   
   },
 );
 
@@ -82,28 +77,27 @@ export const refreshTokenUser = createAsyncThunk<
 
     const response = await api.post('/auth/refresh', { refreshToken });
 
-    const me = await getUser();
-    
+    // const me = await getUser();
 
     return response.data;
   },
 );
 
-type AuthResponseType = {
-  user: {},
-}
-
-type UserRequestParams = {
-  name: string;
-}
-
-const getUser = (params:UserRequestParams) => {
-  return axios.get<AuthResponseType>('/auth/get-me')
-}
+// type AuthResponseType = {
+//   user: any,
+// };
+//
+// type UserRequestParams = {
+//   name: string;
+// };
+//
+// const getUser = (params: UserRequestParams) => {
+//   return axios.get<AuthResponseType>('/auth/get-me');
+// };
 
 export const changeUserName = createAsyncThunk<
-  { fullName: string }, 
-  { fullName: string }, 
+  { fullName: string },
+  { fullName: string },
   { state: RootState }
 >(
   'auth/changeUserName',
@@ -117,8 +111,8 @@ export const changeUserName = createAsyncThunk<
 );
 
 export const changeUserPassword = createAsyncThunk<
-  { status: string }, 
-  { oldPassword: string, newPassword: string }, 
+  { status: string },
+  { oldPassword: string, newPassword: string },
   { state: RootState }
 >(
   'auth/changeUserPassword',

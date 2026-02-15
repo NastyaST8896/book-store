@@ -1,21 +1,24 @@
 import React from 'react';
-import { Navigate, useLocation } from 'react-router';
+import { Navigate, Outlet, useLocation } from 'react-router';
 import { useAppSelector } from '@redux/hooks.ts';
 
 type PrivateRouteProps = {
-  children: React.JSX.Element;
   redirectTo: string;
-  protectVariant: 'auth_required' | 'no_auth'
+  protectVariant: 'auth_required' | 'no_auth';
 };
 
-export const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
+export const PrivateRoute: React.FC<PrivateRouteProps> = ({ protectVariant, redirectTo }) => {
   const auth = useAppSelector(state => state.auth);
 
   const location = useLocation();
 
-  if (!auth.isAuth) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
+  if (protectVariant === 'auth_required' && !auth.user) {
+    return <Navigate to={redirectTo} state={{ from: location }} replace />;
   }
 
-  return children;
+  if (protectVariant === 'no_auth' && auth.user) {
+    return <Navigate to={redirectTo} />;
+  }
+
+  return <Outlet />;
 };

@@ -1,25 +1,24 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router';
 import { PrivateRoute } from '@common/private-route.tsx';
-
-import { ThemeProvider } from '@mui/material';
 
 import { MainLayout } from './components/layouts/main-layout';
 import { Home } from './pages/home';
 import { Login } from './pages/login';
 import { Profile } from './pages/profile';
 import { Register } from './pages/register';
-import { useAppDispatch, useAppSelector } from './redux/hooks.ts';
+import { useAppDispatch } from './redux/hooks.ts';
 import { checkAuthUser } from './redux/thunks/auth-thunk.ts';
-import { theme } from './theme/theme.tsx';
+import { IN_APP_ROUTES } from './utils/routes.ts';
 
 export const App = () => {
   const dispatch = useAppDispatch();
 
-  const isAuthChecked = useAppSelector((state) => state.auth.isAuthChecked);
+  const [isAuthChecked, setIsAuthChecked] = useState(false);
 
   useEffect(() => {
-    dispatch(checkAuthUser());
+    dispatch(checkAuthUser())
+      .finally(() => setIsAuthChecked(true));
   }, [dispatch]);
 
   if (!isAuthChecked) {
@@ -27,22 +26,21 @@ export const App = () => {
   }
 
   return (
-    <ThemeProvider theme={theme}>
-      <BrowserRouter>
-        <Routes>
-          <Route element={<MainLayout />}>
-            <Route index element={<Home />} />
+    <BrowserRouter>
+      <Routes>
+        <Route element={<MainLayout />}>
+          <Route index element={<Home />} />
+
+          <Route element={<PrivateRoute redirectTo={IN_APP_ROUTES.home.path} protectVariant="no_auth" />}>
             <Route path="login" element={<Login />} />
             <Route path="register" element={<Register />} />
-            <Route path="profile" element={
-              <PrivateRoute>
-                <Profile />
-              </PrivateRoute>
-            }
-            />
           </Route>
-        </Routes>
-      </BrowserRouter>
-    </ThemeProvider>
+
+          <Route element={<PrivateRoute redirectTo={IN_APP_ROUTES.login.path} protectVariant="auth_required" />}>
+            <Route path="profile" element={<Profile />} />
+          </Route>
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 };

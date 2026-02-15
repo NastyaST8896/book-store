@@ -1,99 +1,136 @@
-import { type ChangeEventHandler, type SubmitEventHandler, useState } from 'react';
+import { useState } from 'react';
+import { type SubmitHandler, useForm } from 'react-hook-form';
 import ReadingMan from '@assets/img/reading-man.svg';
-import { StyledButton } from '@common/styled-button.tsx';
-import { StyledContainer } from '@common/styled-container.tsx';
-import { StyledInput } from '@common/styled-input.tsx';
-import { useAppDispatch, useAppSelector } from '@redux/hooks.ts';
-import { registerUser } from '@redux/thunks/auth-thunk.ts';
-import styledc from 'styled-components';
+import { HideIcon } from '@common/icons/hide-icon';
+import { MailIcon } from '@common/icons/mail-icon';
+import { ViewIcon } from '@common/icons/view-icon';
+import { StyledButton } from '@common/styled-button';
+import { useAppSelector } from '@redux/hooks';
 
-import { Box, type BoxProps, Typography } from '@mui/material';
+// import { registerUser } from '@redux/thunks/auth-thunk';
+import { Box, type BoxProps, Container, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
-import { checkValidEmail } from '../../utils';
+import type { RegisterFormType } from '../../utils/types';
+import {
+  registerValidateRepeatPassword,
+  validateEmail,
+  validatePassword
+} from '../../utils/validators';
+
+import { FormStyledInput } from './elements/form-styled-input';
 
 
 export const Register = () => {
   const auth = useAppSelector(state => state.auth);
 
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
 
-  const [user, setUser] = useState({ email: '', password: '', repeatPassword: '' });
-  const [emailError, setEmailError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showRepeatPassword, setShowRepeatPassword] = useState(false);
 
-  const clearErrors = () => {
-    setEmailError('');
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+  } = useForm<RegisterFormType>({
+    defaultValues: {
+      email: '',
+      password: '',
+      repeatPassword: ''
+    },
+  });
+
+  const handleTogglePassword = () => {
+    setShowPassword((prevState) => !prevState);
   };
 
-  const handleEmailInputChange: ChangeEventHandler<HTMLInputElement> = (event) => {
-    setUser({ ...user, email: event.target.value });
-  };
-  const handlePasswordInputChange: ChangeEventHandler<HTMLInputElement> = (event) => {
-    setUser({ ...user, password: event.target.value });
-  };
-  const handleRepeatPasswordInputChange: ChangeEventHandler<HTMLInputElement> = (event) => {
-    setUser({ ...user, repeatPassword: event.target.value });
+  const handleToggleRepeatPassword = () => {
+    setShowRepeatPassword((prevState) => !prevState);
   };
 
-  const handleSubmit: SubmitEventHandler = (event) => {
-    event.preventDefault();
+  const onSubmit: SubmitHandler<RegisterFormType> = (data) => {
+    console.log(data);
+    setValue('email', '');
+    setValue('password', '');
+    setValue('repeatPassword', '');
 
-    clearErrors();
-
-    if ( !user.email.trim() || !checkValidEmail(user.email)) {
-      setEmailError('Incorrect email');
-
-      return;
+    if (data.email.trim() && data.password.trim()) {
+      // dispatch(registerUser({ email: data.email, password: data.password })
     }
+    // clearErrors();
 
-    dispatch(registerUser({ email: user.email, password: user.password }))
-      .unwrap()
-      .then(() => {
-        setUser({ email: '', password: '', repeatPassword: '' });
-        clearErrors();
-      })
-      .catch((e) => {
-        if (e.response.data.message === 'This email has already taken') {
-          setEmailError(e.response.data.message);
-        }
+    // if ( !user.email.trim() || !checkValidEmail(user.email)) {
+    //   setEmailError('Incorrect email');
 
-        if(e.response.data.message === 'Incorrect email address') {
-          setEmailError(e.response.data.message);
-        }
-      });
+    // return;
+
+
+    // dispatch(registerUser({ email: user.email, password: user.password }))
+    //   .unwrap()
+    //   .then(() => {
+    //     setUser({ email: '', password: '', repeatPassword: '' });
+    //     // clearErrors();
+    // });
+    // .catch((e) => {
+    // if (e.response.data.message === 'This email has already taken') {
+    // setEmailError(e.response.data.message);
+    // }
+    //
+    //       if(e.response.data.message === 'Incorrect email address') {
+    //         setEmailError(e.response.data.message);
+    //       }
+    //     });
+    // };
   };
 
   return (
     <StyledMain>
-      <StyledContainer maxWidth="md">
+      <Container maxWidth="md">
         <StyledRegisterBox>
-          <StyledFormBox component="form" noValidate="novalidate" onSubmit={handleSubmit}>
+          <StyledFormBox component="form" noValidate="novalidate" onSubmit={handleSubmit(onSubmit)}>
             <Typography variant="h1">Sign Up</Typography>
 
             <StyledFormInputBox>
-              <StyledInput
+              <FormStyledInput
+                name="email"
+                control={control}
+                rules={{ validate: validateEmail }}
+                icon={<MailIcon />}
                 type="email"
-                errorText={emailError}
-                label="Email"
+                label="Your email"
                 helperText="Enter your email"
-                value={user.email}
-                onChange={handleEmailInputChange}
+                errorText={errors.email?.message}
               />
 
-              <StyledInput
-                type="password"
+              <FormStyledInput
+                name="password"
+                control={control}
+                rules={{ validate: validatePassword }}
+                icon={showPassword
+                  ? <ViewIcon onClick={handleTogglePassword} />
+                  : <HideIcon onClick={handleTogglePassword} />
+                }
+                type={showPassword ? 'text' : 'password'}
                 label="Password"
                 helperText="Enter your password"
-                value={user.password}
-                onChange={handlePasswordInputChange}
+                errorText={errors.password?.message}
+
               />
 
-              <StyledInput
-                type="password"
-                label="Repeat Password"
-                helperText="Repeat your password without errors"
-                value={user.repeatPassword}
-                onChange={handleRepeatPasswordInputChange}
+              <FormStyledInput
+                name="repeatPassword"
+                control={control}
+                rules={{ validate: registerValidateRepeatPassword }}
+                icon={ showRepeatPassword
+                  ? <ViewIcon onClick={handleToggleRepeatPassword} />
+                  : <HideIcon onClick={handleToggleRepeatPassword} />
+                }
+                type={ showRepeatPassword ? 'text' : 'password' }
+                label="Password replay"
+                helperText='Repeat your password without errors'
+                errorText={errors.repeatPassword?.message}
               />
             </StyledFormInputBox>
 
@@ -108,12 +145,12 @@ export const Register = () => {
 
           <img src={ReadingMan} alt="Reading man" />
         </StyledRegisterBox>
-      </StyledContainer>
+      </Container>
     </StyledMain>
   );
 };
 
-const StyledMain = styledc.main`
+const StyledMain = styled('main')`
   padding: 90px 0;
 `;
 
