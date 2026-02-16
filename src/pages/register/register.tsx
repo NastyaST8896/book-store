@@ -5,9 +5,9 @@ import { HideIcon } from '@common/icons/hide-icon';
 import { MailIcon } from '@common/icons/mail-icon';
 import { ViewIcon } from '@common/icons/view-icon';
 import { StyledButton } from '@common/styled-button';
-import { useAppSelector } from '@redux/hooks';
+import { useAppSelector, useAppDispatch } from '@redux/hooks';
 
-// import { registerUser } from '@redux/thunks/auth-thunk';
+import { registerUser } from '@redux/auth/thunk';
 import { Box, type BoxProps, Container, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
@@ -24,7 +24,7 @@ import { FormStyledInput } from './elements/form-styled-input';
 export const Register = () => {
   const auth = useAppSelector(state => state.auth);
 
-  // const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
 
   const [showPassword, setShowPassword] = useState(false);
   const [showRepeatPassword, setShowRepeatPassword] = useState(false);
@@ -51,14 +51,17 @@ export const Register = () => {
   };
 
   const onSubmit: SubmitHandler<RegisterFormType> = (data) => {
-    console.log(data);
-    setValue('email', '');
-    setValue('password', '');
-    setValue('repeatPassword', '');
-
     if (data.email.trim() && data.password.trim()) {
-      // dispatch(registerUser({ email: data.email, password: data.password })
+      dispatch(registerUser({ email: data.email, password: data.password }))
+        .unwrap()
+        .then(() => {
+          setValue('email', '');
+          setValue('password', '');
+          setValue('repeatPassword', '');
+        });
     }
+
+
     // clearErrors();
 
     // if ( !user.email.trim() || !checkValidEmail(user.email)) {
@@ -89,7 +92,11 @@ export const Register = () => {
     <StyledMain>
       <Container maxWidth="md">
         <StyledRegisterBox>
-          <StyledFormBox component="form" noValidate="novalidate" onSubmit={handleSubmit(onSubmit)}>
+          <StyledFormBox
+            component="form"
+            noValidate="novalidate"
+            onSubmit={handleSubmit(onSubmit)}
+          >
             <Typography variant="h1">Sign Up</Typography>
 
             <StyledFormInputBox>
@@ -123,11 +130,11 @@ export const Register = () => {
                 name="repeatPassword"
                 control={control}
                 rules={{ validate: registerValidateRepeatPassword }}
-                icon={ showRepeatPassword
+                icon={showRepeatPassword
                   ? <ViewIcon onClick={handleToggleRepeatPassword} />
                   : <HideIcon onClick={handleToggleRepeatPassword} />
                 }
-                type={ showRepeatPassword ? 'text' : 'password' }
+                type={showRepeatPassword ? 'text' : 'password'}
                 label="Password replay"
                 helperText='Repeat your password without errors'
                 errorText={errors.repeatPassword?.message}
@@ -160,7 +167,7 @@ const StyledRegisterBox = styled(Box)`
   justify-content: space-between;
 `;
 
-const StyledFormBox = styled(Box)<BoxProps & { noValidate?: string }>`
+const StyledFormBox = styled(Box) <BoxProps & { noValidate?: string }>`
   display: flex;
   flex-direction: column;
   gap: 60px;

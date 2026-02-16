@@ -31,7 +31,8 @@
     "paths": {
       "@assets/*": ["assets/*"],
       "@common/*": ["components/common/*"],
-      "@redux/*": ["redux/*"]
+      "@redux/*": ["redux/*"],
+      "@utils/*": ["utils/*"]
     }
   },
   "include": [

@@ -8,22 +8,22 @@ import { Login } from './pages/login';
 import { Profile } from './pages/profile';
 import { Register } from './pages/register';
 import { useAppDispatch } from './redux/hooks.ts';
-import { checkAuthUser } from './redux/thunks/auth-thunk.ts';
+import { checkAuthUser } from './redux/auth/thunk.ts';
 import { IN_APP_ROUTES } from './utils/routes.ts';
 
 export const App = () => {
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
 
-  const [isAuthChecked, setIsAuthChecked] = useState(false);
+  // const [isAuthChecked, setIsAuthChecked] = useState(false);
 
-  useEffect(() => {
-    dispatch(checkAuthUser())
-      .finally(() => setIsAuthChecked(true));
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(checkAuthUser())
+  //     .finally(() => setIsAuthChecked(true));
+  // }, [dispatch]);
 
-  if (!isAuthChecked) {
-    return <div>...Loading</div>;
-  }
+  // if (!isAuthChecked) {
+  //   return <div>...Loading</div>;
+  // }
 
   return (
     <BrowserRouter>

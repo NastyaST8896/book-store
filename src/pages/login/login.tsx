@@ -1,50 +1,62 @@
-// import { type ChangeEventHandler, type SubmitEventHandler, useState } from 'react';
-// import { useLocation, useNavigate } from 'react-router';
-import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
+import { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router';
+import { type SubmitHandler, useForm } from 'react-hook-form';
 import ReadingMan from '@assets/img/reading-man.svg';
 import { StyledButton } from '@common/styled-button';
-import { StyledInput } from '@common/styled-input';
-
-// import { useAppDispatch } from '@redux/hooks';
-// import { loginUser } from '@redux/thunks/auth-thunk';
+import { useAppDispatch } from '@redux/hooks';
+import { loginUser } from '@redux/auth/thunk';
 import { Box, type BoxProps, Container, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 import type { LoginFormType } from '../../utils/types.ts';
+import { IN_APP_ROUTES } from '@utils/routes';
+import { createRequiredValidator } from '@utils/validators/required-validator';
+import { MailIcon } from '@common/icons/mail-icon';
+import { FormStyledInput } from './elements/form-styled-input';
+import { ViewIcon } from '@common/icons/view-icon';
+import { HideIcon } from '@common/icons/hide-icon';
+
+const requiredEmailValidator = createRequiredValidator('Email is required');
+const requiredPasswordValidator = createRequiredValidator('Password is required');
 
 export const Login = () => {
-  // const dispatch = useAppDispatch();
-  // const [user, setUser] = useState({ email: '', password: '' });
-  // const [loginError, setLoginError] = useState('');
-  // const [emailError, setEmailError] = useState('');
-  //
-  // const navigate = useNavigate();
-  // const location = useLocation();
-  // const from = location.state?.from?.pathname || '/';
-  //
-  // const clearErrors = () => {
-  //   setLoginError('');
-  //   setEmailError('');
-  // };
+  const dispatch = useAppDispatch();
 
-  const { control, handleSubmit, formState: { errors } } = useForm<LoginFormType>({
+  const [showPassword, setShowPassword] = useState(false);
+
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || IN_APP_ROUTES.home.path;
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    setValue
+  } = useForm<LoginFormType>({
     defaultValues: {
       email: '',
       password: ''
     },
   });
 
+   const handleTogglePassword = () => {
+    setShowPassword((prevState) => !prevState);
+  };
+
   const onSubmit: SubmitHandler<LoginFormType> = (data) => {
 
     console.log(data);
 
-    //   clearErrors();
-
-    // if (!user.email.trim() || !checkValidEmail(user.email)) {
-    //   setEmailError('Incorrect email');
-    //
-    //   return;
-    // }
+    if (data.email.trim() && data.password.trim()) {
+      dispatch(loginUser({ email: data.email, password: data.password }))
+        .unwrap()
+        .then(() => {
+          setValue('email', '');
+          setValue('password', '');
+        })
+        .then(() => navigate(from, { replace: true }));
+    }
 
     //   dispatch(loginUser({ email: user.email, password: user.password }))
     //     .unwrap()
@@ -58,65 +70,44 @@ export const Login = () => {
     //         setLoginError('Incorrect password or email');
     //       }
     //     });
-  };
-
-  // const handleEmailInputChange: ChangeEventHandler<HTMLInputElement> = (event) => {
-  //   setUser({ ...user, email: event.target.value });
-  // };
-  //
-  // const handlePasswordInputChange: ChangeEventHandler<HTMLInputElement> = (event) => {
-  //   setUser({ ...user, password: event.target.value });
-  // };
+  }
 
   return (
     <StyledMain>
       <Container maxWidth="md">
         <StyledRegisterBox>
-          <StyledFormBox component="form" noValidate="novalidate" onSubmit={handleSubmit(onSubmit)}>
+          <StyledFormBox
+            component="form"
+            noValidate="novalidate"
+            onSubmit={handleSubmit(onSubmit)}
+          >
             <Typography variant="h1">Log In</Typography>
 
             <StyledFormInputBox>
-
-              <Controller
+              <FormStyledInput
                 name="email"
                 control={control}
-                rules={{
-                  validate: (email) => {
-                    if (!email.trim()) {
-                      return 'Email is required';
-                    }
-                  }
-                }}
-                render={({ field }) => (
-                  <StyledInput
-                    {...field}
-                    type="email"
-                    label="Email"
-                    helperText="Enter your email"
-                    errorText={errors.email?.message}
-                  />
-                )}
+                rules={{ validate: requiredEmailValidator }}
+                icon={<MailIcon />}
+                type="email"
+                label="Email"
+                helperText="Enter your email"
+                errorText={errors.email?.message}
               />
 
-              <Controller
+              <FormStyledInput
                 name="password"
                 control={control}
-                rules={{
-                  validate: (password) => {
-                    if (!password.trim()) {
-                      return 'Password is required';
-                    }
-                  }
-                }}
-                render={({ field }) => (
-                  <StyledInput
-                    {...field}
-                    type="password"
-                    label="Password"
-                    helperText="Enter your password"
-                    errorText={errors.password?.message}
-                  />
-                )}
+                rules={{ validate: requiredPasswordValidator }}
+                icon={showPassword
+                  ? <ViewIcon onClick={handleTogglePassword} />
+                  : <HideIcon onClick={handleTogglePassword} />
+                }
+                type={showPassword ? 'text' : 'password'}
+                label="Password"
+                helperText="Enter your password"
+                errorText={errors.password?.message}
+
               />
             </StyledFormInputBox>
 

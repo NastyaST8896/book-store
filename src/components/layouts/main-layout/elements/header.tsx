@@ -17,6 +17,7 @@ import {
   Typography
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { IN_APP_ROUTES } from '@utils/routes';
 
 
 export const Header = () => {
@@ -64,15 +65,15 @@ export const Header = () => {
                   <StyledAuthLink to="#">
                     <StyledRoundButton icon={<HeartIcon />} />
                   </StyledAuthLink>
-                  <StyledAuthLink to="/profile">
+                  <StyledAuthLink to={IN_APP_ROUTES.profile.path}>
                     <StyledRoundButton icon={<ProfileIcon />} />
                   </StyledAuthLink>
                 </StyledBox>
               ) : (
                 <StyledButton variant="contained">
-                  <StyledLink to="/login">Log In</StyledLink>
+                  <StyledLink to={IN_APP_ROUTES.login.path}>Log In</StyledLink>
                   /
-                  <StyledLink to="/register">Sign Up</StyledLink>
+                  <StyledLink to={IN_APP_ROUTES.register.path}>Sign Up</StyledLink>
                 </StyledButton>
               )
             }

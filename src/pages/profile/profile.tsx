@@ -7,16 +7,28 @@ import { HideIcon } from '@common/icons/hide-icon';
 import { MailIcon } from '@common/icons/mail-icon';
 import { ViewIcon } from '@common/icons/view-icon';
 import { StyledRoundButton } from '@common/styled-round-button';
-import {  useAppSelector } from '@redux/hooks';
+import { useAppSelector } from '@redux/hooks';
 
-// import { changeUserName, changeUserPassword } from '@redux/thunks/auth-thunk';
-import { Box, Button, Container, Grid, type GridProps, Typography } from '@mui/material';
+import { changeUserName, changeUserPassword } from '@redux/auth/thunk';
+import {
+  Box,
+  Button,
+  Container,
+  Grid,
+  type GridProps,
+  Typography
+} from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 import type { ProfileFormType, } from '../../utils/types';
-import { createRequiredValidator,profileValidateRepeatPassword, validatePassword  } from '../../utils/validators';
+import {
+  createRequiredValidator,
+  profileValidateRepeatPassword,
+  validatePassword
+} from '../../utils/validators';
 
 import { FormStyledInput } from './elements/form-styled-input';
+import { useAppDispatch } from '@redux/hooks';
 
 const requiredNameValidator = createRequiredValidator('Name is required');
 const requiredEmailValidator = createRequiredValidator('Email is required');
@@ -24,7 +36,7 @@ const requiredEmailValidator = createRequiredValidator('Email is required');
 export const Profile = () => {
   const auth = useAppSelector(state => state.auth);
 
-  // const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
 
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
@@ -53,7 +65,12 @@ export const Profile = () => {
     if (!isUserInfoDirty) {
       clearErrors('fullName');
     }
-  }, [clearErrors, isUserInfoDirty]);
+    if (!isUserPasswordDirty) {
+      clearErrors('newPassword');
+      clearErrors('oldPassword');
+      clearErrors('repeatPassword');
+    }
+  }, [clearErrors, isUserInfoDirty, isUserPasswordDirty]);
 
   const handleToggleOldPassword = () => {
     setShowOldPassword((prevState) => !prevState);
@@ -90,53 +107,28 @@ export const Profile = () => {
   const onSubmit: SubmitHandler<ProfileFormType> = (data) => {
     console.log(data);
 
-    if (data.fullName.trim()) {
-      // dispatch(changeName)
+    if (data.fullName.trim() && isUserInfoDirty) {
+      dispatch(changeUserName({ fullName: data.fullName }))
+
+      setIsUserInfoDirty((prevState) => !prevState);
     }
 
-    if (data.newPassword.trim()) {
-      // dispatch(changePassword)
+    if (
+      data.newPassword.trim()
+      && data.oldPassword.trim()
+      && isUserPasswordDirty) {
+      dispatch(changeUserPassword({
+        oldPassword: data.oldPassword,
+        newPassword: data.newPassword
+      }));
+
+      setIsUserPasswordDirty((prevState) => !prevState);
     }
+
+    setValue('oldPassword', '');
+    setValue('newPassword', '');
+    setValue('repeatPassword', '');
   };
-
-  // if (isUserPasswordDirty) {
-  //   if (!oldPassword.trim()) {
-  //     sethelperErrorOldPasswordText('Please fill out this field');
-  //
-  //     return;
-  //   }
-  //
-  //   if (!newPassword.trim()) {
-  //     sethelperErrorNewPasswordText('Please fill out this field');
-  //
-  //     return;
-  //   }
-  //
-  //   if (!repeatPassword.trim()) {
-  //     sethelperErrorRepeatPasswordText('Please fill out this field');
-  //
-  //     return;
-  //   }
-  //
-  //   if (!(newPassword === repeatPassword)) {
-  //     sethelperErrorRepeatPasswordText('Password doesn`t match the new password');
-  //
-  //     return;
-  //   }
-  // }
-
-  // if (isUserInfoDirty) {
-  //   setIsUserInfoDirty(false);
-  // }
-  //
-  // if (userFullName) {
-  //   dispatch(changeUserName({ fullName: userFullName }));
-  // }
-  //
-  // if (oldPassword && newPassword) {
-  //   dispatch(changeUserPassword({ oldPassword, newPassword }));
-  // }
-  // };
 
   return (
     <StyledMain>
@@ -169,8 +161,12 @@ export const Profile = () => {
               <FormStyledInput
                 name="fullName"
                 control={control}
-                rules={{ validate: isUserInfoDirty ? requiredNameValidator : undefined }}
-                icon={ <AvatarIcon /> }
+                rules={{
+                  validate: isUserInfoDirty
+                    ? requiredNameValidator
+                    : undefined
+                }}
+                icon={<AvatarIcon />}
                 type="text"
                 label="Your name"
                 disabled={!isUserInfoDirty}
@@ -180,8 +176,12 @@ export const Profile = () => {
               <FormStyledInput
                 name="email"
                 control={control}
-                rules={{ validate: isUserInfoDirty ? requiredEmailValidator : undefined }}
-                icon={ <MailIcon /> }
+                rules={{
+                  validate: isUserInfoDirty
+                    ? requiredEmailValidator
+                    : undefined
+                }}
+                icon={<MailIcon />}
                 type="email"
                 label="Your email"
                 disabled={true}
@@ -202,15 +202,23 @@ export const Profile = () => {
               <FormStyledInput
                 name="oldPassword"
                 control={control}
-                rules={{ validate: isUserPasswordDirty ? validatePassword : undefined }}
-                icon={ showOldPassword
+                rules={{
+                  validate: isUserPasswordDirty
+                    ? validatePassword
+                    : undefined
+                }}
+                icon={showOldPassword
                   ? <ViewIcon onClick={handleToggleOldPassword} />
                   : <HideIcon onClick={handleToggleOldPassword} />
                 }
-                type={ showOldPassword ? 'text' : 'password' }
+                type={showOldPassword ? 'text' : 'password'}
                 label="Old password"
-                disabled={!isUserInfoDirty}
-                helperText={isUserPasswordDirty ? 'Enter your old password' : ''}
+                disabled={!isUserPasswordDirty}
+                helperText={
+                  isUserPasswordDirty
+                    ? 'Enter your old password'
+                    : ''
+                }
                 errorText={errors.oldPassword?.message}
 
               />
@@ -220,30 +228,46 @@ export const Profile = () => {
                   <FormStyledInput
                     name="newPassword"
                     control={control}
-                    rules={{ validate: isUserPasswordDirty ? validatePassword : undefined }}
-                    icon={ showNewPassword
+                    rules={{
+                      validate: isUserPasswordDirty
+                        ? validatePassword
+                        : undefined
+                    }}
+                    icon={showNewPassword
                       ? <ViewIcon onClick={handleToggleNewPassword} />
                       : <HideIcon onClick={handleToggleNewPassword} />
                     }
-                    type={ showNewPassword ? 'text' : 'password' }
+                    type={showNewPassword ? 'text' : 'password'}
                     label="New password"
                     disabled={!isUserPasswordDirty}
-                    helperText={isUserPasswordDirty ? 'Enter your new password' : ''}
+                    helperText={
+                      isUserPasswordDirty
+                        ? 'Enter your new password'
+                        : ''
+                    }
                     errorText={errors.newPassword?.message}
                   />
 
                   <FormStyledInput
                     name="repeatPassword"
                     control={control}
-                    rules={{ validate: isUserPasswordDirty ? profileValidateRepeatPassword : undefined }}
-                    icon={ showRepeatPassword
+                    rules={{
+                      validate: isUserPasswordDirty
+                        ? profileValidateRepeatPassword
+                        : undefined
+                    }}
+                    icon={showRepeatPassword
                       ? <ViewIcon onClick={handleToggleRepeatPassword} />
                       : <HideIcon onClick={handleToggleRepeatPassword} />
                     }
-                    type={ showRepeatPassword ? 'text' : 'password' }
+                    type={showRepeatPassword ? 'text' : 'password'}
                     label="Password replay"
                     disabled={!isUserPasswordDirty}
-                    helperText={isUserPasswordDirty ? 'Repeat your password without errors' : ''}
+                    helperText={
+                      isUserPasswordDirty
+                        ? 'Repeat your password without errors'
+                        : ''
+                    }
                     errorText={errors.repeatPassword?.message}
                   />
                 </>
@@ -266,7 +290,7 @@ const StyledMain = styled('main')`
   padding: 36px 0 100px 0;
 `;
 
-const StyledProfileInformationGrid = styled(Grid)<GridProps & { noValidate?: string }>`
+const StyledProfileInformationGrid = styled(Grid) <GridProps & { noValidate?: string }>`
   display: flex;
   flex-direction: column;
   gap: 40px;

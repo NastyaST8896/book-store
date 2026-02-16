@@ -4,6 +4,7 @@ import Map from '@assets/img/map.png';
 
 import { Box, Container, Grid } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { IN_APP_ROUTES } from '@utils/routes';
 
 export const Footer = () => {
   return (
@@ -23,7 +24,7 @@ export const Footer = () => {
           <Grid size={2}>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
               <StyledLink to="#">Home Page</StyledLink>
-              <StyledLink to="/">Catalog</StyledLink>
+              <StyledLink to={IN_APP_ROUTES.home.path}>Catalog</StyledLink>
               <StyledLink to="#">My Account</StyledLink>
               <StyledLink to="#">Cart</StyledLink>
             </Box>
