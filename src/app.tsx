@@ -7,23 +7,23 @@ import { Home } from './pages/home';
 import { Login } from './pages/login';
 import { Profile } from './pages/profile';
 import { Register } from './pages/register';
-import { useAppDispatch } from './redux/hooks.ts';
 import { checkAuthUser } from './redux/auth/thunk.ts';
+import { useAppDispatch } from './redux/hooks.ts';
 import { IN_APP_ROUTES } from './utils/routes.ts';
 
 export const App = () => {
-  // const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
 
-  // const [isAuthChecked, setIsAuthChecked] = useState(false);
+  const [isAuthChecked, setIsAuthChecked] = useState(false);
 
-  // useEffect(() => {
-  //   dispatch(checkAuthUser())
-  //     .finally(() => setIsAuthChecked(true));
-  // }, [dispatch]);
+  useEffect(() => {
+    dispatch(checkAuthUser())
+      .finally(() => setIsAuthChecked(true));
+  }, [dispatch]);
 
-  // if (!isAuthChecked) {
-  //   return <div>...Loading</div>;
-  // }
+  if (!isAuthChecked) {
+    return <div>...Loading</div>;
+  }
 
   return (
     <BrowserRouter>
@@ -31,12 +31,26 @@ export const App = () => {
         <Route element={<MainLayout />}>
           <Route index element={<Home />} />
 
-          <Route element={<PrivateRoute redirectTo={IN_APP_ROUTES.home.path} protectVariant="no_auth" />}>
+          <Route
+            element={
+              <PrivateRoute
+                redirectTo={IN_APP_ROUTES.home.path}
+                protectVariant="no_auth"
+              />
+            }
+          >
             <Route path="login" element={<Login />} />
             <Route path="register" element={<Register />} />
           </Route>
 
-          <Route element={<PrivateRoute redirectTo={IN_APP_ROUTES.login.path} protectVariant="auth_required" />}>
+          <Route
+            element={
+              <PrivateRoute
+                redirectTo={IN_APP_ROUTES.login.path}
+                protectVariant="auth_required"
+              />
+            }
+          >
             <Route path="profile" element={<Profile />} />
           </Route>
         </Route>

@@ -7,9 +7,16 @@ import { HideIcon } from '@common/icons/hide-icon';
 import { MailIcon } from '@common/icons/mail-icon';
 import { ViewIcon } from '@common/icons/view-icon';
 import { StyledRoundButton } from '@common/styled-round-button';
-import { useAppSelector } from '@redux/hooks';
-
 import { changeUserName, changeUserPassword } from '@redux/auth/thunk';
+import { useAppSelector } from '@redux/hooks';
+import { useAppDispatch } from '@redux/hooks';
+import type { ProfileFormType, } from '@utils/types';
+import {
+  createRequiredValidator,
+  profileValidateRepeatPassword,
+  validatePassword
+} from '@utils/validators';
+
 import {
   Box,
   Button,
@@ -20,15 +27,7 @@ import {
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
-import type { ProfileFormType, } from '../../utils/types';
-import {
-  createRequiredValidator,
-  profileValidateRepeatPassword,
-  validatePassword
-} from '../../utils/validators';
-
 import { FormStyledInput } from './elements/form-styled-input';
-import { useAppDispatch } from '@redux/hooks';
 
 const requiredNameValidator = createRequiredValidator('Name is required');
 const requiredEmailValidator = createRequiredValidator('Email is required');
@@ -50,7 +49,7 @@ export const Profile = () => {
     handleSubmit,
     formState: { errors },
     clearErrors,
-    setValue
+    setValue,
   } = useForm<ProfileFormType>({
     defaultValues: {
       fullName: auth.user?.fullName || '',
@@ -108,7 +107,7 @@ export const Profile = () => {
     console.log(data);
 
     if (data.fullName.trim() && isUserInfoDirty) {
-      dispatch(changeUserName({ fullName: data.fullName }))
+      dispatch(changeUserName({ fullName: data.fullName }));
 
       setIsUserInfoDirty((prevState) => !prevState);
     }
@@ -158,7 +157,7 @@ export const Profile = () => {
                 </StyledButton>
               </StyledInformationHeaderBox>
 
-              <FormStyledInput
+              <FormStyledInput<ProfileFormType>
                 name="fullName"
                 control={control}
                 rules={{
@@ -290,8 +289,8 @@ const StyledMain = styled('main')`
   padding: 36px 0 100px 0;
 `;
 
-const StyledProfileInformationGrid = styled(Grid) <GridProps & 
-{ noValidate?: string }
+const StyledProfileInformationGrid = styled(Grid) <GridProps &
+  { noValidate?: string }
 >`
   display: flex;
   flex-direction: column;

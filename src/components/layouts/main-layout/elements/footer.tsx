@@ -1,10 +1,10 @@
 import { Link } from 'react-router';
 import FooterLogo from '@assets/img/footer-logo.svg';
 import Map from '@assets/img/map.png';
+import { IN_APP_ROUTES } from '@utils/routes';
 
 import { Box, Container, Grid } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { IN_APP_ROUTES } from '@utils/routes';
 
 export const Footer = () => {
   return (

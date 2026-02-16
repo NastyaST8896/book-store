@@ -1,11 +1,12 @@
 import { Link } from 'react-router';
 import Logo from '@assets/img/logo.svg';
 import Search from '@assets/img/search.svg';
-import { StyledRoundButton } from '@common/styled-round-button.tsx';
 import { CartIcon } from '@common/icons/cart-icon';
 import { HeartIcon } from '@common/icons/heart-icon';
 import { ProfileIcon } from '@common/icons/profile-icon';
+import { StyledRoundButton } from '@common/styled-round-button.tsx';
 import { useAppSelector } from '@redux/hooks';
+import { IN_APP_ROUTES } from '@utils/routes';
 
 import {
   Box,
@@ -17,11 +18,12 @@ import {
   Typography
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { IN_APP_ROUTES } from '@utils/routes';
 
 
 export const Header = () => {
-  const auth = useAppSelector((state) => state.auth);
+  const auth = useAppSelector((state) => {
+    return state.auth;
+  });
 
   return (
     <StyledHeader>
@@ -71,9 +73,17 @@ export const Header = () => {
                 </StyledBox>
               ) : (
                 <StyledButton variant="contained">
-                  <StyledLink to={IN_APP_ROUTES.login.path}>Log In</StyledLink>
+                  <StyledLink
+                    to={IN_APP_ROUTES.login.path}
+                  >
+                    Log In
+                  </StyledLink>
                   /
-                  <StyledLink to={IN_APP_ROUTES.register.path}>Sign Up</StyledLink>
+                  <StyledLink
+                    to={IN_APP_ROUTES.register.path}
+                  >
+                    Sign Up
+                  </StyledLink>
                 </StyledButton>
               )
             }

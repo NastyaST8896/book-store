@@ -1,17 +1,17 @@
-import type { UserType } from '@utils/types';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { IN_APP_ROUTES } from '@utils/routes';
-
+import type { UserType } from '@utils/types';
 // import axios from 'axios';
-import type { Nullable, UserDataPayload } from '../../utils/types';
+import type { Nullable, UserDataPayload } from '@utils/types';
+
 import type { RootState } from '../store.ts';
+
 import {
-  register,
-  login,
-  checkAuth,
   changeName,
-  changePassword
-} from './api.ts';
+  changePassword,
+  checkAuth,
+  login,
+  register} from './api.ts';
 
 type LoginUserResponseType = {
   accessToken: string;
@@ -43,7 +43,7 @@ export const loginUser = createAsyncThunk<
     try {
       // const api = getApiClient();
 
-      return login(userData)
+      return login(userData);
     } catch (error) {
       return rejectWithValue(error);
     }
@@ -54,10 +54,13 @@ export const checkAuthUser = createAsyncThunk<
   { fullName: string; email: string }, void, { state: RootState }
 >(
   IN_APP_ROUTES.checkAuth.pathName,
-  async () => {
-    // const api = getApiClient(dispatch);
-
-    return await checkAuth()
+  async (_, { rejectWithValue }) => {
+    try {
+      // const api = getApiClient(dispatch);
+      return checkAuth();
+    } catch (error) {
+      return rejectWithValue(error);
+    }
   },
 );
 

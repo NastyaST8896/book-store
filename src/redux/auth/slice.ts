@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
+import type { Nullable, UserType } from '@utils/types.ts';
 
-import type { Nullable, UserType } from '../../utils/types.ts';
 import {
   changeUserName,
   changeUserPassword,
@@ -66,7 +66,9 @@ export const authSlice = createSlice({
         };
       })
       .addCase(checkAuthUser.rejected, (state) => {
+        console.log('pupu');
         state.loading = false;
+        state.user = null;
       })
 
       // refreshTokenUser

@@ -5,18 +5,17 @@ import { HideIcon } from '@common/icons/hide-icon';
 import { MailIcon } from '@common/icons/mail-icon';
 import { ViewIcon } from '@common/icons/view-icon';
 import { StyledButton } from '@common/styled-button';
-import { useAppSelector, useAppDispatch } from '@redux/hooks';
-
 import { registerUser } from '@redux/auth/thunk';
-import { Box, type BoxProps, Container, Typography } from '@mui/material';
-import { styled } from '@mui/material/styles';
-
-import type { RegisterFormType } from '../../utils/types';
+import { useAppDispatch,useAppSelector } from '@redux/hooks';
+import type { RegisterFormType } from '@utils/types';
 import {
   registerValidateRepeatPassword,
   validateEmail,
   validatePassword
-} from '../../utils/validators';
+} from '@utils/validators';
+
+import { Box, type BoxProps, Container, Typography } from '@mui/material';
+import { styled } from '@mui/material/styles';
 
 import { FormStyledInput } from './elements/form-styled-input';
 

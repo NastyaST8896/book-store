@@ -1,7 +1,10 @@
-import { type Control, useController, type UseControllerProps } from 'react-hook-form';
+import {
+  type Control,
+  useController,
+  type UseControllerProps
+} from 'react-hook-form';
 import { StyledInput, type StyledInputProps } from '@common/styled-input.tsx';
-
-import type { LoginFormType } from '../../../utils/types';
+import type { LoginFormType } from '@utils/types';
 
 type FormStyledInputProps = {
   name: keyof LoginFormType;
