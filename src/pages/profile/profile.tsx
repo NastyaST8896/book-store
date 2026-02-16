@@ -290,7 +290,9 @@ const StyledMain = styled('main')`
   padding: 36px 0 100px 0;
 `;
 
-const StyledProfileInformationGrid = styled(Grid) <GridProps & { noValidate?: string }>`
+const StyledProfileInformationGrid = styled(Grid) <GridProps & 
+{ noValidate?: string }
+>`
   display: flex;
   flex-direction: column;
   gap: 40px;

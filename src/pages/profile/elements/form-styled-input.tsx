@@ -2,7 +2,7 @@ import { type Control, useController, type UseControllerProps } from 'react-hook
 import { StyledInput, type StyledInputProps } from '@common/styled-input.tsx';
 
 import type { ProfileFormType } from '../../../utils/types';
-
+// для типов джененрик в один файл компонент.
 type FormStyledInputProps = {
   name: keyof ProfileFormType;
   control: Control<ProfileFormType>;
