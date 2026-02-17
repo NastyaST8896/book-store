@@ -62,5 +62,11 @@ export const refreshTokenUser = async (refreshToken: string) => {
   return response.data;
 };
 
+export const changeAvatar = async (formData: FormData) => {
+  const response = await api.post(IN_APP_ROUTES.changeAvatar.path, formData);
+
+  return response.data;
+}
+
 
 

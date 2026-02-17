@@ -6,8 +6,12 @@ import { CameraIcon } from '@common/icons/camera-icon';
 import { HideIcon } from '@common/icons/hide-icon';
 import { MailIcon } from '@common/icons/mail-icon';
 import { ViewIcon } from '@common/icons/view-icon';
-import { StyledRoundButton } from '@common/styled-round-button';
-import { changeUserName, changeUserPassword } from '@redux/auth/thunk';
+// import { StyledRoundButton } from '@common/styled-round-button';
+import {
+  changeUserName,
+  changeUserPassword,
+  changeUserAvatar
+} from '@redux/auth/thunk';
 import { useAppSelector } from '@redux/hooks';
 import { useAppDispatch } from '@redux/hooks';
 import type { ProfileFormType, } from '@utils/types';
@@ -20,10 +24,11 @@ import {
 import {
   Box,
   Button,
+  type ButtonProps,
   Container,
   Grid,
   type GridProps,
-  Typography
+  Typography,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
@@ -43,6 +48,7 @@ export const Profile = () => {
 
   const [isUserInfoDirty, setIsUserInfoDirty] = useState(false);
   const [isUserPasswordDirty, setIsUserPasswordDirty] = useState(false);
+  const [avatar, setAvatar] = useState(null);
 
   const {
     control,
@@ -102,6 +108,12 @@ export const Profile = () => {
     setIsUserPasswordDirty((prevState) => !prevState);
   };
 
+  const handleAvatarButton = (event: React.ChangeEvent<HTMLInputElement, HTMLInputElement>) => {
+    if (event.target && event.target.files) {
+      dispatch(changeUserAvatar({ file: event.target.files[0] }));
+    }
+    
+  };
 
   const onSubmit: SubmitHandler<ProfileFormType> = (data) => {
     console.log(data);
@@ -136,7 +148,18 @@ export const Profile = () => {
           <StyledAvatarGrid size={3}>
             <img src={DefaultAvatar} alt="default avatar" />
             <StyledRoundButtonBox>
-              <StyledRoundButton icon={<CameraIcon />} />
+              {/* <StyledRoundButton  component="label" icon={<CameraIcon />} /> */}
+              <StyledImgButton
+                component="label"
+                tabIndex={1}
+              ><CameraIcon />
+                <VisuallyHiddenInput
+                  type="file"
+                  onChange={handleAvatarButton}
+                  multiple
+                  accept='img/*'
+                />
+              </StyledImgButton>
             </StyledRoundButtonBox>
           </StyledAvatarGrid>
 
@@ -290,7 +313,7 @@ const StyledMain = styled('main')`
 `;
 
 const StyledProfileInformationGrid = styled(Grid) <GridProps &
-  { noValidate?: string }
+{ noValidate?: string }
 >`
   display: flex;
   flex-direction: column;
@@ -362,3 +385,33 @@ const StyledRoundButtonBox = styled(Box)`
   bottom: 20px;
   width: 48px;
 `;
+
+const StyledImgButton = styled(Button) <ButtonProps>`
+  background-color: ${({ theme }) => theme.palette.appColor.darkBlue};
+  max-width: 48px;
+  width: 100%;
+  height: 48px;
+  border-radius: 30px;
+
+
+  &.MuiButton-root {
+    max-width: 48px;
+    min-width: 30px;
+  }
+
+  &:hover {
+    background-color: #2c506ed0;
+  }
+`;
+
+const VisuallyHiddenInput = styled('input')({
+  clip: 'rect(0 0 0 0)',
+  clipPath: 'inset(50%)',
+  height: 1,
+  overflow: 'hidden',
+  position: 'absolute',
+  bottom: 0,
+  left: 0,
+  whiteSpace: 'nowrap',
+  width: 1,
+});

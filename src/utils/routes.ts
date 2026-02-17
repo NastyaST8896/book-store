@@ -1,3 +1,5 @@
+import { changeName } from "@redux/auth/api";
+
 export const IN_APP_ROUTES = {
   home: {
     path: '/',
@@ -33,6 +35,10 @@ export const IN_APP_ROUTES = {
   refreshToken: {
     path: '/refresh',
     pathName: 'refreshTokenUser'
+  },
+  changeAvatar: {
+    path: '/change-avatar',
+    pathName: 'changeUserAvatar'
   }
 
 } as const;

@@ -10,7 +10,6 @@ export const api = axios.create({
 
 api.interceptors.request.use(
   (config) => {
-    console.log(1);
     const token = localStorage.getItem('accessToken');
 
     if (token) {
@@ -32,7 +31,6 @@ api.interceptors.response.use(
     const originalRequest = error.config;
 
     if (error.response?.status === 401 && !originalRequest._retry) {
-      console.log(1);
 
       return Promise.reject(error);
     }
@@ -47,17 +45,17 @@ api.interceptors.response.use(
 
     originalRequest._retry = true;
 
-    if (refreshToken) {
-      const data = await refreshTokenUser(refreshToken);
+    // if (refreshToken) {
+    //   const data = await refreshTokenUser(refreshToken);
 
-      const { accessToken } = data;
+    //   const { accessToken } = data;
 
-      localStorage.setItem('accessToken', accessToken);
+    //   localStorage.setItem('accessToken', accessToken);
 
-      originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
+    //   originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
 
-      return api(originalRequest);
-    }
+    //   return api(originalRequest);
+    // }
 
     // try {
     /* 1) проверяем наличие refreshToken-а

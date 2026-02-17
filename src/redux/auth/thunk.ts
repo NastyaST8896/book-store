@@ -7,11 +7,13 @@ import type { Nullable, UserDataPayload } from '@utils/types';
 import type { RootState } from '../store.ts';
 
 import {
+  changeAvatar,
   changeName,
   changePassword,
   checkAuth,
   login,
-  register} from './api.ts';
+  register
+} from './api.ts';
 
 type LoginUserResponseType = {
   accessToken: string;
@@ -123,4 +125,23 @@ export const changeUserPassword = createAsyncThunk<
 
     return changePassword(userData);
   },
+);
+
+export const changeUserAvatar = createAsyncThunk<
+{status: string},
+{file: File},
+{state: RootState}
+>(
+  IN_APP_ROUTES.changeAvatar.pathName,
+  async ({file}) => {
+
+    if(!file) return
+
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    for (let [key, value] of formData.entries()){console.log(key,value)}
+    return changeAvatar(formData);
+  }
 );

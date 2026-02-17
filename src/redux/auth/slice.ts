@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import type { Nullable, UserType } from '@utils/types.ts';
 
 import {
+  changeUserAvatar,
   changeUserName,
   changeUserPassword,
   checkAuthUser,
@@ -60,13 +61,14 @@ export const authSlice = createSlice({
       })
       .addCase(checkAuthUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = {
-          fullName: action.payload?.fullName || '',
-          email: action.payload?.email || ''
-        };
+        if (!state.user?.fullName || !state.user?.email) {
+          state.user = {
+            fullName: action.payload?.fullName || '',
+            email: action.payload?.email || ''
+          };
+        }
       })
       .addCase(checkAuthUser.rejected, (state) => {
-        console.log('pupu');
         state.loading = false;
         state.user = null;
       })
@@ -102,6 +104,17 @@ export const authSlice = createSlice({
         state.loading = false;
       })
       .addCase(changeUserPassword.rejected, (state) => {
+        state.loading = false;
+      })
+
+      // changeUserAvatar
+      .addCase(changeUserAvatar.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(changeUserAvatar.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(changeUserAvatar.rejected, (state) => {
         state.loading = false;
       });
   }
