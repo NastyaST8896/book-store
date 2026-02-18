@@ -1,7 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { IN_APP_ROUTES } from '@utils/routes';
 import type { UserType } from '@utils/types';
-// import axios from 'axios';
 import type { Nullable, UserDataPayload } from '@utils/types';
 
 import type { RootState } from '../store.ts';
@@ -11,6 +10,8 @@ import {
   changeName,
   changePassword,
   checkAuth,
+  getAvatar,
+  getInfo,
   login,
   register
 } from './api.ts';
@@ -18,7 +19,10 @@ import {
 type LoginUserResponseType = {
   accessToken: string;
   refreshToken: string;
-  user: Pick<UserType, 'email'> & { fullName: Nullable<string> };
+  user: Pick<UserType, 'email'> & { 
+    fullName: Nullable<string>, 
+    avatar: Nullable<string> 
+  };  
 };
 
 export const registerUser = createAsyncThunk<
@@ -27,8 +31,6 @@ export const registerUser = createAsyncThunk<
   IN_APP_ROUTES.register.pathName,
   async (userData, { rejectWithValue }) => {
     try {
-      // const api = getApiClient();
-
       return await register(userData);
     } catch (error) {
       return rejectWithValue(error);
@@ -43,7 +45,6 @@ export const loginUser = createAsyncThunk<
   IN_APP_ROUTES.login.pathName,
   async (userData, { rejectWithValue }) => {
     try {
-      // const api = getApiClient();
 
       return login(userData);
     } catch (error) {
@@ -58,7 +59,6 @@ export const checkAuthUser = createAsyncThunk<
   IN_APP_ROUTES.checkAuth.pathName,
   async (_, { rejectWithValue }) => {
     try {
-      // const api = getApiClient(dispatch);
       return checkAuth();
     } catch (error) {
       return rejectWithValue(error);
@@ -101,6 +101,22 @@ export const checkAuthUser = createAsyncThunk<
 //   return axios.get<AuthResponseType>('/auth/get-me');
 // };
 
+export const getUserInfo = createAsyncThunk<
+{ fullName: string, email: string, avatar: string },
+void,
+{ state: RootState }
+>(
+  IN_APP_ROUTES.getInfo.pathName,
+  async (_, { rejectWithValue }) => {
+    try{
+         return await getInfo();
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+ 
+  }
+)
+
 export const changeUserName = createAsyncThunk<
   { fullName: string },
   { fullName: string },
@@ -108,7 +124,6 @@ export const changeUserName = createAsyncThunk<
 >(
   IN_APP_ROUTES.changeName.pathName,
   async (userData) => {
-    // const api = getApiClient();
 
     return await changeName(userData);
   },
@@ -121,7 +136,6 @@ export const changeUserPassword = createAsyncThunk<
 >(
   IN_APP_ROUTES.changePassword.pathName,
   async (userData) => {
-    // const api = getApiClient();
 
     return changePassword(userData);
   },
@@ -143,5 +157,20 @@ export const changeUserAvatar = createAsyncThunk<
 
     for (let [key, value] of formData.entries()){console.log(key,value)}
     return changeAvatar(formData);
+  }
+);
+
+export const getUserAvatar = createAsyncThunk<
+void,
+{avatar: File},
+{state:RootState}
+>(
+  IN_APP_ROUTES.getAvatar.pathName,
+  async (_, {rejectWithValue}) => {
+    try {
+      return getAvatar()
+    } catch (error) {
+      return rejectWithValue(error)
+    }
   }
 );

@@ -10,7 +10,8 @@ import { ViewIcon } from '@common/icons/view-icon';
 import {
   changeUserName,
   changeUserPassword,
-  changeUserAvatar
+  changeUserAvatar,
+  getUserInfo
 } from '@redux/auth/thunk';
 import { useAppSelector } from '@redux/hooks';
 import { useAppDispatch } from '@redux/hooks';
@@ -48,7 +49,6 @@ export const Profile = () => {
 
   const [isUserInfoDirty, setIsUserInfoDirty] = useState(false);
   const [isUserPasswordDirty, setIsUserPasswordDirty] = useState(false);
-  const [avatar, setAvatar] = useState(null);
 
   const {
     control,
@@ -65,6 +65,10 @@ export const Profile = () => {
       repeatPassword: ''
     },
   });
+
+    // useEffect(() => {
+    //   dispatch(getUserInfo());
+    // }, [dispatch]);
 
   useEffect(() => {
     if (!isUserInfoDirty) {
@@ -116,7 +120,6 @@ export const Profile = () => {
   };
 
   const onSubmit: SubmitHandler<ProfileFormType> = (data) => {
-    console.log(data);
 
     if (data.fullName.trim() && isUserInfoDirty) {
       dispatch(changeUserName({ fullName: data.fullName }));
@@ -148,7 +151,6 @@ export const Profile = () => {
           <StyledAvatarGrid size={3}>
             <img src={DefaultAvatar} alt="default avatar" />
             <StyledRoundButtonBox>
-              {/* <StyledRoundButton  component="label" icon={<CameraIcon />} /> */}
               <StyledImgButton
                 component="label"
                 tabIndex={1}

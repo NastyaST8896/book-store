@@ -6,18 +6,22 @@ import {
   changeUserName,
   changeUserPassword,
   checkAuthUser,
+  getUserAvatar,
   loginUser,
-  registerUser
+  registerUser,
+  getUserInfo
 } from './thunk';
 
 type AuthState = {
   loading: boolean;
   user: Nullable<Omit<UserType, 'id' | 'password'>>;
+  avatar: string | null;
 };
 
 const initialState: AuthState = {
   loading: false,
   user: null,
+  avatar: null
 };
 
 export const authSlice = createSlice({
@@ -115,6 +119,33 @@ export const authSlice = createSlice({
         state.loading = false;
       })
       .addCase(changeUserAvatar.rejected, (state) => {
+        state.loading = false;
+      })
+
+      // getUserAvatar
+      .addCase(getUserAvatar.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getUserAvatar.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(getUserAvatar.rejected, (state) => {
+        state.loading = false;
+      })
+
+      // getUserInfo
+      .addCase(getUserInfo.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getUserInfo.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = {
+          email: action.payload.email,
+          fullName: action.payload.fullName,
+        }
+        state.avatar = action.payload.avatar
+      })
+      .addCase(getUserInfo.rejected, (state) => {
         state.loading = false;
       });
   }
