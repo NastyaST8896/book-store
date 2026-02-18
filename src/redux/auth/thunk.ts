@@ -19,10 +19,10 @@ import {
 type LoginUserResponseType = {
   accessToken: string;
   refreshToken: string;
-  user: Pick<UserType, 'email'> & { 
-    fullName: Nullable<string>, 
-    avatar: Nullable<string> 
-  };  
+  user: Pick<UserType, 'email'> & {
+    fullName: Nullable<string>,
+    avatar: Nullable<string>
+  };
 };
 
 export const registerUser = createAsyncThunk<
@@ -77,7 +77,6 @@ export const checkAuthUser = createAsyncThunk<
 //       return rejectWithValue({});
 //     }
 
-    
 
 //     // const api = getApiClient(dispatch);
 
@@ -102,20 +101,20 @@ export const checkAuthUser = createAsyncThunk<
 // };
 
 export const getUserInfo = createAsyncThunk<
-{ fullName: string, email: string, avatar: string },
-void,
-{ state: RootState }
+  { fullName: string, email: string, avatar: string },
+  void,
+  { state: RootState }
 >(
   IN_APP_ROUTES.getInfo.pathName,
   async (_, { rejectWithValue }) => {
-    try{
-         return await getInfo();
+    try {
+      return await getInfo();
     } catch (error) {
       return rejectWithValue(error);
     }
- 
+
   }
-)
+);
 
 export const changeUserName = createAsyncThunk<
   { fullName: string },
@@ -142,35 +141,39 @@ export const changeUserPassword = createAsyncThunk<
 );
 
 export const changeUserAvatar = createAsyncThunk<
-{status: string},
-{file: File},
-{state: RootState}
+  { avatar: string },
+  { file: File },
+  { state: RootState }
 >(
   IN_APP_ROUTES.changeAvatar.pathName,
-  async ({file}) => {
+  async ({ file }) => {
 
-    if(!file) return
+    if (!file) return;
 
 
     const formData = new FormData();
+
     formData.append('file', file);
 
-    for (let [key, value] of formData.entries()){console.log(key,value)}
+    for (const [key, value] of formData.entries()) {
+      console.log(key, value);
+    }
+
     return changeAvatar(formData);
   }
 );
 
 export const getUserAvatar = createAsyncThunk<
-void,
-{avatar: File},
-{state:RootState}
+  void,
+  { avatar: File },
+  { state: RootState }
 >(
   IN_APP_ROUTES.getAvatar.pathName,
-  async (_, {rejectWithValue}) => {
+  async (_, { rejectWithValue }) => {
     try {
-      return getAvatar()
+      return getAvatar();
     } catch (error) {
-      return rejectWithValue(error)
+      return rejectWithValue(error);
     }
   }
 );

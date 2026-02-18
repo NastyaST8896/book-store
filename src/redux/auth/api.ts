@@ -39,7 +39,7 @@ export const getInfo = async () => {
   );
 
   return response.data;
-}
+};
 
 export const changeName = async (userData: UserNamePayload) => {
   const response = await api.post(
@@ -72,14 +72,14 @@ export const changeAvatar = async (formData: FormData) => {
   const response = await api.post(IN_APP_ROUTES.changeAvatar.path, formData);
 
   return response.data;
-}
+};
 
 export const getAvatar = async () => {
 
   const response = await api.get(IN_APP_ROUTES.getAvatar.path);
 
   return response.data;
-}
+};
 
 
 

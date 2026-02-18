@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { type SubmitHandler, useForm } from 'react-hook-form';
 import DefaultAvatar from '@assets/img/dafault-avatar.svg';
 import { AvatarIcon } from '@common/icons/avatar-icon';
@@ -8,9 +8,9 @@ import { MailIcon } from '@common/icons/mail-icon';
 import { ViewIcon } from '@common/icons/view-icon';
 // import { StyledRoundButton } from '@common/styled-round-button';
 import {
+  changeUserAvatar,
   changeUserName,
   changeUserPassword,
-  changeUserAvatar,
   getUserInfo
 } from '@redux/auth/thunk';
 import { useAppSelector } from '@redux/hooks';
@@ -66,9 +66,9 @@ export const Profile = () => {
     },
   });
 
-    // useEffect(() => {
-    //   dispatch(getUserInfo());
-    // }, [dispatch]);
+  useEffect(() => {
+    dispatch(getUserInfo());
+  }, [dispatch]);
 
   useEffect(() => {
     if (!isUserInfoDirty) {
@@ -81,6 +81,7 @@ export const Profile = () => {
     }
   }, [clearErrors, isUserInfoDirty, isUserPasswordDirty]);
 
+  console.log(auth.avatar);
   const handleToggleOldPassword = () => {
     setShowOldPassword((prevState) => !prevState);
   };
@@ -116,7 +117,7 @@ export const Profile = () => {
     if (event.target && event.target.files) {
       dispatch(changeUserAvatar({ file: event.target.files[0] }));
     }
-    
+
   };
 
   const onSubmit: SubmitHandler<ProfileFormType> = (data) => {
@@ -149,7 +150,7 @@ export const Profile = () => {
       <Container maxWidth="md">
         <Grid container gap={3}>
           <StyledAvatarGrid size={3}>
-            <img src={DefaultAvatar} alt="default avatar" />
+            <img src={auth.avatar ? `http://localhost:3000/${auth.avatar}` : DefaultAvatar} alt="default avatar" />
             <StyledRoundButtonBox>
               <StyledImgButton
                 component="label"
@@ -159,7 +160,7 @@ export const Profile = () => {
                   type="file"
                   onChange={handleAvatarButton}
                   multiple
-                  accept='img/*'
+                  accept="img/*"
                 />
               </StyledImgButton>
             </StyledRoundButtonBox>
@@ -315,7 +316,7 @@ const StyledMain = styled('main')`
 `;
 
 const StyledProfileInformationGrid = styled(Grid) <GridProps &
-{ noValidate?: string }
+  { noValidate?: string }
 >`
   display: flex;
   flex-direction: column;

@@ -115,8 +115,9 @@ export const authSlice = createSlice({
       .addCase(changeUserAvatar.pending, (state) => {
         state.loading = true;
       })
-      .addCase(changeUserAvatar.fulfilled, (state) => {
+      .addCase(changeUserAvatar.fulfilled, (state, action) => {
         state.loading = false;
+        state.avatar = action.payload.avatar;
       })
       .addCase(changeUserAvatar.rejected, (state) => {
         state.loading = false;
@@ -128,6 +129,7 @@ export const authSlice = createSlice({
       })
       .addCase(getUserAvatar.fulfilled, (state) => {
         state.loading = false;
+        // state.avatar = action.payload.
       })
       .addCase(getUserAvatar.rejected, (state) => {
         state.loading = false;
