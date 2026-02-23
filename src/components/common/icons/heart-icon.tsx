@@ -1,12 +1,14 @@
 import React from 'react';
 
-export const HeartIcon: React.FC<React.SVGProps<SVGSVGElement>> = () => {
+export const HeartIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => {
+  const { fill } = props;
+
   return (
     <svg
       width="26"
       height="26"
-      viewBox="0 0 26 26"
-      fill="none"
+      viewBox="0 0 26 24"
+      fill={fill}
       xmlns="http://www.w3.org/2000/svg"
     >
       <path

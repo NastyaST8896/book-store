@@ -1,73 +1,65 @@
 import Books from '@assets/img/books.svg';
 import ReadingGirl from '@assets/img/reading-girl.svg';
+import { StyledButton } from '@common/styled-button.tsx';
 
-import { Box, Button, Container, Grid, Typography } from '@mui/material';
+import { Box, Grid, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 export const FreeBook = () => {
   return (
-    <Container maxWidth="md">
-      <StyledDiv>
-        <StyledDivImgBooks>
-          <StyledImgBooks src={Books} />
-        </StyledDivImgBooks>
-        <StyledContainerGrid
-          container
+    <StyledDiv>
+      <StyledDivImgBooks>
+        <StyledImgBooks src={Books} />
+      </StyledDivImgBooks>
+      <StyledContainerGrid
+        container
+        sx={{
+          justifyContent: 'space-evenly',
+          alignItems: 'center',
+          gap: '56px',
+          position: 'relative'
+        }}
+      >
+        <Grid
+          size={4}
           sx={{
-            justifyContent: 'space-evenly',
-            alignItems: 'center',
-            gap: '56px',
-            position: 'relative'
+            zIndex: '1',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '30px',
+            marginLeft: '40px'
           }}
         >
-          <Grid
-            size={4}
+          <Box
             sx={{
-              zIndex: '1',
               display: 'flex',
               flexDirection: 'column',
-              gap: '30px',
-              marginLeft: '40px'
-            }}
-          >
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '10px',
-              }}>
-              <Typography variant="h1">Build your library with us</Typography>
-              <Typography variant="subtitle2">
-                Buy two books and get one for free
-              </Typography>
-            </Box>
-            <StyledButton variant="contained">
-              Choose a book
-            </StyledButton>
-          </Grid>
-          <StyledGrid size={4} sx={{ zIndex: '1' }}>
-            <StyledImg src={ReadingGirl} alt="reading girl" />
-          </StyledGrid>
-        </StyledContainerGrid>
-      </StyledDiv>
-    </Container>
+              gap: '10px',
+            }}>
+            <Typography variant="h1">Build your library with us</Typography>
+            <Typography variant="subtitle2">
+              Buy two books and get one for free
+            </Typography>
+          </Box>
+          <StyledChooseButton width={230} variant="contained">
+            Choose a book
+          </StyledChooseButton>
+        </Grid>
+        <StyledGrid size={4} sx={{ zIndex: '1' }}>
+          <StyledImg src={ReadingGirl} alt="reading girl" />
+        </StyledGrid>
+      </StyledContainerGrid>
+    </StyledDiv>
   );
 };
 
-const StyledDiv = styled('div') (({ theme }) => `
-  margin-top: 40px;
+const StyledDiv = styled('div')(({ theme }) => `
   background-color: ${theme.palette.appColor.light};;
   position: relative;
   border-radius: 16px;
 `);
 
-const StyledButton = styled(Button)`
-  border-radius: 16px;
-  width: 230px;
-  height: 44px;
-  text-transform: none;
-  align-items: center;
-  font-weight: 500;
+const StyledChooseButton = styled(StyledButton)`
   font-size: 16px;
 
   @media (max-width: 600px) {
@@ -75,7 +67,6 @@ const StyledButton = styled(Button)`
     height: 38px;
     padding: 10px 50px;
     font-size: 12px;
-
   }
 `;
 
@@ -84,7 +75,7 @@ const StyledDivImgBooks = styled('div')`
   bottom: 0;
   left: 0;
   z-index: 1;
-   @media (max-width: 1000px) {
+  @media (max-width: 1000px) {
     width: 361px;
     height: 177px;
   }
@@ -109,7 +100,7 @@ const StyledGrid = styled(Grid)`
 `;
 
 const StyledImg = styled('img')`
-@media (max-width: 1000px) {
+  @media (max-width: 1000px) {
     max-width: 100%;
     object-fit: contain;
   }

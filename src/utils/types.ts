@@ -9,7 +9,7 @@ export type UserType = {
 
 export type UserDataPayload = Pick<UserType, 'email' | 'password'>;
 
-export type UserNamePayload = Pick<UserType, 'fullName'> 
+export type UserNamePayload = Pick<UserType, 'fullName'>;
 
 export type RegisterFormType = {
   email: string;
@@ -28,3 +28,13 @@ export type ProfileFormType = {
 };
 
 export type UserPasswordPayload = Pick<ProfileFormType, 'oldPassword' | 'newPassword'>;
+
+export type Book = {
+  id: number;
+  title: string;
+  author: string;
+  price: string;
+  rating: number;
+  media: string;
+  isFavorite?: boolean;
+};

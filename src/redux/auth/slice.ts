@@ -7,10 +7,9 @@ import {
   changeUserPassword,
   checkAuthUser,
   getUserAvatar,
+  getUserInfo,
   loginUser,
-  registerUser,
-  getUserInfo
-} from './thunk';
+  registerUser} from './thunk';
 
 type AuthState = {
   loading: boolean;
@@ -144,8 +143,8 @@ export const authSlice = createSlice({
         state.user = {
           email: action.payload.email,
           fullName: action.payload.fullName,
-        }
-        state.avatar = action.payload.avatar
+        };
+        state.avatar = action.payload.avatar;
       })
       .addCase(getUserInfo.rejected, (state) => {
         state.loading = false;

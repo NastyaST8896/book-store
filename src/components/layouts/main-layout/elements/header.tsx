@@ -65,7 +65,7 @@ export const Header = () => {
                     <StyledRoundButton icon={<CartIcon />} />
                   </StyledAuthLink>
                   <StyledAuthLink to="#">
-                    <StyledRoundButton icon={<HeartIcon />} />
+                    <StyledRoundButton icon={<HeartIcon fill='none'/>} />
                   </StyledAuthLink>
                   <StyledAuthLink to={IN_APP_ROUTES.profile.path}>
                     <StyledRoundButton icon={<ProfileIcon />} />

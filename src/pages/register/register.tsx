@@ -140,13 +140,9 @@ export const Register = () => {
               />
             </StyledFormInputBox>
 
-            <StyledSignUpButton
-              type="submit"
-              variant="contained"
-              disabled={auth.loading}
-            >
+            <StyledButton width={166} type="submit" disabled={auth.loading}>
               Sign Up
-            </StyledSignUpButton>
+            </StyledButton>
           </StyledFormBox>
 
           <img src={ReadingMan} alt="Reading man" />
@@ -176,8 +172,4 @@ const StyledFormBox = styled(Box) <BoxProps & { noValidate?: string }>`
 
 const StyledFormInputBox = styled(StyledFormBox)`
   gap: 30px;
-`;
-
-const StyledSignUpButton = styled(StyledButton)`
-  width: 166px;
 `;

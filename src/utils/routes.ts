@@ -43,4 +43,8 @@ export const IN_APP_ROUTES = {
     path: '/user/get-avatar',
     pathName: 'getAvatar'
   },
+  getBooks: {
+    path: '/books',
+    pathName: 'books',
+  }
 } as const;

@@ -101,12 +101,9 @@ export const Login = () => {
               />
             </StyledFormInputBox>
 
-            <StyledSignUpButton
-              type="submit"
-              variant="contained"
-            >
+            <StyledButton type="submit" width={166}>
               Log In
-            </StyledSignUpButton>
+            </StyledButton>
           </StyledFormBox>
 
           <img src={ReadingMan} alt="Reading man" />
@@ -136,8 +133,4 @@ const StyledFormBox = styled(Box) <BoxProps & { noValidate?: string }>`
 
 const StyledFormInputBox = styled(StyledFormBox)`
   gap: 30px;
-`;
-
-const StyledSignUpButton = styled(StyledButton)`
-  width: 166px;
 `;
