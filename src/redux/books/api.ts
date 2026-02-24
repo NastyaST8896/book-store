@@ -1,13 +1,13 @@
 import { api } from '@redux/api.ts';
 import { IN_APP_ROUTES } from '@utils/routes.ts';
 
-export const getBooksApi = async () => {
+export const getBooksApi = async (page: number) => {
   const response = await api.get(
     IN_APP_ROUTES.getBooks.path,
     {
       params: {
-        page: 1,
-        pageSize: 20
+        page: page,
+      //   pageSize: 20
       }
     }
   );

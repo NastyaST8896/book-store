@@ -1,41 +1,113 @@
+import React from 'react';
 import { useEffect, useState } from 'react';
 import { BookCard } from '@common/book-card';
 import { getBooks } from '@redux/books/thunk.ts';
-import { useAppDispatch, useAppSelector } from '@redux/hooks.ts';
+import { useAppDispatch } from '@redux/hooks.ts';
 import { unwrapResult } from '@reduxjs/toolkit';
-import type {Book} from '@utils/types';
+import type { Book } from '@utils/types';
 
 import {
+  Button,
   Box,
   Container,
+  Checkbox,
   Grid,
+  Pagination,
+  Typography,
+  Menu,
+  MenuItem
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 import { FreeBook } from './elements';
+import { ArrowIcon } from '@common/icons/arrow-icon';
+
 
 export const Home = () => {
   // const auth = useAppSelector((state) => {
   //   return state.auth;
   // });
+
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const dispatch = useAppDispatch();
   const [books, setBooks] = useState<Book[]>([]);
 
   useEffect(() => {
-    dispatch(getBooks())
+    dispatch(getBooks(page))
       .then(unwrapResult)
-      .then((data) =>{
+      .then((data) => {
         setBooks(data.books);
+        setTotalPages(data.totalPages);
       })
       .catch(err => console.log(err));
   }, [dispatch]);
 
+  const handlePaginationChange = (
+    event: React.ChangeEvent<unknown>,
+    value: number
+  ) => {
+    dispatch(getBooks(value))
+      .then(unwrapResult)
+      .then((data) => {
+        setBooks(data.books);
+        setTotalPages(data.totalPages);
+      })
+      .catch(err => console.log(err));
+    setPage(value);
+  };
+
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   return (
     <main>
       <Container maxWidth="md">
-        <StyledBox>
+        <StyledFreeBookBox>
           <FreeBook />
-        </StyledBox>
+        </StyledFreeBookBox>
+
+        <Grid container justifyContent='space-between'>
+          <Grid size={2}>
+            <Typography variant='h1'>Catalog</Typography>
+          </Grid>
+
+          <Grid container size={6}>
+            <Grid size={4}>
+              <StyledFilterButton
+                onClick={handleClick}
+                endIcon={<ArrowIcon />}
+              >
+                Genre
+              </StyledFilterButton>
+            </Grid>
+            <StyledGenreMenu
+              anchorEl={anchorEl}
+              open={open}
+              onClose={handleClose}
+              // onClick={handleClose}
+
+              transformOrigin={{ horizontal: 'left', vertical: 'top' }}
+              anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
+            >
+              <MenuItem>
+                <Box>
+                  <StyledCheckbox 
+                  icon={<CheckboxIcon />}
+                  checkedIcon={<CheckedCheckboxIcon/>}
+                  />
+                </Box>
+                Add another account
+              </MenuItem>
+            </StyledGenreMenu>
+          </Grid>
+        </Grid>
 
         <StyledGrid
           container
@@ -47,15 +119,117 @@ export const Home = () => {
           ))}
         </StyledGrid>
 
+        <StyledPaginationBox>
+          <StyledPagination
+            color='secondary'
+            count={totalPages}
+            page={page}
+            onChange={handlePaginationChange}
+          />
+        </StyledPaginationBox>
+
       </Container>
     </main>
   );
 };
 
-const StyledBox = styled(Box)`
+const StyledFreeBookBox = styled(Box)`
   padding: 20px 0 60px 0;
 `;
 
 const StyledGrid = styled(Grid)`
-  padding: 20px 0 20px 0;
+  padding: 20px 0 40px 0;
 `;
+
+const StyledPagination = styled(Pagination)(({ theme }) => `
+
+& .MuiPaginationItem-root {
+color: ${theme.palette.appColor.dark};
+}
+
+& .MuiTouchRipple-root  {
+  bordrer: none;
+}
+`);
+
+const StyledPaginationBox = styled(Box)`
+  padding: 40px 0 150px 0;
+  display: flex;
+  justify-content: center;
+`;
+
+const StyledFilterButton = styled(Button)(({ theme }) => `
+  text-transform: none;
+  background-color: ${theme.palette.appColor.light};
+  padding: 10px 15px;
+  font-size: 18px;
+  border-radius: 16px;
+  width:100%;
+
+  & .MuiButton-icon {
+    margin-left: 43%;
+  }
+`);
+
+const StyledGenreMenu = styled(Menu)(({ theme }) => `
+  & .MuiMenu-paper {
+    box-shadow: none;
+    background-color: ${theme.palette.appColor.light};
+    margin-top: 16px;
+    overflow: visible;
+    border-radius: 16px;
+
+    &::before {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 14px;
+    width: 10px;
+    height: 10px;
+    background: ${theme.palette.appColor.light};
+    transform: translateY(-50%) rotate(45deg);
+    z-index: 0;
+  },
+
+  & .MuiMenuItem-root {
+   & .MuiTouchRipple-root {
+    border-radius: 16px;
+  }}
+},
+`);
+
+const StyledCheckbox = styled(Checkbox)`
+
+  & .MuiSvgIcon-root {
+    border-radius: 16px;
+  }
+
+  
+
+   
+
+  
+`;
+
+const CheckboxIcon = styled('span')(({ theme }) => `
+  border-radius: 12px;
+  width: 24px;
+  height: 24px;
+  border: 1px solid ${theme.palette.appColor.dark};
+
+  background-color: ${theme.palette.appColor.white};
+`);
+
+const CheckedCheckboxIcon = styled(CheckboxIcon)(({ theme }) => `
+  background-color: ${theme.palette.appColor.dark};
+  &::before: {
+    display: block;
+    width: 10px;
+    height: 10px;
+    /* background-image: url(Check);
+    background-size: cover;
+    background-position: center; */
+    content: "";
+  },
+`);

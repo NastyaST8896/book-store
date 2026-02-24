@@ -54,7 +54,7 @@ export const FreeBook = () => {
 };
 
 const StyledDiv = styled('div')(({ theme }) => `
-  background-color: ${theme.palette.appColor.light};;
+  background-color: ${theme.palette.appColor.light};
   position: relative;
   border-radius: 16px;
 `);

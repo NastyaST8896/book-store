@@ -19,6 +19,11 @@ export const theme = createTheme({
       light: '#5d83b8',
       dark: '#243247',
     },
+    secondary: {
+      main: '#0D1821',
+      light: '#213c52',
+      dark: '#010203',
+    },
     appColor: {
       dark: '#0D1821',
       darkBlue: '#344966',
