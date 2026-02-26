@@ -1,43 +1,41 @@
 import React from 'react';
 import { useEffect, useState } from 'react';
 import { BookCard } from '@common/book-card';
+import { ArrowIcon } from '@common/icons/arrow-icon';
 import { getBooks } from '@redux/books/thunk.ts';
 import { useAppDispatch } from '@redux/hooks.ts';
 import { unwrapResult } from '@reduxjs/toolkit';
 import type { Book, Genre } from '@utils/types';
+
 import {
-  Button,
   Box,
-  Container,
+  Button,
   Checkbox,
+  Container,
   Grid,
-  Pagination,
-  Typography,
   Menu,
-  MenuItem
+  MenuItem,
+  Pagination, type PaginationProps,
+  Typography
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 import { FreeBook } from './elements';
-import { ArrowIcon } from '@common/icons/arrow-icon';
 
-function getGenresWidthChecked(genres:Genre[]):Genre[] {
- return genres.map((genre) => {
+function getGenresWidthChecked(genres: Genre[]): Genre[] {
+  return genres.map((genre) => {
     genre.checked = false;
-    return genre
-  })
+
+    return genre;
+  });
 }
 
-function getCheckedGenresName(genres:Genre[]):string[] | [] {
-
-   return genres.filter((genre) => {
-    if (genre.checked) {
-      return genre
-    } 
-  }).map((genre) => {
-    return genre.genre
-  })
+function getCheckedGenresName(genres: Genre[]): string[] {
+  return genres
+    .filter((genre) => genre.checked)
+    .map((genre) => genre.name);
 }
+
 export const Home = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -48,7 +46,7 @@ export const Home = () => {
   const [genres, setGenres] = useState<Genre[]>([]);
 
   useEffect(() => {
-    dispatch(getBooks({page, genres: []}))
+    dispatch(getBooks({ page }))
       .then(unwrapResult)
       .then((data) => {
         setBooks(data.books);
@@ -56,20 +54,18 @@ export const Home = () => {
         setGenres(getGenresWidthChecked(data.genres));
       })
       .catch(err => console.log(err));
-  }, [dispatch]);
+  }, [dispatch, page]);
 
-  const handlePaginationChange = (
-    event: React.ChangeEvent<unknown>,
-    value: number
-  ) => {
-    dispatch(getBooks({page: value, genres: getCheckedGenresName(genres)}))
+  const handlePaginationChange: PaginationProps['onChange'] = (_, value) => {
+    dispatch(getBooks({ page: value, genres: getCheckedGenresName(genres) }))
       .then(unwrapResult)
       .then((data) => {
         setBooks(data.books);
         setTotalPages(data.totalPages);
-        setGenres(getGenresWidthChecked(data.genres))
+        setGenres(getGenresWidthChecked(data.genres));
       })
       .catch(err => console.log(err));
+
     setPage(value);
   };
 
@@ -79,34 +75,35 @@ export const Home = () => {
   const handleClose = () => {
     setAnchorEl(null);
 
-    dispatch(getBooks({page, genres: getCheckedGenresName(genres)}))
+    dispatch(getBooks({ page, genres: getCheckedGenresName(genres) }))
       .then(unwrapResult)
       .then((data) => {
         setBooks(data.books);
         setTotalPages(data.totalPages);
-        setGenres(getGenresWidthChecked(data.genres))
+        setGenres(getGenresWidthChecked(data.genres));
       })
       .catch(err => console.log(err));
   };
 
-  const handleCheckboxChange = (event:React.ChangeEvent<HTMLInputElement>) => {
-   if (event.target.type === 'checkbox') {
+  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.type === 'checkbox') {
       const genre = genres.find((item) => {
         return item.id === +event.target.id;
-      })
+      });
 
       const newGenres = genres.map((item) => {
         if (item === genre) {
-          item.checked = !item.checked
-          return item
+          item.checked = !item.checked;
+
+          return item;
         }
 
-        return item
-      })
+        return item;
+      });
 
       setGenres(newGenres);
     }
-  }
+  };
 
   return (
     <main>
@@ -115,9 +112,9 @@ export const Home = () => {
           <FreeBook />
         </StyledFreeBookBox>
 
-        <Grid container justifyContent='space-between'>
+        <Grid container justifyContent="space-between">
           <Grid size={2}>
-            <Typography variant='h1'>Catalog</Typography>
+            <Typography variant="h1">Catalog</Typography>
           </Grid>
 
           <Grid container size={6}>
@@ -143,13 +140,13 @@ export const Home = () => {
                 <MenuItem key={genre.id}>
                   <Box>
                     <Checkbox
-                    id={`${genre.id}`}
-                    checked={genre.checked}
+                      id={`${genre.id}`}
+                      checked={genre.checked}
                       icon={<CheckboxIcon />}
                       checkedIcon={<CheckedCheckboxIcon />}
                     />
                   </Box>
-                  {genre.genre}
+                  {genre.name}
                 </MenuItem>
               ))}
             </StyledGenreMenu>
@@ -168,7 +165,7 @@ export const Home = () => {
 
         <StyledPaginationBox>
           <StyledPagination
-            color='secondary'
+            color="secondary"
             count={totalPages}
             page={page}
             onChange={handlePaginationChange}

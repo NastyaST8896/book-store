@@ -41,6 +41,6 @@ export type Book = {
 
 export type Genre = {
   id: number,
-  genre: string,
+  name: string,
   checked?: boolean
-}
+};
