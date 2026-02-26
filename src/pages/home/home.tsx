@@ -4,8 +4,7 @@ import { BookCard } from '@common/book-card';
 import { getBooks } from '@redux/books/thunk.ts';
 import { useAppDispatch } from '@redux/hooks.ts';
 import { unwrapResult } from '@reduxjs/toolkit';
-import type { Book } from '@utils/types';
-
+import type { Book, Genre } from '@utils/types';
 import {
   Button,
   Box,
@@ -22,25 +21,39 @@ import { styled } from '@mui/material/styles';
 import { FreeBook } from './elements';
 import { ArrowIcon } from '@common/icons/arrow-icon';
 
+function getGenresWidthChecked(genres:Genre[]):Genre[] {
+ return genres.map((genre) => {
+    genre.checked = false;
+    return genre
+  })
+}
 
+function getCheckedGenresName(genres:Genre[]):string[] | [] {
+
+   return genres.filter((genre) => {
+    if (genre.checked) {
+      return genre
+    } 
+  }).map((genre) => {
+    return genre.genre
+  })
+}
 export const Home = () => {
-  // const auth = useAppSelector((state) => {
-  //   return state.auth;
-  // });
-
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const dispatch = useAppDispatch();
   const [books, setBooks] = useState<Book[]>([]);
+  const [genres, setGenres] = useState<Genre[]>([]);
 
   useEffect(() => {
-    dispatch(getBooks(page))
+    dispatch(getBooks({page, genres: []}))
       .then(unwrapResult)
       .then((data) => {
         setBooks(data.books);
         setTotalPages(data.totalPages);
+        setGenres(getGenresWidthChecked(data.genres));
       })
       .catch(err => console.log(err));
   }, [dispatch]);
@@ -49,11 +62,12 @@ export const Home = () => {
     event: React.ChangeEvent<unknown>,
     value: number
   ) => {
-    dispatch(getBooks(value))
+    dispatch(getBooks({page: value, genres: getCheckedGenresName(genres)}))
       .then(unwrapResult)
       .then((data) => {
         setBooks(data.books);
         setTotalPages(data.totalPages);
+        setGenres(getGenresWidthChecked(data.genres))
       })
       .catch(err => console.log(err));
     setPage(value);
@@ -64,7 +78,35 @@ export const Home = () => {
   };
   const handleClose = () => {
     setAnchorEl(null);
+
+    dispatch(getBooks({page, genres: getCheckedGenresName(genres)}))
+      .then(unwrapResult)
+      .then((data) => {
+        setBooks(data.books);
+        setTotalPages(data.totalPages);
+        setGenres(getGenresWidthChecked(data.genres))
+      })
+      .catch(err => console.log(err));
   };
+
+  const handleCheckboxChange = (event:React.ChangeEvent<HTMLInputElement>) => {
+   if (event.target.type === 'checkbox') {
+      const genre = genres.find((item) => {
+        return item.id === +event.target.id;
+      })
+
+      const newGenres = genres.map((item) => {
+        if (item === genre) {
+          item.checked = !item.checked
+          return item
+        }
+
+        return item
+      })
+
+      setGenres(newGenres);
+    }
+  }
 
   return (
     <main>
@@ -92,19 +134,24 @@ export const Home = () => {
               open={open}
               onClose={handleClose}
               // onClick={handleClose}
+              onChange={handleCheckboxChange}
 
               transformOrigin={{ horizontal: 'left', vertical: 'top' }}
               anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
             >
-              <MenuItem>
-                <Box>
-                  <StyledCheckbox 
-                  icon={<CheckboxIcon />}
-                  checkedIcon={<CheckedCheckboxIcon/>}
-                  />
-                </Box>
-                Add another account
-              </MenuItem>
+              {genres.map((genre) => (
+                <MenuItem key={genre.id}>
+                  <Box>
+                    <Checkbox
+                    id={`${genre.id}`}
+                    checked={genre.checked}
+                      icon={<CheckboxIcon />}
+                      checkedIcon={<CheckedCheckboxIcon />}
+                    />
+                  </Box>
+                  {genre.genre}
+                </MenuItem>
+              ))}
             </StyledGenreMenu>
           </Grid>
         </Grid>
@@ -198,19 +245,6 @@ const StyledGenreMenu = styled(Menu)(({ theme }) => `
   }}
 },
 `);
-
-const StyledCheckbox = styled(Checkbox)`
-
-  & .MuiSvgIcon-root {
-    border-radius: 16px;
-  }
-
-  
-
-   
-
-  
-`;
 
 const CheckboxIcon = styled('span')(({ theme }) => `
   border-radius: 12px;

@@ -38,3 +38,9 @@ export type Book = {
   media: string;
   isFavorite?: boolean;
 };
+
+export type Genre = {
+  id: number,
+  genre: string,
+  checked?: boolean
+}
