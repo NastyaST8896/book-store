@@ -11,6 +11,7 @@ declare module '@mui/material/styles' {
       light: string;
       lightGrey: string;
       white: string;
+      grayscale: string;
     };
   }
 
@@ -24,6 +25,7 @@ declare module '@mui/material/styles' {
       light: string;
       lightGrey: string;
       white: string;
+      grayscale: string;
     };
   }
 }

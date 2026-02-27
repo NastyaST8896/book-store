@@ -16,11 +16,15 @@ import {
   Menu,
   MenuItem,
   Pagination, type PaginationProps,
+  Slider,
   Typography
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 import { FreeBook } from './elements';
+import { DefaultCheckIcon } from '@common/icons/default-check-icon';
+import { CheckedIcon } from '@common/icons/checked-icon';
+import { RightArrowIcon } from '@common/icons/right-arrow-icon';
 
 function getGenresWidthChecked(genres: Genre[]): Genre[] {
   return genres.map((genre) => {
@@ -37,13 +41,29 @@ function getCheckedGenresName(genres: Genre[]): string[] {
 }
 
 export const Home = () => {
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
+  const [
+    anchorGenreEl,
+    setAnchorGenreEl
+  ] = React.useState<null | HTMLElement>(null);
+  const [
+    anchorPriceEl,
+    setAnchorPriceEl
+  ] = React.useState<null | HTMLElement>(null);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const dispatch = useAppDispatch();
   const [books, setBooks] = useState<Book[]>([]);
   const [genres, setGenres] = useState<Genre[]>([]);
+  const [isActiveGenreButton, setIsActiveGenreButton] = useState(false);
+  const [isActivePriceButton, setIsActivePriceButton] = useState(false);
+  const [priceValue, setPriceValue] = useState([0, 50000]);
+  const [maxPrice, setMaxPrice] = useState(0);
+  const [minPrice, setMinPrice] = useState(50000);
+  const [value, setValue] = React.useState<number[]>([20, 37]);
+
+  const handleChange = (event: Event, newValue: number[]) => {
+    setValue(newValue);
+  };
 
   useEffect(() => {
     dispatch(getBooks({ page }))
@@ -52,35 +72,72 @@ export const Home = () => {
         setBooks(data.books);
         setTotalPages(data.totalPages);
         setGenres(getGenresWidthChecked(data.genres));
+        setMaxPrice(data.maxPrice);
+        setMinPrice(data.minPrice);
       })
       .catch(err => console.log(err));
-  }, [dispatch, page]);
+  }, [dispatch]);
 
   const handlePaginationChange: PaginationProps['onChange'] = (_, value) => {
-    dispatch(getBooks({ page: value, genres: getCheckedGenresName(genres) }))
+    dispatch(getBooks({
+      page: value,
+      genres: getCheckedGenresName(genres),
+      maxPrice: priceValue[1],
+      minPrice: priceValue[0],
+    }))
       .then(unwrapResult)
       .then((data) => {
         setBooks(data.books);
         setTotalPages(data.totalPages);
-        setGenres(getGenresWidthChecked(data.genres));
       })
       .catch(err => console.log(err));
 
     setPage(value);
   };
 
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
+  const handleGenreButtonClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorGenreEl(event.currentTarget);
+    setIsActiveGenreButton(true);
+
   };
-  const handleClose = () => {
-    setAnchorEl(null);
+  const handleGenreButtonClose = () => {
+    setAnchorGenreEl(null);
+    setIsActiveGenreButton(false);
 
     dispatch(getBooks({ page, genres: getCheckedGenresName(genres) }))
       .then(unwrapResult)
       .then((data) => {
         setBooks(data.books);
         setTotalPages(data.totalPages);
-        setGenres(getGenresWidthChecked(data.genres));
+      })
+      .catch(err => console.log(err));
+  };
+
+  const handlePriceButtonClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorPriceEl(event.currentTarget)
+    setIsActivePriceButton(true);
+  };
+
+  const handlePriceValueChange = (_: Event, newValue: number[] | number) => {
+    if (Array.isArray(newValue)) {
+      setPriceValue(newValue);
+    }
+  }
+
+  const handlePriceButtonClose = () => {
+    setAnchorPriceEl(null);
+    setIsActiveGenreButton(false);
+
+    dispatch(getBooks({
+      page,
+      genres: getCheckedGenresName(genres),
+      maxPrice: priceValue[1],
+      minPrice: priceValue[0]
+    }))
+      .then(unwrapResult)
+      .then((data) => {
+        setBooks(data.books);
+        setTotalPages(data.totalPages);
       })
       .catch(err => console.log(err));
   };
@@ -105,6 +162,20 @@ export const Home = () => {
     }
   };
 
+  const marks = [
+    {
+      value: minPrice,
+      label: `$ ${minPrice.toFixed(2)}`,
+      left: '0%'
+    },
+
+    {
+      value: maxPrice,
+      label: `$ ${maxPrice.toFixed(2)}`,
+      left: '78%'
+    },
+  ]
+
   return (
     <main>
       <Container maxWidth="md">
@@ -117,21 +188,23 @@ export const Home = () => {
             <Typography variant="h1">Catalog</Typography>
           </Grid>
 
-          <Grid container size={6}>
+          <Grid container spacing='20px' size={6}>
             <Grid size={4}>
               <StyledFilterButton
-                onClick={handleClick}
-                endIcon={<ArrowIcon />}
+                onClick={handleGenreButtonClick}
+                endIcon={
+                  isActiveGenreButton ? <ArrowIcon /> : <RightArrowIcon />
+                }
               >
                 Genre
               </StyledFilterButton>
             </Grid>
             <StyledGenreMenu
-              anchorEl={anchorEl}
-              open={open}
-              onClose={handleClose}
-              // onClick={handleClose}
+              anchorEl={anchorGenreEl}
+              open={Boolean(anchorGenreEl)}
+              onClose={handleGenreButtonClose}
               onChange={handleCheckboxChange}
+              variant='selectedMenu'
 
               transformOrigin={{ horizontal: 'left', vertical: 'top' }}
               anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
@@ -142,13 +215,70 @@ export const Home = () => {
                     <Checkbox
                       id={`${genre.id}`}
                       checked={genre.checked}
-                      icon={<CheckboxIcon />}
-                      checkedIcon={<CheckedCheckboxIcon />}
+                      checkedIcon={<CheckedIcon />}
+                      icon={<DefaultCheckIcon />}
                     />
                   </Box>
                   {genre.name}
                 </MenuItem>
               ))}
+            </StyledGenreMenu>
+
+            <Grid size={4}>
+              <StyledFilterButton
+                onClick={handlePriceButtonClick}
+                endIcon={
+                  isActivePriceButton ? <ArrowIcon /> : <RightArrowIcon />
+                }
+              >
+                Price
+              </StyledFilterButton>
+            </Grid>
+
+            <StyledGenreMenu
+              anchorEl={anchorPriceEl}
+              open={Boolean(anchorPriceEl)}
+              onClose={handlePriceButtonClose}
+
+              transformOrigin={{ horizontal: 'left', vertical: 'top' }}
+              anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
+            >
+              <MenuItem>
+                <Box width="380px" sx={{ padding: '26px 0 26px 2px' }}>
+                  <StyledSlider
+                    getAriaLabel={() => 'Price'}
+                    value={priceValue}
+                    onChange={handlePriceValueChange}
+                    valueLabelDisplay="auto"
+                    marks={marks.map((mark) => ({ value: mark.value }))}
+                    min={minPrice}
+                    max={maxPrice}
+                  />
+                  <Box
+                    sx={{
+                      position: 'relative',
+                      width: '100%',
+                      height: '30px'
+                    }}
+                  >
+                    {marks.map((mark, index) => (
+                      <Typography
+                        key={index}
+                        sx={{
+                          position: 'absolute',
+                          left: mark.left,
+                          fontSize: '16px',
+                          fontWeight: '400',
+                          color: '#344966',
+                          whiteSpace: 'nowrap',
+                        }}
+                      >
+                        {mark.label}
+                      </Typography>
+                    ))}
+                  </Box>
+                </Box>
+              </MenuItem>
             </StyledGenreMenu>
           </Grid>
         </Grid>
@@ -224,43 +354,37 @@ const StyledGenreMenu = styled(Menu)(({ theme }) => `
     border-radius: 16px;
 
     &::before {
-    content: "";
-    display: block;
-    position: absolute;
-    top: 0;
-    left: 14px;
-    width: 10px;
-    height: 10px;
-    background: ${theme.palette.appColor.light};
-    transform: translateY(-50%) rotate(45deg);
-    z-index: 0;
+      content: "";
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 14px;
+      width: 10px;
+      height: 10px;
+      background: ${theme.palette.appColor.light};
+      transform: translateY(-50%) rotate(45deg);
+      z-index: 0;
+    },
+
+    & .MuiMenuItem-root {
+      & .MuiTouchRipple-root {
+        border-radius: 16px;
+    }}
   },
-
-  & .MuiMenuItem-root {
-   & .MuiTouchRipple-root {
-    border-radius: 16px;
-  }}
-},
 `);
 
-const CheckboxIcon = styled('span')(({ theme }) => `
-  border-radius: 12px;
-  width: 24px;
-  height: 24px;
-  border: 1px solid ${theme.palette.appColor.dark};
+const StyledSlider = styled(Slider)(({ theme }) => `
+  color: ${theme.palette.appColor.green};
+  height: 12px;
 
-  background-color: ${theme.palette.appColor.white};
-`);
+  & .MuiSlider-thumb {
+    height: 32px;
+    width: 32px;
+    background-color: ${theme.palette.appColor.white};
+    border: 2px solid ${theme.palette.appColor.green};
+  };
 
-const CheckedCheckboxIcon = styled(CheckboxIcon)(({ theme }) => `
-  background-color: ${theme.palette.appColor.dark};
-  &::before: {
-    display: block;
-    width: 10px;
-    height: 10px;
-    /* background-image: url(Check);
-    background-size: cover;
-    background-position: center; */
-    content: "";
+  & .MuiSlider-rail {
+    background-color: ${theme.palette.appColor.grayscale};
   },
 `);

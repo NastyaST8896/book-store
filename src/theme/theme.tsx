@@ -32,7 +32,8 @@ export const theme = createTheme({
       green: '#BFCC94',
       light: '#F0F4EF',
       lightGrey: '#D6D8E7',
-      white: '#FFFFFF'
+      white: '#FFFFFF',
+      grayscale: '#D6D8E7'
     }
   },
   typography: {

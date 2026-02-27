@@ -6,14 +6,24 @@ import type { Book, Genre } from '@utils/types';
 
 
 export const getBooks = createAsyncThunk<
-  { books: Book[], totalPages: number, genres: Genre[] },
-  { page: number, genres?: string[] },
+  {
+    books: Book[],
+    totalPages: number,
+    genres: Genre[],
+    maxPrice: number,
+    minPrice: number,
+  },
+  { page: number, 
+    genres?: string[], 
+    maxPrice?: number,
+    minPrice?: number, 
+  },
   { state: RootState }
 >(
   IN_APP_ROUTES.getBooks.pathName,
-  async ({ page, genres }, { rejectWithValue }) => {
+  async ({ page, genres, maxPrice, minPrice }, { rejectWithValue }) => {
     try {
-      return await getBooksApi(page, genres);
+      return await getBooksApi(page, genres, maxPrice, minPrice);
     } catch (error) {
       return rejectWithValue(error);
     }
