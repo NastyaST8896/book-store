@@ -13,7 +13,8 @@ export const getBooks = createAsyncThunk<
     maxPrice: number,
     minPrice: number,
   },
-  { page: number, 
+  {
+    page: number,
     genres?: string[], 
     maxPrice?: number,
     minPrice?: number, 

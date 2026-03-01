@@ -22,6 +22,7 @@ export const getBooksApi = async (
   if(minPrice) {
     params.append('minPrice', String(minPrice));
   }
+
   const response = await api.get(
     IN_APP_ROUTES.getBooks.path,
     { params }

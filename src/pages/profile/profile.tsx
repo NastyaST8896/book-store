@@ -81,7 +81,7 @@ export const Profile = () => {
     }
   }, [clearErrors, isUserInfoDirty, isUserPasswordDirty]);
 
-  console.log(auth.avatar);
+
   const handleToggleOldPassword = () => {
     setShowOldPassword((prevState) => !prevState);
   };
