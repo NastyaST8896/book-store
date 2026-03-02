@@ -1,26 +1,29 @@
-import { ArrowIcon } from "@common/icons/arrow-icon";
-import { RightArrowIcon } from "@common/icons/right-arrow-icon";
-import { StyledFilterButton } from "@common/styled-filter-button";
-import { styled } from "@mui/material/styles";
+import React, { useState } from 'react';
+import { ArrowIcon } from '@common/icons/arrow-icon';
+import { RightArrowIcon } from '@common/icons/right-arrow-icon';
+import { StyledFilterButton } from '@common/styled-filter-button';
+
 import {
+  type ButtonProps,
   List,
   ListItem,
   ListItemButton,
   ListItemText,
-  Popover,
-  type ButtonProps
-} from "@mui/material";
-import React, { useState } from "react";
+  Popover
+} from '@mui/material';
+import { styled } from '@mui/material/styles';
 
-type SortByFilterprops = {
+type SortByFilterProps = {
   onClose?: (value: string) => void
-}
+};
 
-export const SortByFilter = (props: SortByFilterprops) => {
+export const SortByFilter = (props: SortByFilterProps) => {
   const { onClose } = props;
 
   const sortNames = ['Price', 'Name', 'Author name', 'Rating', 'Date of issue'];
   const [isActive, setIsActive] = useState(false);
+
+  const [startName, setStartName] = useState('');
 
   const [currentName, setCurrentName] = useState('');
 
@@ -32,20 +35,21 @@ export const SortByFilter = (props: SortByFilterprops) => {
   const handleSortByButtonClick: ButtonProps['onClick'] = (event) => {
     setAnchorSortByEl(event.currentTarget);
     setIsActive(true);
+    setStartName(currentName);
   };
 
   const handleSortByClose = () => {
     setAnchorSortByEl(null);
     setIsActive(false);
 
-    if (onClose) {
+    if (onClose && startName !== currentName) {
       onClose(currentName);
-    };
+    }
   };
 
   const handleItemClick = (name: string) => () => {
     setCurrentName(name);
-  }
+  };
 
   return (
     <>

@@ -18,7 +18,7 @@ import { styled } from '@mui/material/styles';
 import { GenresFilter } from './elements/genres-filter.tsx';
 import { PriceRangeFilter } from './elements/price-range-filter.tsx';
 import { FreeBook } from './elements';
-import { SortByFilter } from './elements/Sort-by-filter.tsx';
+import { SortByFilter } from './elements/sort-by-filter.tsx';
 
 export const Home = () => {
   const books = useAppSelector((state) => state.books);

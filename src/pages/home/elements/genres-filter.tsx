@@ -23,6 +23,17 @@ type GenresFilterProps = {
   onClose?: (value: string[]) => void;
 };
 
+function isSameArray(startCheckedGenres: string[], checkedGenres: string[]) {
+  if (startCheckedGenres.length !== checkedGenres.length) {
+    return false;
+  }
+
+  const setCheckedGenres = new Set(checkedGenres);
+
+
+  return startCheckedGenres.every((item) => setCheckedGenres.has(item));
+}
+
 export const GenresFilter = (props: GenresFilterProps) => {
   const { genres, onClose } = props;
 
@@ -34,16 +45,19 @@ export const GenresFilter = (props: GenresFilterProps) => {
 
   const [checkedGenres, setCheckedGenres] = React.useState<string[]>([]);
 
+  const [startCheckedGenres, setStartCheckedGenres] = React.useState<string[]>([]);
+
   const handleGenresButtonClick: ButtonProps['onClick'] = (event) => {
     setAnchorGenresEl(event.currentTarget);
     setIsActive(true);
+    setStartCheckedGenres(checkedGenres);
   };
 
   const handleGenresClose = () => {
     setAnchorGenresEl(null);
     setIsActive(false);
 
-    if (onClose) {
+    if (onClose && !isSameArray(startCheckedGenres, checkedGenres)) {
       onClose(checkedGenres);
     }
   };

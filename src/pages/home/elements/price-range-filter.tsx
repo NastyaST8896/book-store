@@ -27,6 +27,7 @@ export const PriceRangeFilter = (props: PriceRangeFilterProps) => {
   } = props;
 
   const [priceValue, setPriceValue] = useState([minPrice, maxPrice]);
+  const [startValue, setStartValue] = useState([minPrice, maxPrice]);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -42,6 +43,7 @@ export const PriceRangeFilter = (props: PriceRangeFilterProps) => {
   const handlePriceButtonClick: ButtonProps['onClick'] = (event) => {
     setAnchorPriceEl(event.currentTarget);
     setIsActive(true);
+    setStartValue(priceValue);
   };
 
   const handlePriceValueChange: SliderProps['onChange'] = (_, newValue) => {
@@ -65,7 +67,7 @@ export const PriceRangeFilter = (props: PriceRangeFilterProps) => {
     setAnchorPriceEl(null);
     setIsActive(false);
 
-    if (onClose) {
+    if (onClose && startValue.join(',') !== priceValue.join(',')) {
       onClose(priceValue);
     }
   };

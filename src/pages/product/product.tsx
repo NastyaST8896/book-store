@@ -1,48 +1,54 @@
-import { styled } from "@mui/material/styles";
+import { HeartIcon } from '@common/icons/heart-icon';
+import { RatingArrowIcon } from '@common/icons/rating-arrow-icon';
+import { StarIcon } from '@common/icons/star-icon';
+import { StyledButton } from '@common/styled-button';
+
 import {
   Box,
-  Button,
   Container,
   Grid,
   IconButton,
+  type IconButtonProps,
   Rating,
-  Typography,
-  type IconButtonProps
-} from "@mui/material";
-import { HeartIcon } from "@common/icons/heart-icon";
-import { StarIcon } from "@common/icons/star-icon";
-import { RatingArrowIcon } from "@common/icons/rating-arrow-icon";
-import { StyledButton } from "@common/styled-button";
+  Typography} from '@mui/material';
+import { styled } from '@mui/material/styles';
 
 export const Product = () => {
   return (
     <main>
       <Container maxWidth="md">
-        <Grid container display='flex' justifyContent='space-between' padding='36px 0 60px 0'>
+        <Grid
+          container
+          display="flex"
+          justifyContent="space-between"
+          padding="36px 0 60px 0"
+        >
           <StyledCoverGrid /*img={`http://localhost:3000/${book.media}`}*/>
             <StyledIconButton /*transparent={!book.isFavorite}*/>
-              <HeartIcon  fill='none' /*fill={book.isFavorite ? 'white' : 'none'}*/ />
+              <HeartIcon
+                fill="none" /*fill={book.isFavorite ? 'white' : 'none'}*/ />
             </StyledIconButton>
           </StyledCoverGrid>
 
           <Grid
-            display='flex'
-            flexDirection='column'
-            gap='80px'>
+            display="flex"
+            flexDirection="column"
+            gap="80px">
             <Grid
               container
-              display='flex'
-              flexDirection='column'
-              gap='30px'
+              display="flex"
+              flexDirection="column"
+              gap="30px"
               sx={{ maxWidth: '630px', width: '100%' }}
             >
-              <Grid >
+              <Grid>
                 <Typography variant="h1">milk and honey</Typography>
-                <Typography variant="h2" sx={{ fontSize: '24px' }}>Rupi Kaur</Typography>
+                <Typography variant="h2" sx={{ fontSize: '24px' }}>Rupi
+                  Kaur</Typography>
               </Grid>
 
-              <Grid container gap='40px' flexDirection='row'>
-                <Grid display='flex' gap='14px'>
+              <Grid container gap="40px" flexDirection="row">
+                <Grid display="flex" gap="14px">
                   <StarIcon />
                   <Typography
                     variant="subtitle1"
@@ -62,7 +68,7 @@ export const Product = () => {
                   />
                 </Grid>
 
-                <Grid display='flex' gap='7px'>
+                <Grid display="flex" gap="7px">
                   <RatingArrowIcon />
                   <Typography
                     variant="subtitle1"
@@ -73,8 +79,13 @@ export const Product = () => {
                 </Grid>
               </Grid>
 
-              <Grid display='flex' flexDirection='column' gap='12px'>
-                <Typography variant="h2" sx={{ fontSize: '24px' }}>Description</Typography>
+              <Grid display="flex" flexDirection="column" gap="12px">
+                <Typography
+                  variant="h2"
+                  sx={{ fontSize: '24px' }}
+                >
+                  Description
+                </Typography>
                 <Typography variant="subtitle2" sx={{ fontSize: '16px' }}>
                   “Rupi Kaur is the Writer of the Decade.” - The New Republic.
                   <br />
@@ -84,7 +95,8 @@ export const Product = () => {
                   violence, abuse, love, loss, and femininity.
                   <br />
                   <br />
-                  The book is divided into four chapters, and each chapter serves
+                  The book is divided into four chapters, and each chapter
+                  serves
                   a different purpose. Deals with a different pain. Heals a
                   different heartache. milk and honey takes readers through
                   a journey of the most bitter moments in life and finds
@@ -95,15 +107,33 @@ export const Product = () => {
             </Grid>
 
             <Grid>
-              <Box display='flex' gap='82px'>
-                <Box display='flex' flexDirection='column' gap='14px'>
-                  <Typography variant="subtitle2" fontSize='16px'>Paperback</Typography>
-                  <StyledButton disabled buttonHeight={50} sx={{fontSize: '20px'}}>Not available</StyledButton>
+              <Box display="flex" gap="82px">
+                <Box display="flex" flexDirection="column" gap="14px">
+                  <Typography
+                    variant="subtitle2"
+                    fontSize="16px"
+                  >
+                    Paperback
+                  </Typography>
+                  <StyledButton
+                    disabled
+                    buttonHeight={50}
+                    sx={{ fontSize: '20px' }}
+                  >
+                    Not available
+                  </StyledButton>
                 </Box>
 
-                <Box display='flex' flexDirection='column' gap='14px'>
-                  <Typography variant="subtitle2" fontSize='16px'>Hardcover</Typography>
-                  <StyledButton buttonHeight={50} sx={{fontSize: '20px'}}>$19.99 USD</StyledButton>
+                <Box display="flex" flexDirection="column" gap="14px">
+                  <Typography
+                    variant="subtitle2"
+                    fontSize="16px"
+                  >
+                    Hardcover
+                  </Typography>
+                  <StyledButton buttonHeight={50} sx={{ fontSize: '20px' }}>
+                    $19.99 USD
+                  </StyledButton>
                 </Box>
               </Box>
             </Grid>
