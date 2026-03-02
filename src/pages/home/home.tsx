@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { BookCard } from '@common/book-card';
-import { setGenres, setPriceRange } from '@redux/books/slice.ts';
+import { setGenres, setPriceRange, setSortBy } from '@redux/books/slice.ts';
 import { getBooks } from '@redux/books/thunk.ts';
 import { useAppDispatch, useAppSelector } from '@redux/hooks.ts';
 
 import {
   Box,
+  CircularProgress,
   Container,
   Grid,
   Pagination,
@@ -17,6 +18,7 @@ import { styled } from '@mui/material/styles';
 import { GenresFilter } from './elements/genres-filter.tsx';
 import { PriceRangeFilter } from './elements/price-range-filter.tsx';
 import { FreeBook } from './elements';
+import { SortByFilter } from './elements/Sort-by-filter.tsx';
 
 export const Home = () => {
   const books = useAppSelector((state) => state.books);
@@ -30,8 +32,15 @@ export const Home = () => {
       genres: books.activeFilters?.genres,
       minPrice: books.activeFilters?.priceRange?.[0],
       maxPrice: books.activeFilters?.priceRange?.[1],
+      sortBy: books.activeFilters?.sortBy,
     }));
-  }, [books.activeFilters?.priceRange, books.activeFilters?.genres, dispatch, page]);
+  }, [
+    books.activeFilters?.priceRange,
+    books.activeFilters?.genres,
+    books.activeFilters?.sortBy,
+    dispatch,
+    page
+  ]);
 
   const handlePaginationChange: PaginationProps['onChange'] = (_, value) => {
     setPage(value);
@@ -49,7 +58,7 @@ export const Home = () => {
             <Typography variant="h1">Catalog</Typography>
           </Grid>
 
-          <Grid container spacing="20px" size={6}>
+          <Grid container spacing="20px" size={8}>
             <Grid size={4}>
               <GenresFilter
                 genres={books.genres}
@@ -64,18 +73,33 @@ export const Home = () => {
                 onClose={(priceRange) => dispatch(setPriceRange(priceRange))}
               />
             </Grid>
+
+            <Grid size={4}>
+              <SortByFilter
+                onClose={(sortName) => dispatch(setSortBy(sortName))}
+              />
+            </Grid>
           </Grid>
         </Grid>
 
-        <StyledGrid
-          container
-          columnSpacing={2}
-          rowSpacing={8}
-        >
-          {books.books.map((book) => (
-            <BookCard key={book.id} book={book} />
-          ))}
-        </StyledGrid>
+        {
+          books.loading
+            ? (
+              <StyledProgressBox>
+                <CircularProgress size={100} />
+              </StyledProgressBox>
+            ) : (
+              <StyledGrid
+                container
+                columnSpacing={2}
+                rowSpacing={8}
+              >
+                {books.books.map((book) => (
+                  <BookCard key={book.id} book={book} />
+                ))}
+              </StyledGrid>
+            )
+        }
 
         <StyledPaginationBox>
           <StyledPagination
@@ -113,4 +137,11 @@ const StyledPaginationBox = styled(Box)`
   padding: 40px 0 150px 0;
   display: flex;
   justify-content: center;
+`;
+
+const StyledProgressBox = styled(Box)`
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  padding: 40px;
 `;

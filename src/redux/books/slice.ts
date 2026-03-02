@@ -8,6 +8,7 @@ type BookState = {
   activeFilters: {
     genres?: string[];
     priceRange?: [number, number];
+    sortBy?: string;
   } | null;
   totalPages: number;
   minPrice: number;
@@ -40,7 +41,14 @@ export const booksSlice = createSlice({
         ...state.activeFilters,
         genres: action.payload,
       };
-    }
+    },
+
+    setSortBy: (state, action) => {
+      state.activeFilters = {
+        ...state.activeFilters,
+        sortBy: action.payload,
+      };
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -62,6 +70,6 @@ export const booksSlice = createSlice({
   },
 });
 
-export const { setPriceRange, setGenres } = booksSlice.actions;
+export const { setPriceRange, setGenres, setSortBy } = booksSlice.actions;
 
 export const booksReducer = booksSlice.reducer;

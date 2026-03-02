@@ -2,17 +2,17 @@ import { Button, type ButtonProps } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 type StyledButtonProps = ButtonProps & {
-  buttonHeight?: 44 | 48;
-  width?: number;
+  buttonHeight?: 44 | 48 | 50;
 };
 
 export const StyledButton = styled(
   (props: StyledButtonProps) => <Button variant="contained" {...props} />,
   { shouldForwardProp: (prop) => prop !== 'buttonHeight' }
-)<StyledButtonProps>(({ buttonHeight = 44, width, theme }) => ({
+)<StyledButtonProps>(({ buttonHeight = 44, theme }) => ({
   borderRadius: 16,
   textTransform: 'none',
+  width: 'auto',
   height: buttonHeight,
-  width: width ? `${width}px` : '100%',
   color: theme.palette.appColor.light,
+  padding: '10px 50px'
 }));

@@ -31,6 +31,7 @@ export const GenresFilter = (props: GenresFilterProps) => {
     anchorGenresEl,
     setAnchorGenresEl
   ] = React.useState<HTMLElement | null>(null);
+
   const [checkedGenres, setCheckedGenres] = React.useState<string[]>([]);
 
   const handleGenresButtonClick: ButtonProps['onClick'] = (event) => {
@@ -148,7 +149,9 @@ const StyledPriceRangePopover = styled(Popover)(({ theme }) => `
       & .MuiTypography-root {
        font-weight: 500;
        font-size: 16px;
+      }
     }
+  }
 `);
 
 const StyledList = styled(List)(({ theme }) => `

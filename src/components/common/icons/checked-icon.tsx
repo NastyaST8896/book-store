@@ -10,9 +10,10 @@ export const CheckedIcon = () => {
       <circle cx="12" cy="12" r="12" fill="#344966" />
       <path
         d="M16.5 9L10.3125 15.75L7.5 12.6818"
-        stroke="white" stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        stroke="white" 
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   )

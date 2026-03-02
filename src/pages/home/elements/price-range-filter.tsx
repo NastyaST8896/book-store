@@ -96,21 +96,13 @@ export const PriceRangeFilter = (props: PriceRangeFilterProps) => {
           max={maxPrice}
         />
 
-        <Box display="flex" justifyContent="space-between">
+        <StyledBox>
           {marks.map((_, index) => (
-            <Typography
-              key={index}
-              sx={{
-                fontSize: '16px',
-                fontWeight: '400',
-                color: '#344966',
-                whiteSpace: 'nowrap',
-              }}
-            >
+            <StyledTypography key={index}>
               $ {priceValue[index].toFixed(2)}
-            </Typography>
+            </StyledTypography>
           ))}
-        </Box>
+        </StyledBox>
       </StyledPriceRangePopover>
     </>
   );
@@ -160,4 +152,16 @@ const StyledSlider = styled(Slider)(({ theme }) => `
   & .MuiSlider-mark {
     background-color: transparent;
   }
+`);
+
+const StyledBox = styled(Box)`
+  display: flex; 
+  justify-content: space-between;
+`;
+
+const StyledTypography = styled(Typography)(({ theme }) => `
+  font-size: 16px;
+  font-weight: 400;
+  color: ${theme.palette.appColor.darkBlue};
+  white-space: 'nowrap';
 `);

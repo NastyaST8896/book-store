@@ -10,6 +10,7 @@ import { Register } from './pages/register';
 import { checkAuthUser } from './redux/auth/thunk.ts';
 import { useAppDispatch } from './redux/hooks.ts';
 import { IN_APP_ROUTES } from './utils/routes.ts';
+import { Product } from './pages/product';
 
 export const App = () => {
   const dispatch = useAppDispatch();
@@ -30,6 +31,7 @@ export const App = () => {
       <Routes>
         <Route element={<MainLayout />}>
           <Route index element={<Home />} />
+          <Route path="product" element={<Product />} />
 
           <Route
             element={

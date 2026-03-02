@@ -37,13 +37,18 @@ export const Header = () => {
           }}
         >
           <Grid size={{ xl: 1, lg: 2 }}>
-            <StyledIcon src={Logo} alt="book room" />
+            <Link to={IN_APP_ROUTES.home.path}>
+              <StyledIcon src={Logo} alt="book room" />
+            </Link>
+
           </Grid>
 
           <StyledGridEnd size={{ lg: 7, md: 6, sm: 4, xs: 12 }}>
-            <Typography variant="subtitle1" fontWeight={500}>
-              Catalog
-            </Typography>
+            <StyledCatalogLink to={IN_APP_ROUTES.home.path}>
+              <Typography variant="subtitle1" fontWeight={500}>
+                Catalog
+              </Typography>
+            </StyledCatalogLink>
 
             <StyledInput
               fullWidth={true}
@@ -65,7 +70,7 @@ export const Header = () => {
                     <StyledRoundButton icon={<CartIcon />} />
                   </StyledAuthLink>
                   <StyledAuthLink to="#">
-                    <StyledRoundButton icon={<HeartIcon fill='none'/>} />
+                    <StyledRoundButton icon={<HeartIcon fill='none' />} />
                   </StyledAuthLink>
                   <StyledAuthLink to={IN_APP_ROUTES.profile.path}>
                     <StyledRoundButton icon={<ProfileIcon />} />
@@ -188,3 +193,8 @@ const StyledBox = styled(Box)`
 const StyledAuthLink = styled(Link)`
   width: 48px;
 `;
+
+const StyledCatalogLink = styled(Link)(({theme}) => `
+   text-decoration: none;
+  color: ${theme.palette.appColor.darkBlue};
+`);

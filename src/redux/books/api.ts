@@ -6,6 +6,7 @@ export const getBooksApi = async (
   genres?: string[],
   maxPrice?: number,
   minPrice?: number,
+  sortBy?: string,
 ) => {
   const params = new URLSearchParams();
 
@@ -21,6 +22,10 @@ export const getBooksApi = async (
 
   if(minPrice) {
     params.append('minPrice', String(minPrice));
+  }
+
+  if(sortBy) {
+    params.append('sortBy', sortBy);
   }
 
   const response = await api.get(
