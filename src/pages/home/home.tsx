@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { BookCard } from '@common/book-card';
+import { getBook } from '@redux/book/thunk.ts';
 import { setGenres, setPriceRange, setSortBy } from '@redux/books/slice.ts';
 import { getBooks } from '@redux/books/thunk.ts';
 import { useAppDispatch, useAppSelector } from '@redux/hooks.ts';
@@ -17,9 +18,8 @@ import { styled } from '@mui/material/styles';
 
 import { GenresFilter } from './elements/genres-filter.tsx';
 import { PriceRangeFilter } from './elements/price-range-filter.tsx';
-import { FreeBook } from './elements';
 import { SortByFilter } from './elements/sort-by-filter.tsx';
-import { getBook } from '@redux/book/thunk.ts';
+import { FreeBook } from './elements';
 
 export const Home = () => {
   const books = useAppSelector((state) => state.books);
@@ -99,10 +99,7 @@ export const Home = () => {
                   <BookCard
                     key={book.id}
                     book={book}
-                    onClick={(id) => {
-                      console.log('>id', id)
-                      dispatch(getBook(id));
-                    }}
+                    onClick={(id) => dispatch(getBook(id))}
                   />
                 ))}
               </StyledGrid>

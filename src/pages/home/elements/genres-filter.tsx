@@ -32,6 +32,7 @@ function isSameArray(startCheckedGenres: string[], checkedGenres: string[]) {
 
 
   return startCheckedGenres.every((item) => setCheckedGenres.has(item));
+
 }
 
 export const GenresFilter = (props: GenresFilterProps) => {

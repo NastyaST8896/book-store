@@ -12,7 +12,7 @@ import { IN_APP_ROUTES } from '@utils/routes';
 import type { LoginFormType } from '@utils/types.ts';
 import { createRequiredValidator } from '@utils/validators/required-validator';
 
-import { Box, type BoxProps, CircularProgress, Container, Typography } from '@mui/material';
+import { Box, type BoxProps, Container, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 import { FormStyledInput } from './elements/form-styled-input';
@@ -24,7 +24,6 @@ export const Login = () => {
   const dispatch = useAppDispatch();
 
   const [showPassword, setShowPassword] = useState(false);
-  const [krutim, setKrutim] = useState(true);
 
   const navigate = useNavigate();
   const location = useLocation();

@@ -1,3 +1,5 @@
+import type { MouseEventHandler } from 'react';
+import { useNavigate } from 'react-router';
 import { HeartIcon } from '@common/icons/heart-icon.tsx';
 import { StyledButton } from '@common/styled-button.tsx';
 import { formatPrice } from '@utils/formatters.ts';
@@ -11,7 +13,6 @@ import {
   Typography
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { Link } from 'react-router';
 
 type BookCardProps = {
   book: Book,
@@ -22,14 +23,20 @@ type BookCardProps = {
 export const BookCard = (props: BookCardProps) => {
   const { book, onClick } = props;
 
+  const navigate = useNavigate();
+
   const handleBookClick = () => {
+    navigate('/product');
     if (onClick) {
-      return onClick(book.id)
+      return onClick(book.id);
     }
-  }
-  const handleIconButtonClick:React.MouseEventHandler<HTMLButtonElement> = (e) => {
+  };
+
+  const handleIconButtonClick: MouseEventHandler<HTMLButtonElement> = (e) => {
     e.stopPropagation();
-  }
+
+    // toggleLike()
+  };
 
   return (
     <Grid
@@ -38,16 +45,17 @@ export const BookCard = (props: BookCardProps) => {
       sx={{ flexDirection: 'column' }}
       rowSpacing="30px"
     >
-      <Link to='/product'>
-        <StyledCoverGrid
-          onClick={handleBookClick}
-          img={`http://localhost:3000/${book.media}`}
+      <StyledCoverGrid
+        onClick={handleBookClick}
+        img={`http://localhost:3000/${book.media}`}
+      >
+        <StyledIconButton
+          onClick={handleIconButtonClick}
+          transparent={!book.isFavorite}
         >
-          <StyledIconButton onClick={handleIconButtonClick} transparent={!book.isFavorite}>
-            <HeartIcon fill={book.isFavorite ? 'white' : 'none'} />
-          </StyledIconButton>
-        </StyledCoverGrid>
-      </Link>
+          <HeartIcon fill={book.isFavorite ? 'white' : 'none'} />
+        </StyledIconButton>
+      </StyledCoverGrid>
 
       <Grid rowSpacing="20px" container width="100%">
         <Grid onClick={handleBookClick}>
