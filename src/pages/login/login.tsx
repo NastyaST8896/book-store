@@ -12,7 +12,7 @@ import { IN_APP_ROUTES } from '@utils/routes';
 import type { LoginFormType } from '@utils/types.ts';
 import { createRequiredValidator } from '@utils/validators/required-validator';
 
-import { Box, type BoxProps, CircularProgress, Container, Slider, Typography } from '@mui/material';
+import { Box, type BoxProps, CircularProgress, Container, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 import { FormStyledInput } from './elements/form-styled-input';
@@ -41,10 +41,6 @@ export const Login = () => {
       password: ''
     },
   });
-
-  setTimeout(() => {
-    setKrutim(false);
-  }, 2000)
 
   const handleTogglePassword = () => {
     setShowPassword((prevState) => !prevState);
@@ -77,9 +73,6 @@ export const Login = () => {
             onSubmit={handleSubmit(onSubmit)}
           >
             <Typography variant="h1">Log In</Typography>
-              <Box sx={{ display: 'flex' }}>
-                {krutim && <CircularProgress />}
-              </Box>
 
             <StyledFormInputBox>
               <FormStyledInput
@@ -109,7 +102,7 @@ export const Login = () => {
               />
             </StyledFormInputBox>
 
-            <StyledButton type="submit" width={166}>
+            <StyledButton type="submit">
               Log In
             </StyledButton>
           </StyledFormBox>
@@ -134,6 +127,7 @@ const StyledRegisterBox = styled(Box)`
 const StyledFormBox = styled(Box) <BoxProps & { noValidate?: string }>`
   display: flex;
   flex-direction: column;
+  align-items: baseline;
   gap: 60px;
   max-width: 413px;
   width: 100%;

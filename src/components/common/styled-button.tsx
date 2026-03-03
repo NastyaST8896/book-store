@@ -11,7 +11,6 @@ export const StyledButton = styled(
 )<StyledButtonProps>(({ buttonHeight = 44, theme }) => ({
   borderRadius: 16,
   textTransform: 'none',
-  width: 'auto',
   height: buttonHeight,
   color: theme.palette.appColor.light,
   padding: '10px 50px'

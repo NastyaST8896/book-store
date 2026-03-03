@@ -11,14 +11,25 @@ import {
   Typography
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { Link } from 'react-router';
 
 type BookCardProps = {
-  book: Book
+  book: Book,
+  onClick?: (value: number) => void,
 };
 
 
 export const BookCard = (props: BookCardProps) => {
-  const { book } = props;
+  const { book, onClick } = props;
+
+  const handleBookClick = () => {
+    if (onClick) {
+      return onClick(book.id)
+    }
+  }
+  const handleIconButtonClick:React.MouseEventHandler<HTMLButtonElement> = (e) => {
+    e.stopPropagation();
+  }
 
   return (
     <Grid
@@ -27,14 +38,19 @@ export const BookCard = (props: BookCardProps) => {
       sx={{ flexDirection: 'column' }}
       rowSpacing="30px"
     >
-      <StyledCoverGrid img={`http://localhost:3000/${book.media}`}>
-        <StyledIconButton transparent={!book.isFavorite}>
-          <HeartIcon fill={book.isFavorite ? 'white' : 'none'} />
-        </StyledIconButton>
-      </StyledCoverGrid>
+      <Link to='/product'>
+        <StyledCoverGrid
+          onClick={handleBookClick}
+          img={`http://localhost:3000/${book.media}`}
+        >
+          <StyledIconButton onClick={handleIconButtonClick} transparent={!book.isFavorite}>
+            <HeartIcon fill={book.isFavorite ? 'white' : 'none'} />
+          </StyledIconButton>
+        </StyledCoverGrid>
+      </Link>
 
       <Grid rowSpacing="20px" container width="100%">
-        <Grid>
+        <Grid onClick={handleBookClick}>
           <Typography
             title={book.title}
             variant={'subtitle2'}

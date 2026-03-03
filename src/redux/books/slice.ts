@@ -2,7 +2,7 @@ import { getBooks } from '@redux/books/thunk.ts';
 import { createSlice } from '@reduxjs/toolkit';
 import type { Book, Genre } from '@utils/types.ts';
 
-type BookState = {
+type BooksState = {
   loading: boolean;
   books: Book[];
   activeFilters: {
@@ -16,7 +16,7 @@ type BookState = {
   genres: Genre[];
 };
 
-const initialState: BookState = {
+const initialState: BooksState = {
   loading: false,
   books: [],
   activeFilters: null,

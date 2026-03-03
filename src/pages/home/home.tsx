@@ -19,6 +19,7 @@ import { GenresFilter } from './elements/genres-filter.tsx';
 import { PriceRangeFilter } from './elements/price-range-filter.tsx';
 import { FreeBook } from './elements';
 import { SortByFilter } from './elements/sort-by-filter.tsx';
+import { getBook } from '@redux/book/thunk.ts';
 
 export const Home = () => {
   const books = useAppSelector((state) => state.books);
@@ -95,7 +96,14 @@ export const Home = () => {
                 rowSpacing={8}
               >
                 {books.books.map((book) => (
-                  <BookCard key={book.id} book={book} />
+                  <BookCard
+                    key={book.id}
+                    book={book}
+                    onClick={(id) => {
+                      console.log('>id', id)
+                      dispatch(getBook(id));
+                    }}
+                  />
                 ))}
               </StyledGrid>
             )

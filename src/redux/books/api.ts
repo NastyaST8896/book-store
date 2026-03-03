@@ -32,6 +32,6 @@ export const getBooksApi = async (
     IN_APP_ROUTES.getBooks.path,
     { params }
   );
-
+  
   return response.data;
 };

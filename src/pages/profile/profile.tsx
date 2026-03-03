@@ -113,7 +113,9 @@ export const Profile = () => {
     setIsUserPasswordDirty((prevState) => !prevState);
   };
 
-  const handleAvatarButton = (event: React.ChangeEvent<HTMLInputElement, HTMLInputElement>) => {
+  const handleAvatarButton = (
+    event: React.ChangeEvent<HTMLInputElement, HTMLInputElement>
+  ) => {
     if (event.target && event.target.files) {
       dispatch(changeUserAvatar({ file: event.target.files[0] }));
     }
@@ -150,7 +152,10 @@ export const Profile = () => {
       <Container maxWidth="md">
         <Grid container gap={3}>
           <StyledAvatarGrid size={3}>
-            <img src={auth.avatar ? `http://localhost:3000/${auth.avatar}` : DefaultAvatar} alt="default avatar" />
+            <img src={auth.avatar
+              ? `http://localhost:3000/${auth.avatar}`
+              : DefaultAvatar} alt="default avatar"
+            />
             <StyledRoundButtonBox>
               <StyledImgButton
                 component="label"
@@ -316,7 +321,7 @@ const StyledMain = styled('main')`
 `;
 
 const StyledProfileInformationGrid = styled(Grid) <GridProps &
-  { noValidate?: string }
+{ noValidate?: string }
 >`
   display: flex;
   flex-direction: column;
