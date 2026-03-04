@@ -16,20 +16,16 @@ import { styled } from '@mui/material/styles';
 
 type BookCardProps = {
   book: Book,
-  onClick?: (value: number) => void,
 };
 
 
 export const BookCard = (props: BookCardProps) => {
-  const { book, onClick } = props;
+  const { book } = props;
 
   const navigate = useNavigate();
 
-  const handleBookClick = () => {
-    navigate('/product');
-    if (onClick) {
-      return onClick(book.id);
-    }
+  const handleBookClick = (id: string) => () => {
+    navigate(`/product/${id}`);
   };
 
   const handleIconButtonClick: MouseEventHandler<HTMLButtonElement> = (e) => {
@@ -46,7 +42,7 @@ export const BookCard = (props: BookCardProps) => {
       rowSpacing="30px"
     >
       <StyledCoverGrid
-        onClick={handleBookClick}
+        onClick={handleBookClick(String(book.id))}
         img={`http://localhost:3000/${book.media}`}
       >
         <StyledIconButton
@@ -58,7 +54,7 @@ export const BookCard = (props: BookCardProps) => {
       </StyledCoverGrid>
 
       <Grid rowSpacing="20px" container width="100%">
-        <Grid onClick={handleBookClick}>
+        <Grid onClick={handleBookClick(String(book.id))}>
           <Typography
             title={book.title}
             variant={'subtitle2'}

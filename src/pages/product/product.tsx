@@ -1,3 +1,4 @@
+import { BookCard } from '@common/book-card';
 import { HeartIcon } from '@common/icons/heart-icon';
 import { RatingArrowIcon } from '@common/icons/rating-arrow-icon';
 import { StarIcon } from '@common/icons/star-icon';
@@ -5,141 +6,186 @@ import { StyledButton } from '@common/styled-button';
 
 import {
   Box,
+  CircularProgress,
   Container,
   Grid,
+  type GridProps,
   IconButton,
   type IconButtonProps,
   Rating,
-  Typography} from '@mui/material';
+  Typography
+} from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { getBook } from '@redux/book/thunk';
+import { useAppDispatch, useAppSelector } from '@redux/hooks';
+import { useEffect } from 'react';
+import { useParams } from 'react-router';
 
 export const Product = () => {
+  const dispath = useAppDispatch();
+  const book = useAppSelector((state) => state.book);
+
+  const description = book.book.description.replace(/<br>\s*\/?>/gi, '\n');
+
+  const { id } = useParams();
+
+  useEffect(() => {
+    if (id) {
+      dispath(getBook(+id));
+    }
+  }, []);
+
   return (
     <main>
       <Container maxWidth="md">
-        <Grid
-          container
-          display="flex"
-          justifyContent="space-between"
-          padding="36px 0 60px 0"
-        >
-          <StyledCoverGrid /*img={`http://localhost:3000/${book.media}`}*/>
-            <StyledIconButton /*transparent={!book.isFavorite}*/>
-              <HeartIcon
-                fill="none" /*fill={book.isFavorite ? 'white' : 'none'}*/ />
-            </StyledIconButton>
-          </StyledCoverGrid>
-
-          <Grid
-            display="flex"
-            flexDirection="column"
-            gap="80px">
-            <Grid
-              container
-              display="flex"
-              flexDirection="column"
-              gap="30px"
-              sx={{ maxWidth: '630px', width: '100%' }}
-            >
-              <Grid>
-                <Typography variant="h1">milk and honey</Typography>
-                <Typography variant="h2" sx={{ fontSize: '24px' }}>Rupi
-                  Kaur</Typography>
-              </Grid>
-
-              <Grid container gap="40px" flexDirection="row">
-                <Grid display="flex" gap="14px">
-                  <StarIcon />
-                  <Typography
-                    variant="subtitle1"
-                    sx={{ fontWeight: '400', color: '#B9BAC3' }}
-                  >
-                    5.0
-                  </Typography>
-                </Grid>
-
-
-                <Grid>
-                  <StyledRating
-                    // value={0}
-                    precision={0.1}
-                    defaultValue={0}
-                    size="large"
-                  />
-                </Grid>
-
-                <Grid display="flex" gap="7px">
-                  <RatingArrowIcon />
-                  <Typography
-                    variant="subtitle1"
-                    sx={{ fontWeight: '400', color: '#B9BAC3' }}
-                  >
-                    Rate this book
-                  </Typography>
-                </Grid>
-              </Grid>
-
-              <Grid display="flex" flexDirection="column" gap="12px">
-                <Typography
-                  variant="h2"
-                  sx={{ fontSize: '24px' }}
+        {
+          book.loading
+            ? (
+              <StyledProgressBox>
+                <CircularProgress size={100} />
+              </StyledProgressBox>
+            ) : (
+              <>
+                <Grid
+                  container
+                  display="flex"
+                  justifyContent="space-between"
+                  padding="36px 0 60px 0"
                 >
-                  Description
-                </Typography>
-                <Typography variant="subtitle2" sx={{ fontSize: '16px' }}>
-                  “Rupi Kaur is the Writer of the Decade.” - The New Republic.
-                  <br />
-                  <br />
-                  #1 New York Times bestseller milk and honey is a collection of
-                  poetry and prose about survival. About the experience of
-                  violence, abuse, love, loss, and femininity.
-                  <br />
-                  <br />
-                  The book is divided into four chapters, and each chapter
-                  serves
-                  a different purpose. Deals with a different pain. Heals a
-                  different heartache. milk and honey takes readers through
-                  a journey of the most bitter moments in life and finds
-                  sweetness in them because there is sweetness everywhere
-                  if you are just willing to look.
-                </Typography>
-              </Grid>
-            </Grid>
-
-            <Grid>
-              <Box display="flex" gap="82px">
-                <Box display="flex" flexDirection="column" gap="14px">
-                  <Typography
-                    variant="subtitle2"
-                    fontSize="16px"
+                  <StyledCoverGrid
+                    img={`http://localhost:3000/${book.book.media}`}
                   >
-                    Paperback
-                  </Typography>
-                  <StyledButton
-                    disabled
-                    buttonHeight={50}
-                    sx={{ fontSize: '20px' }}
-                  >
-                    Not available
-                  </StyledButton>
-                </Box>
+                    <StyledIconButton /*transparent={!book.isFavorite}*/>
+                      <HeartIcon
+                        fill="none"
+                      /*fill={book.isFavorite ? 'white' : 'none'}*/
+                      />
+                    </StyledIconButton>
+                  </StyledCoverGrid>
 
-                <Box display="flex" flexDirection="column" gap="14px">
-                  <Typography
-                    variant="subtitle2"
-                    fontSize="16px"
-                  >
-                    Hardcover
-                  </Typography>
-                  <StyledButton buttonHeight={50} sx={{ fontSize: '20px' }}>
-                    $19.99 USD
-                  </StyledButton>
-                </Box>
-              </Box>
-            </Grid>
-          </Grid>
+                  <Grid
+                    display="flex"
+                    flexDirection="column"
+                    gap="80px">
+                    <Grid
+                      container
+                      display="flex"
+                      flexDirection="column"
+                      gap="30px"
+                      sx={{ maxWidth: '630px', width: '100%' }}
+                    >
+                      <Grid>
+                        <Typography variant="h1">{book.book.title}</Typography>
+                        <Typography variant="h2" sx={{ fontSize: '24px' }}>
+                          {book.book.author}
+                        </Typography>
+                      </Grid>
 
-        </Grid>
+                      <Grid container gap="40px" flexDirection="row">
+                        <Grid display="flex" gap="14px">
+                          <StarIcon />
+                          <Typography
+                            variant="subtitle1"
+                            sx={{ fontWeight: '400', color: '#B9BAC3' }}
+                          >
+                            {book.book.rating}
+                          </Typography>
+                        </Grid>
+
+
+                        <Grid>
+                          <StyledRating
+                            // value={0}
+                            precision={0.1}
+                            defaultValue={0}
+                            size="large"
+                          />
+                        </Grid>
+
+                        <Grid display="flex" gap="7px">
+                          <RatingArrowIcon />
+                          <Typography
+                            variant="subtitle1"
+                            sx={{ fontWeight: '400', color: '#B9BAC3' }}
+                          >
+                            Rate this book
+                          </Typography>
+                        </Grid>
+                      </Grid>
+
+                      <Grid display="flex" flexDirection="column" gap="12px">
+                        <Typography
+                          variant="h2"
+                          sx={{ fontSize: '24px' }}
+                        >
+                          Description
+                        </Typography>
+                        <Typography
+                          variant="subtitle2"
+                          sx={{ fontSize: '16px', whiteSpace: 'pre-wrap' }}
+                        >
+                          {description}
+                        </Typography>
+                      </Grid>
+                    </Grid>
+
+                    <Grid>
+                      <Box display="flex" gap="82px">
+                        <Box display="flex" flexDirection="column" gap="14px">
+                          <Typography
+                            variant="subtitle2"
+                            fontSize="16px"
+                          >
+                            Paperback
+                          </Typography>
+                          <StyledButton
+                            disabled
+                            buttonHeight={50}
+                            sx={{ fontSize: '20px' }}
+                          >
+                            Not available
+                          </StyledButton>
+                        </Box>
+
+                        <Box display="flex" flexDirection="column" gap="14px">
+                          <Typography
+                            variant="subtitle2"
+                            fontSize="16px"
+                          >
+                            Hardcover
+                          </Typography>
+                          <StyledButton
+                            buttonHeight={50}
+                            sx={{ fontSize: '20px' }}
+                          >
+                            $ {book.book.price} USD
+                          </StyledButton>
+                        </Box>
+                      </Box>
+                    </Grid>
+                  </Grid>
+
+                </Grid>
+
+                <StyledBox>
+                  <Typography variant="h1">Recommendations</Typography>
+
+                  <Grid
+                    container
+                    columnSpacing='20px'
+                  >
+                    {book.recommended.map((book) => (
+                      <BookCard
+                        key={book.id}
+                        book={book}
+                      />
+                    ))}
+                  </Grid>
+                </StyledBox>
+              </>
+            )
+        }
+
       </Container>
     </main>
   );
@@ -158,9 +204,12 @@ export const Product = () => {
 //   borderRadius: 16,
 // }));
 
-const StyledCoverGrid = styled(Grid)`
+const StyledCoverGrid = styled(
+  (props: GridProps) => <Grid {...props} />,
+  { shouldForwardProp: (prop) => prop !== 'img' }
+)<{ img?: string }>(({ img = 'src/assets/img/no-cover.webp' }) => `
   position: relative;
-  background-image: url('src/assets/img/book1.png');
+  background-image: url(${img});
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center center;
@@ -169,7 +218,7 @@ const StyledCoverGrid = styled(Grid)`
   max-width: 522px;
   width: 100%;
   height: 780px;
-`;
+`);
 
 const StyledIconButton = styled(
   (props: IconButtonProps) => <IconButton {...props} />,
@@ -179,9 +228,9 @@ const StyledIconButton = styled(
   right: 30,
   top: 30,
   opacity: transparent ? .75 : 1,
-  maxWidth: 48,
+  maxWidth: 60,
   width: '100%',
-  height: 48,
+  height: 60,
   backgroundColor: theme.palette.appColor.darkBlue,
 
   '&:hover': {
@@ -206,3 +255,17 @@ const StyledRating = styled(Rating)(({ theme }) => ({
     color: theme.palette.appColor.green
   }
 }));
+
+const StyledProgressBox = styled(Box)`
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  padding: 40px;
+`;
+
+const StyledBox = styled(Box)`
+  padding: 60px 0 80px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 60px;
+`;

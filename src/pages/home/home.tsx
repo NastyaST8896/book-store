@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { BookCard } from '@common/book-card';
-import { getBook } from '@redux/book/thunk.ts';
 import { setGenres, setPriceRange, setSortBy } from '@redux/books/slice.ts';
 import { getBooks } from '@redux/books/thunk.ts';
 import { useAppDispatch, useAppSelector } from '@redux/hooks.ts';
@@ -99,7 +98,6 @@ export const Home = () => {
                   <BookCard
                     key={book.id}
                     book={book}
-                    onClick={(id) => dispatch(getBook(id))}
                   />
                 ))}
               </StyledGrid>

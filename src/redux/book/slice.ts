@@ -1,7 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { getBook } from "./thunk";
+import type { Book } from "@utils/types";
 
- export type BookState = {
+  type BookState = {
   loading: boolean;
   book: {
     id: number;
@@ -12,12 +13,23 @@ import { getBook } from "./thunk";
     media?: string;
     isFavorite?: boolean;
     description: string;
-  } | null;
-}
+  };
+  recommended: Book[];
+};
 
 const initialState: BookState = {
   loading: false,
-  book: null,
+  book: {
+    id: 0,
+    title: '',
+    author: '',
+    price: '',
+    rating: 0,
+    media: '',
+    isFavorite: false,
+    description: '',
+  },
+  recommended: [],
 }
 
   export const bookSlice = createSlice({
@@ -39,7 +51,8 @@ const initialState: BookState = {
             rating: action.payload.rating,
             media: action.payload.media,
             description: action.payload.description,
-          }
+          };
+          state.recommended = action.payload.recommended;
         })
         .addCase(getBook.rejected, (state) => {
           state.loading = false;

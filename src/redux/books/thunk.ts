@@ -5,6 +5,9 @@ import { IN_APP_ROUTES } from '@utils/routes';
 import type { Book, Genre } from '@utils/types';
 
 
+
+
+
 export const getBooks = createAsyncThunk<
   {
     books: Book[],
@@ -24,10 +27,9 @@ export const getBooks = createAsyncThunk<
 >(
   IN_APP_ROUTES.getBooks.pathName,
   async ({ page, genres, maxPrice, minPrice, sortBy }, { rejectWithValue }) => {
-    try {
-      return await getBooksApi(page, genres, maxPrice, minPrice, sortBy);
-    } catch (error) {
-      return rejectWithValue(error);
-    }
+
+      const response = await getBooksApi(page, genres, maxPrice, minPrice, sortBy);
+
+
   }
 );

@@ -1,6 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import type { RootState } from "@redux/store.ts";
 import { getBookApi } from "./api";
+import type { Book } from "@utils/types";
 
 export const getBook = createAsyncThunk<
   {
@@ -12,6 +13,7 @@ export const getBook = createAsyncThunk<
     media?: string;
     isFavorite?: boolean;
     description: string;
+    recommended: Book[];
   },
   number,
   { state: RootState }
@@ -19,8 +21,6 @@ export const getBook = createAsyncThunk<
   'book/id',
   async (id, { rejectWithValue }) => {
     try {
-      console.log('>>id', id);
-      console.log('>> typof', typeof id)
       return getBookApi(String(id));
     } catch (error) {
       return rejectWithValue(error);
