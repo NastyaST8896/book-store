@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { ArrowIcon } from '@common/icons/arrow-icon.tsx';
 import { RightArrowIcon } from '@common/icons/right-arrow-icon.tsx';
 import { StyledFilterButton } from '@common/styled-filter-button.tsx';
+import { api } from '@redux/api';
+import type { CommonResponseType } from '@utils/types';
 
 import {
   Box,
@@ -12,8 +14,6 @@ import {
   Typography
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { api } from '@redux/api';
-import type { CommonResponseType } from '@redux/books/api';
 
 type PriceRangeFilterProps = {
   onClose?: (value: number[]) => void;
@@ -35,17 +35,18 @@ export const PriceRangeFilter = (props: PriceRangeFilterProps) => {
     setAnchorPriceEl
   ] = React.useState<HTMLElement | null>(null);
 
-   useEffect(() => {
+  useEffect(() => {
     const getMaxPrice = async () => {
       const response = await api.get<CommonResponseType<{ maxPrice: number }>>
-        ('/books/maxPrice');
+      ('/books/maxPrice');
 
       setMaxPrice(response.data.data.maxPrice);
     };
 
     getMaxPrice();
 
-    setPriceValue([0, maxPrice])
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setPriceValue([0, maxPrice]);
   }, []);
 
   const handlePriceButtonClick: ButtonProps['onClick'] = (event) => {
@@ -165,7 +166,7 @@ const StyledSlider = styled(Slider)(({ theme }) => `
 `);
 
 const StyledBox = styled(Box)`
-  display: flex; 
+  display: flex;
   justify-content: space-between;
 `;
 

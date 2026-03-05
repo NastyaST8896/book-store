@@ -1,7 +1,6 @@
 import { getBooks } from '@redux/books/thunk.ts';
 import { createSlice } from '@reduxjs/toolkit';
-import type { Book } from '@utils/types.ts';
-import type { PaginationType } from './api';
+import type { Book, PaginationType } from '@utils/types';
 
 type BooksState = {
   isLoading: boolean;

@@ -4,7 +4,8 @@ import { CheckedIcon } from '@common/icons/checked-icon.tsx';
 import { DefaultCheckIcon } from '@common/icons/default-check-icon.tsx';
 import { RightArrowIcon } from '@common/icons/right-arrow-icon.tsx';
 import { StyledFilterButton } from '@common/styled-filter-button.tsx';
-import type { Genre } from '@utils/types.ts';
+import { api } from '@redux/api';
+import type { CommonResponseType, Genre } from '@utils/types.ts';
 
 import {
   type ButtonProps,
@@ -17,8 +18,6 @@ import {
   Popover
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { api } from '@redux/api';
-import { type CommonResponseType } from '@redux/books/api';
 
 type GenresFilterProps = {
   onClose?: (value: string[]) => void;
@@ -57,15 +56,15 @@ export const GenresFilter = (props: GenresFilterProps) => {
   useEffect(() => {
     const getGenres = async () => {
       const response = await api.get<CommonResponseType<{ allGenres: Genre[] }>>
-        (
-          '/books/genres'
-        );
+      (
+        '/books/genres'
+      );
 
       setGenres(response.data.data.allGenres);
     };
 
     getGenres();
-  }, [])
+  }, []);
 
   const handleGenresButtonClick: ButtonProps['onClick'] = (event) => {
     setAnchorGenresEl(event.currentTarget);

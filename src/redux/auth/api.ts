@@ -1,19 +1,18 @@
 import { IN_APP_ROUTES } from '@utils/routes';
 import type {
+  CommonResponseType,
   UserDataPayload,
   UserNamePayload,
-  UserPasswordPayload
+  UserPasswordPayload,
 } from '@utils/types';
 
 import { api } from '../api';
 
 export const register = async (userData: UserDataPayload) => {
-  const response = await api.post(
+  await api.post<CommonResponseType<void>>(
     IN_APP_ROUTES.register.path,
     userData
   );
-
-  return response.data;
 };
 
 export const login = async (userData: UserDataPayload) => {

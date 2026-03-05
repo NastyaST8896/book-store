@@ -9,7 +9,8 @@ import {
   getUserAvatar,
   getUserInfo,
   loginUser,
-  registerUser} from './thunk';
+  registerUser
+} from './thunk';
 
 type AuthState = {
   isLoading: boolean;
@@ -75,7 +76,6 @@ export const authSlice = createSlice({
         state.isLoading = false;
         state.user = null;
       })
-
       // refreshTokenUser
       // .addCase(refreshTokenUser.fulfilled, (_, action) => {
       //   localStorage.setItem('accessToken', action.payload.accessToken);

@@ -43,3 +43,25 @@ export type Genre = {
   id: number,
   name: string,
 };
+
+export type CommonResponseType<D, M = unknown> = {
+  data: D;
+  meta?: M;
+};
+
+export type PaginationType = {
+  perPage: number;
+  currentPage: number;
+  nextPage: number | null;
+  prevPage: number | null;
+  totalPages: number;
+  totalAmount: number;
+};
+
+export type BooksApiParams = {
+  page: number,
+  genres?: string[],
+  maxPrice?: number,
+  minPrice?: number,
+  sortBy?: string,
+};

@@ -23,8 +23,6 @@ import { FreeBook } from './elements';
 export const Home = () => {
   const books = useAppSelector((state) => state.books);
 
-  console.log(books.pagination)
-
   const [page, setPage] = useState(1);
   const dispatch = useAppDispatch();
 

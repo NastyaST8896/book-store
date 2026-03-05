@@ -1,7 +1,7 @@
 import { IN_APP_ROUTES } from '@utils/routes';
 import axios from 'axios';
 
-import { refreshTokenUser } from './auth/api';
+// import { refreshTokenUser } from './auth/api';
 
 export const api = axios.create({
   baseURL: 'http://localhost:3000',
