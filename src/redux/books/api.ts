@@ -1,21 +1,20 @@
 import { api } from '@redux/api.ts';
 import { IN_APP_ROUTES } from '@utils/routes.ts';
 import type { Book } from '@utils/types';
-import type { AxiosResponse } from 'axios';
 
-type CommonResponseType<D, M = unknown> = {
+export type CommonResponseType<D, M = unknown> = {
   data: D;
   meta?: M;
 }
 
-type PaginationType = {
+export type PaginationType = {
   perPage: number;
   currentPage: number;
   nextPage: number | null;
   prevPage: number | null;
-  totalPage: number;
+  totalPages: number;
   totalAmount: number;
-} 
+}
 
 
 export const getBooksApi = async (
@@ -25,30 +24,22 @@ export const getBooksApi = async (
   minPrice?: number,
   sortBy?: string,
 ) => {
-  const params = new URLSearchParams();
 
-  params.append('page', String(page));
-
-  if (genres?.length) {
-    params.append('genres', genres.join(','));
-  }
-
-  if (maxPrice) {
-    params.append('maxPrice', String(maxPrice));
-  }
-
-  if (minPrice) {
-    params.append('minPrice', String(minPrice));
-  }
-
-  if (sortBy) {
-    params.append('sortBy', sortBy);
-  }
-
-  const response = await api.get<AxiosResponse<CommonResponseType<Book[], PaginationType>>>(
+  const response = await api.get<
+   CommonResponseType<{ books: Book[] }, { pagination: PaginationType }>
+  >(
     IN_APP_ROUTES.getBooks.path,
-    { params }
+    {
+      params: {
+        page: String(page),
+        genres: genres?.length && genres.join(','),
+        maxPrice,
+        minPrice,
+        sortBy
+      }
+    }
   );
+
 
   return response.data;
 };
@@ -97,7 +88,7 @@ const salary = calculateSalary(
 
 const salary2 = calculateSalary2({
   exactlyMonth: 1,
-  company:  'AAA Group',
+  company: 'AAA Group',
   months: 13,
   user: 'Alex',
   yearFrom: '1989',

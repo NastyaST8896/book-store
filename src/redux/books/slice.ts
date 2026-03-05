@@ -1,29 +1,35 @@
 import { getBooks } from '@redux/books/thunk.ts';
 import { createSlice } from '@reduxjs/toolkit';
-import type { Book, Genre } from '@utils/types.ts';
+import type { Book } from '@utils/types.ts';
+import type { PaginationType } from './api';
 
 type BooksState = {
-  loading: boolean;
+  isLoading: boolean;
   books: Book[];
   activeFilters: {
     genres?: string[];
     priceRange?: [number, number];
     sortBy?: string;
   } | null;
-  totalPages: number;
-  minPrice: number;
-  maxPrice: number;
-  genres: Genre[];
+  pagination: PaginationType;
+  // maxPrice: number;
+  // genres: Genre[];
 };
 
 const initialState: BooksState = {
-  loading: false,
+  isLoading: false,
   books: [],
   activeFilters: null,
-  totalPages: 1,
-  minPrice: 0,
-  maxPrice: Infinity,
-  genres: []
+  pagination: {
+    perPage: 8,
+    currentPage: 1,
+    nextPage: null,
+    prevPage: null,
+    totalPages: 1,
+    totalAmount: 0
+  },
+  // maxPrice: Infinity,
+  // genres: []
 };
 
 export const booksSlice = createSlice({
@@ -54,18 +60,17 @@ export const booksSlice = createSlice({
     builder
       // getBooks
       .addCase(getBooks.pending, (state) => {
-        state.loading = true;
+        state.isLoading = true;
       })
       .addCase(getBooks.fulfilled, (state, action) => {
-        state.loading = false;
+        state.isLoading = false;
         state.books = action.payload.books;
-        state.totalPages = action.payload.totalPages;
-        state.minPrice = action.payload.minPrice;
-        state.maxPrice = action.payload.maxPrice;
-        state.genres = action.payload.genres;
+        if(action.payload.pagination) {
+          state.pagination = action.payload.pagination;
+        };
       })
       .addCase(getBooks.rejected, (state) => {
-        state.loading = false;
+        state.isLoading = false;
       });
   },
 });

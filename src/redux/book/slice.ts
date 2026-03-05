@@ -3,7 +3,7 @@ import { getBook } from "./thunk";
 import type { Book } from "@utils/types";
 
   type BookState = {
-  loading: boolean;
+  isLoading: boolean;
   book: {
     id: number;
     title: string;
@@ -18,7 +18,7 @@ import type { Book } from "@utils/types";
 };
 
 const initialState: BookState = {
-  loading: false,
+  isLoading: false,
   book: {
     id: 0,
     title: '',
@@ -39,10 +39,10 @@ const initialState: BookState = {
     extraReducers: (builder) => {
       builder
         .addCase(getBook.pending, (state) => {
-          state.loading = true;
+          state.isLoading = true;
         })
         .addCase(getBook.fulfilled, (state, action) => {
-          state.loading = false;
+          state.isLoading = false;
           state.book = {
             id: action.payload.id,
             title: action.payload.title,
@@ -55,7 +55,7 @@ const initialState: BookState = {
           state.recommended = action.payload.recommended;
         })
         .addCase(getBook.rejected, (state) => {
-          state.loading = false;
+          state.isLoading = false;
         });
     }
   });

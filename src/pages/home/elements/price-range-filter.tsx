@@ -12,33 +12,41 @@ import {
   Typography
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { api } from '@redux/api';
+import type { CommonResponseType } from '@redux/books/api';
 
 type PriceRangeFilterProps = {
   onClose?: (value: number[]) => void;
-  minPrice: number;
-  maxPrice: number;
 };
 
 export const PriceRangeFilter = (props: PriceRangeFilterProps) => {
   const {
-    minPrice,
-    maxPrice,
     onClose
   } = props;
 
-  const [priceValue, setPriceValue] = useState([minPrice, maxPrice]);
-  const [startValue, setStartValue] = useState([minPrice, maxPrice]);
+  const [maxPrice, setMaxPrice] = useState(Infinity);
 
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setPriceValue([minPrice, maxPrice]);
-  }, [minPrice, maxPrice]);
+  const [priceValue, setPriceValue] = useState([0, Infinity]);
+  const [startValue, setStartValue] = useState([0, Infinity]);
 
   const [isActive, setIsActive] = useState(false);
   const [
     anchorPriceEl,
     setAnchorPriceEl
   ] = React.useState<HTMLElement | null>(null);
+
+   useEffect(() => {
+    const getMaxPrice = async () => {
+      const response = await api.get<CommonResponseType<{ maxPrice: number }>>
+        ('/books/maxPrice');
+
+      setMaxPrice(response.data.data.maxPrice);
+    };
+
+    getMaxPrice();
+
+    setPriceValue([0, maxPrice])
+  }, []);
 
   const handlePriceButtonClick: ButtonProps['onClick'] = (event) => {
     setAnchorPriceEl(event.currentTarget);
@@ -54,7 +62,7 @@ export const PriceRangeFilter = (props: PriceRangeFilterProps) => {
 
   const marks = [
     {
-      value: minPrice,
+      value: 0,
       label: '',
     },
     {
@@ -94,7 +102,7 @@ export const PriceRangeFilter = (props: PriceRangeFilterProps) => {
           valueLabelDisplay="off"
           step={0.1}
           marks={marks}
-          min={minPrice}
+          min={0}
           max={maxPrice}
         />
 

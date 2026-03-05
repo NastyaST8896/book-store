@@ -39,7 +39,7 @@ export const Product = () => {
     <main>
       <Container maxWidth="md">
         {
-          book.loading
+          book.isLoading
             ? (
               <StyledProgressBox>
                 <CircularProgress size={100} />

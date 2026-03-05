@@ -19,11 +19,5 @@ export const getBook = createAsyncThunk<
   { state: RootState }
 >(
   'book/id',
-  async (id, { rejectWithValue }) => {
-    try {
-      return getBookApi(String(id));
-    } catch (error) {
-      return rejectWithValue(error);
-    }
-  }
+  async (id) => getBookApi(String(id))
 );

@@ -1,35 +1,32 @@
-import { getBooksApi } from '@redux/books/api.ts';
+import { getBooksApi, type PaginationType } from '@redux/books/api.ts';
 import type { RootState } from '@redux/store.ts';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { IN_APP_ROUTES } from '@utils/routes';
-import type { Book, Genre } from '@utils/types';
-
-
-
-
+import type { Book } from '@utils/types';
 
 export const getBooks = createAsyncThunk<
   {
     books: Book[],
-    totalPages: number,
-    genres: Genre[],
-    maxPrice: number,
-    minPrice: number,
+    pagination?: PaginationType
+    // genres: Genre[],
+    // maxPrice: number,
   },
   {
     page: number,
-    genres?: string[], 
+    genres?: string[],
     maxPrice?: number,
     minPrice?: number,
-    sortBy?: string, 
+    sortBy?: string,
   },
   { state: RootState }
 >(
   IN_APP_ROUTES.getBooks.pathName,
-  async ({ page, genres, maxPrice, minPrice, sortBy }, { rejectWithValue }) => {
+  async ({ page, genres, maxPrice, minPrice, sortBy }) => {
 
-      const response = await getBooksApi(page, genres, maxPrice, minPrice, sortBy);
-
-
+    const result = await getBooksApi(page, genres, maxPrice, minPrice, sortBy);
+    return {
+      books: result.data.books,
+      pagination: result.meta?.pagination
+    }
   }
 );

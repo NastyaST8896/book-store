@@ -140,7 +140,7 @@ export const Register = () => {
               />
             </StyledFormInputBox>
 
-            <StyledButton type="submit" disabled={auth.loading}>
+            <StyledButton type="submit" disabled={auth.isLoading}>
               Sign Up
             </StyledButton>
           </StyledFormBox>

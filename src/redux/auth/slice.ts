@@ -12,13 +12,13 @@ import {
   registerUser} from './thunk';
 
 type AuthState = {
-  loading: boolean;
+  isLoading: boolean;
   user: Nullable<Omit<UserType, 'id' | 'password'>>;
   avatar: string | null;
 };
 
 const initialState: AuthState = {
-  loading: false,
+  isLoading: false,
   user: null,
   avatar: null
 };
@@ -31,21 +31,21 @@ export const authSlice = createSlice({
     builder
       // registerUser
       .addCase(registerUser.pending, (state) => {
-        state.loading = true;
+        state.isLoading = true;
       })
       .addCase(registerUser.fulfilled, (state) => {
-        state.loading = false;
+        state.isLoading = false;
       })
       .addCase(registerUser.rejected, (state) => {
-        state.loading = false;
+        state.isLoading = false;
       })
 
       // loginUser
       .addCase(loginUser.pending, (state) => {
-        state.loading = true;
+        state.isLoading = true;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
-        state.loading = false;
+        state.isLoading = false;
         state.user = {
           email: action.payload.user.email,
           fullName: action.payload.user.fullName || ''
@@ -55,15 +55,15 @@ export const authSlice = createSlice({
         localStorage.setItem('refreshToken', action.payload.refreshToken);
       })
       .addCase(loginUser.rejected, (state) => {
-        state.loading = false;
+        state.isLoading = false;
       })
 
       // checkAuthUser
       .addCase(checkAuthUser.pending, (state) => {
-        state.loading = true;
+        state.isLoading = true;
       })
       .addCase(checkAuthUser.fulfilled, (state, action) => {
-        state.loading = false;
+        state.isLoading = false;
         if (!state.user?.fullName || !state.user?.email) {
           state.user = {
             fullName: action.payload?.fullName || '',
@@ -72,7 +72,7 @@ export const authSlice = createSlice({
         }
       })
       .addCase(checkAuthUser.rejected, (state) => {
-        state.loading = false;
+        state.isLoading = false;
         state.user = null;
       })
 
@@ -86,60 +86,60 @@ export const authSlice = createSlice({
 
       // changeUserName
       .addCase(changeUserName.pending, (state) => {
-        state.loading = true;
+        state.isLoading = true;
       })
       .addCase(changeUserName.fulfilled, (state, action) => {
-        state.loading = false;
+        state.isLoading = false;
         state.user = {
           email: state.user?.email || '',
           fullName: action.payload.fullName
         };
       })
       .addCase(changeUserName.rejected, (state) => {
-        state.loading = false;
+        state.isLoading = false;
       })
 
       // changeUserPassword
       .addCase(changeUserPassword.pending, (state) => {
-        state.loading = true;
+        state.isLoading = true;
       })
       .addCase(changeUserPassword.fulfilled, (state) => {
-        state.loading = false;
+        state.isLoading = false;
       })
       .addCase(changeUserPassword.rejected, (state) => {
-        state.loading = false;
+        state.isLoading = false;
       })
 
       // changeUserAvatar
       .addCase(changeUserAvatar.pending, (state) => {
-        state.loading = true;
+        state.isLoading = true;
       })
       .addCase(changeUserAvatar.fulfilled, (state, action) => {
-        state.loading = false;
+        state.isLoading = false;
         state.avatar = action.payload.avatar;
       })
       .addCase(changeUserAvatar.rejected, (state) => {
-        state.loading = false;
+        state.isLoading = false;
       })
 
       // getUserAvatar
       .addCase(getUserAvatar.pending, (state) => {
-        state.loading = true;
+        state.isLoading = true;
       })
       .addCase(getUserAvatar.fulfilled, (state) => {
-        state.loading = false;
+        state.isLoading = false;
         // state.avatar = action.payload.
       })
       .addCase(getUserAvatar.rejected, (state) => {
-        state.loading = false;
+        state.isLoading = false;
       })
 
       // getUserInfo
       .addCase(getUserInfo.pending, (state) => {
-        state.loading = true;
+        state.isLoading = true;
       })
       .addCase(getUserInfo.fulfilled, (state, action) => {
-        state.loading = false;
+        state.isLoading = false;
         state.user = {
           email: action.payload.email,
           fullName: action.payload.fullName,
@@ -147,7 +147,7 @@ export const authSlice = createSlice({
         state.avatar = action.payload.avatar;
       })
       .addCase(getUserInfo.rejected, (state) => {
-        state.loading = false;
+        state.isLoading = false;
       });
   }
 });

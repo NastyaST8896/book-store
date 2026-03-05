@@ -23,6 +23,8 @@ import { FreeBook } from './elements';
 export const Home = () => {
   const books = useAppSelector((state) => state.books);
 
+  console.log(books.pagination)
+
   const [page, setPage] = useState(1);
   const dispatch = useAppDispatch();
 
@@ -61,15 +63,12 @@ export const Home = () => {
           <Grid container spacing="20px" size={8}>
             <Grid size={4}>
               <GenresFilter
-                genres={books.genres}
                 onClose={(genres) => dispatch(setGenres(genres))}
               />
             </Grid>
 
             <Grid size={4}>
               <PriceRangeFilter
-                minPrice={books.minPrice}
-                maxPrice={books.maxPrice}
                 onClose={(priceRange) => dispatch(setPriceRange(priceRange))}
               />
             </Grid>
@@ -83,7 +82,7 @@ export const Home = () => {
         </Grid>
 
         {
-          books.loading
+          books.isLoading
             ? (
               <StyledProgressBox>
                 <CircularProgress size={100} />
@@ -107,7 +106,7 @@ export const Home = () => {
         <StyledPaginationBox>
           <StyledPagination
             color="secondary"
-            count={books.totalPages}
+            count={books.pagination.totalPages}
             page={page}
             onChange={handlePaginationChange}
           />

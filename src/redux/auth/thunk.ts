@@ -29,41 +29,24 @@ export const registerUser = createAsyncThunk<
   void, UserDataPayload
 >(
   IN_APP_ROUTES.register.pathName,
-  async (userData, { rejectWithValue }) => {
-    try {
-      return await register(userData);
-    } catch (error) {
-      return rejectWithValue(error);
-    }
-  },
+  async (userData) => await register(userData)
 );
+
 
 export const loginUser = createAsyncThunk<
   LoginUserResponseType,
   UserDataPayload
 >(
   IN_APP_ROUTES.login.pathName,
-  async (userData, { rejectWithValue }) => {
-    try {
-
-      return login(userData);
-    } catch (error) {
-      return rejectWithValue(error);
-    }
-  },
+  async (userData) => login(userData)
 );
+
 
 export const checkAuthUser = createAsyncThunk<
   { fullName: string; email: string }, void, { state: RootState }
 >(
   IN_APP_ROUTES.checkAuth.pathName,
-  async (_, { rejectWithValue }) => {
-    try {
-      return checkAuth();
-    } catch (error) {
-      return rejectWithValue(error);
-    }
-  },
+  async (_) => checkAuth()
 );
 
 // export const refreshTokenUser = createAsyncThunk<
@@ -106,14 +89,7 @@ export const getUserInfo = createAsyncThunk<
   { state: RootState }
 >(
   IN_APP_ROUTES.getInfo.pathName,
-  async (_, { rejectWithValue }) => {
-    try {
-      return await getInfo();
-    } catch (error) {
-      return rejectWithValue(error);
-    }
-
-  }
+  async (_) => await getInfo()
 );
 
 export const changeUserName = createAsyncThunk<
@@ -122,11 +98,9 @@ export const changeUserName = createAsyncThunk<
   { state: RootState }
 >(
   IN_APP_ROUTES.changeName.pathName,
-  async (userData) => {
-
-    return await changeName(userData);
-  },
+  async (userData) => await changeName(userData)
 );
+
 
 export const changeUserPassword = createAsyncThunk<
   { status: string },
@@ -134,11 +108,9 @@ export const changeUserPassword = createAsyncThunk<
   { state: RootState }
 >(
   IN_APP_ROUTES.changePassword.pathName,
-  async (userData) => {
-
-    return changePassword(userData);
-  },
+  async (userData) => changePassword(userData)
 );
+
 
 export const changeUserAvatar = createAsyncThunk<
   { avatar: string },
@@ -169,11 +141,5 @@ export const getUserAvatar = createAsyncThunk<
   { state: RootState }
 >(
   IN_APP_ROUTES.getAvatar.pathName,
-  async (_, { rejectWithValue }) => {
-    try {
-      return getAvatar();
-    } catch (error) {
-      return rejectWithValue(error);
-    }
-  }
+  async (_) => getAvatar()
 );

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ArrowIcon } from '@common/icons/arrow-icon.tsx';
 import { CheckedIcon } from '@common/icons/checked-icon.tsx';
 import { DefaultCheckIcon } from '@common/icons/default-check-icon.tsx';
@@ -17,9 +17,10 @@ import {
   Popover
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { api } from '@redux/api';
+import { type CommonResponseType } from '@redux/books/api';
 
 type GenresFilterProps = {
-  genres: Genre[];
   onClose?: (value: string[]) => void;
 };
 
@@ -36,7 +37,9 @@ function isSameArray(startCheckedGenres: string[], checkedGenres: string[]) {
 }
 
 export const GenresFilter = (props: GenresFilterProps) => {
-  const { genres, onClose } = props;
+  const { onClose } = props;
+
+  const [genres, setGenres] = useState<Genre[]>([]);
 
   const [isActive, setIsActive] = useState(false);
   const [
@@ -46,7 +49,23 @@ export const GenresFilter = (props: GenresFilterProps) => {
 
   const [checkedGenres, setCheckedGenres] = React.useState<string[]>([]);
 
-  const [startCheckedGenres, setStartCheckedGenres] = React.useState<string[]>([]);
+  const [
+    startCheckedGenres,
+    setStartCheckedGenres
+  ] = React.useState<string[]>([]);
+
+  useEffect(() => {
+    const getGenres = async () => {
+      const response = await api.get<CommonResponseType<{ allGenres: Genre[] }>>
+        (
+          '/books/genres'
+        );
+
+      setGenres(response.data.data.allGenres);
+    };
+
+    getGenres();
+  }, [])
 
   const handleGenresButtonClick: ButtonProps['onClick'] = (event) => {
     setAnchorGenresEl(event.currentTarget);
