@@ -34,7 +34,7 @@ export const Home = () => {
     console.log(searchParams)
     dispatch(getBooks({
       page,
-      genres: searchParams.getAll('genres'),
+      genres: searchParams.has('genres') ? searchParams.getAll('genres') : undefined,
       minPrice: Number(searchParams.get('minPrice')),
       maxPrice: Number(searchParams.get('maxPrice')),
       sortBy: String(searchParams.get('sortId')),
