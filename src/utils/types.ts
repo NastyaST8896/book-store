@@ -9,6 +9,14 @@ export type UserType = {
 
 export type UserDataPayload = Pick<UserType, 'email' | 'password'>;
 
+export type UserCheck = Pick<UserType, 'email' | 'fullName'>;
+
+export type UserRegister = Pick<UserType, 'email' | 'id'>;
+
+export type UserWidthAvatar = UserCheck & {
+  avatar: string,
+}
+
 export type UserNamePayload = Pick<UserType, 'fullName'>;
 
 export type RegisterFormType = {
@@ -27,7 +35,9 @@ export type ProfileFormType = {
   repeatPassword: string;
 };
 
-export type UserPasswordPayload = Pick<ProfileFormType, 'oldPassword' | 'newPassword'>;
+export type UserPasswordPayload = Pick<
+  ProfileFormType, 'oldPassword' | 'newPassword'
+>;
 
 export type Book = {
   id: number;
@@ -38,6 +48,10 @@ export type Book = {
   media: string;
   isFavorite?: boolean;
 };
+
+export type BookProfile = Book & {
+  description: string;
+} | null;
 
 export type Genre = {
   id: number,

@@ -1,6 +1,11 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { IN_APP_ROUTES } from '@utils/routes';
-import type { UserType } from '@utils/types';
+import type { 
+  UserCheck, 
+  UserRegister, 
+  UserType, 
+  UserWidthAvatar 
+} from '@utils/types';
 import type { Nullable, UserDataPayload } from '@utils/types';
 
 import type { RootState } from '../store.ts';
@@ -10,13 +15,12 @@ import {
   changeName,
   changePassword,
   checkAuth,
-  getAvatar,
   getInfo,
   login,
   register
-} from './api.ts';
+} from '../../api/auth-api.ts';
 
-type LoginUserResponseType = {
+export type LoginUserResponseType = {
   accessToken: string;
   refreshToken: string;
   user: Pick<UserType, 'email'> & {
@@ -26,27 +30,52 @@ type LoginUserResponseType = {
 };
 
 export const registerUser = createAsyncThunk<
-  void, UserDataPayload
+  UserRegister, UserDataPayload
 >(
   IN_APP_ROUTES.register.pathName,
-  async (userData) => await register(userData)
+  async (userData) => {
+    const result = await register(userData);
+
+    return result.data.user
+  }
 );
 
 
 export const loginUser = createAsyncThunk<
-  LoginUserResponseType,
+  {
+    accessToken: string,
+    refreshToken: string,
+    user: Pick<UserType, 'email'> & {
+      fullName: Nullable<string>,
+      avatar: Nullable<string>
+    }
+  },
   UserDataPayload
 >(
   IN_APP_ROUTES.login.pathName,
-  async (userData) => login(userData)
+  async (userData) => {
+    const result = await login(userData);
+
+    return {
+      user: result.data.params.user,
+      accessToken: result.data.params.accessToken,
+      refreshToken: result.data.params.refreshToken
+    }
+  }
 );
 
 
 export const checkAuthUser = createAsyncThunk<
-  { fullName: string; email: string }, void, { state: RootState }
+  { user: UserCheck }, void, { state: RootState }
 >(
   IN_APP_ROUTES.checkAuth.pathName,
-  async (_) => checkAuth()
+  async (_) => {
+    const result = await checkAuth();
+
+    return {
+      user: result.data.user
+    }
+  }
 );
 
 // export const refreshTokenUser = createAsyncThunk<
@@ -84,43 +113,59 @@ export const checkAuthUser = createAsyncThunk<
 // };
 
 export const getUserInfo = createAsyncThunk<
-  { fullName: string, email: string, avatar: string },
+  { user: UserWidthAvatar },
   void,
   { state: RootState }
 >(
   IN_APP_ROUTES.getInfo.pathName,
-  async (_) => await getInfo()
+  async (_) => {
+    const result = await getInfo();
+
+    return {
+      user: result.data.user,
+    }
+  }
 );
 
 export const changeUserName = createAsyncThunk<
-  { fullName: string },
+  { user: UserCheck },
   { fullName: string },
   { state: RootState }
 >(
   IN_APP_ROUTES.changeName.pathName,
-  async (userData) => await changeName(userData)
+  async (userData) => {
+    const result = await changeName(userData);
+
+    return {
+      user: result.data.user
+    }
+  }
 );
 
 
 export const changeUserPassword = createAsyncThunk<
-  { status: string },
+  string,
   { oldPassword: string, newPassword: string },
   { state: RootState }
 >(
   IN_APP_ROUTES.changePassword.pathName,
-  async (userData) => changePassword(userData)
+  async (userData) => {
+    const result = await changePassword(userData);
+
+    return result
+  }
 );
 
 
 export const changeUserAvatar = createAsyncThunk<
-  { avatar: string },
+  string,
   { file: File },
   { state: RootState }
 >(
   IN_APP_ROUTES.changeAvatar.pathName,
   async ({ file }) => {
 
-    if (!file) return;
+    if (!file) return "";
 
 
     const formData = new FormData();
@@ -131,15 +176,8 @@ export const changeUserAvatar = createAsyncThunk<
       console.log(key, value);
     }
 
-    return changeAvatar(formData);
-  }
-);
+    const result = await changeAvatar(formData);
 
-export const getUserAvatar = createAsyncThunk<
-  void,
-  { avatar: File },
-  { state: RootState }
->(
-  IN_APP_ROUTES.getAvatar.pathName,
-  async (_) => getAvatar()
+    return result.data.avatar
+  }
 );

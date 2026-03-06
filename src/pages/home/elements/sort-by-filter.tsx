@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ArrowIcon } from '@common/icons/arrow-icon';
 import { RightArrowIcon } from '@common/icons/right-arrow-icon';
 import { StyledFilterButton } from '@common/styled-filter-button';
@@ -12,6 +12,7 @@ import {
   Popover
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { useSearchParams } from 'react-router';
 
 type SortByFilterProps = {
   onClose?: (value: string) => void
@@ -20,7 +21,15 @@ type SortByFilterProps = {
 export const SortByFilter = (props: SortByFilterProps) => {
   const { onClose } = props;
 
-  const sortNames = ['Price', 'Name', 'Author name', 'Rating', 'Date of issue'];
+  const [searchParams] = useSearchParams();
+
+  const sortNames = [
+    {id: 1, name: 'Price'},
+    {id: 2, name: 'Name'},
+    {id: 3, name: 'Author name'},
+    {id: 4, name: 'Rating'},
+    {id: 5, name: 'Date of issue'},
+  ];
   const [isActive, setIsActive] = useState(false);
 
   const [startName, setStartName] = useState('');
@@ -31,6 +40,15 @@ export const SortByFilter = (props: SortByFilterProps) => {
     anchorSortByEl,
     setAnchorSortByEl
   ] = React.useState<HTMLElement | null>(null);
+
+  useEffect(() => {
+      const active = searchParams.get('sortId');
+
+      const activeName = sortNames
+      .find((sort) => sort.id === Number(active))?.name;
+      if(activeName)
+      setCurrentName(activeName);
+    }, []);
 
   const handleSortByButtonClick: ButtonProps['onClick'] = (event) => {
     setAnchorSortByEl(event.currentTarget);
@@ -43,7 +61,10 @@ export const SortByFilter = (props: SortByFilterProps) => {
     setIsActive(false);
 
     if (onClose && startName !== currentName) {
-      onClose(currentName);
+
+      const currentSort = sortNames.find((sort) => sort.name === currentName);
+      const currentId = String(currentSort?.id) as string
+      onClose(currentId);
     }
   };
 
@@ -72,13 +93,13 @@ export const SortByFilter = (props: SortByFilterProps) => {
             <ListItem key={index} disablePadding>
               <ListItemButton
                 role={undefined}
-                onClick={handleItemClick(name)}
+                onClick={handleItemClick(name.name)}
                 dense
               >
                 {
-                  currentName === name
-                    ? <StyledListItemText primary={name} />
-                    : <ListItemText primary={name} />
+                  currentName === name.name
+                    ? <StyledListItemText primary={name.name} />
+                    : <ListItemText primary={name.name} />
                 }
               </ListItemButton>
             </ListItem>

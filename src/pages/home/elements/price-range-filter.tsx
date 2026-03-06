@@ -2,8 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { ArrowIcon } from '@common/icons/arrow-icon.tsx';
 import { RightArrowIcon } from '@common/icons/right-arrow-icon.tsx';
 import { StyledFilterButton } from '@common/styled-filter-button.tsx';
-import { api } from '@redux/api';
-import type { CommonResponseType } from '@utils/types';
 
 import {
   Box,
@@ -14,6 +12,9 @@ import {
   Typography
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { useAppDispatch } from '@redux/hooks';
+import { getMaxPrice } from '@redux/thunks/price-thunk';
+import { useSearchParams } from 'react-router';
 
 type PriceRangeFilterProps = {
   onClose?: (value: number[]) => void;
@@ -24,10 +25,14 @@ export const PriceRangeFilter = (props: PriceRangeFilterProps) => {
     onClose
   } = props;
 
+  const dispath = useAppDispatch();
+
+  const [searchParams] = useSearchParams();
+
   const [maxPrice, setMaxPrice] = useState(Infinity);
 
-  const [priceValue, setPriceValue] = useState([0, Infinity]);
-  const [startValue, setStartValue] = useState([0, Infinity]);
+  const [priceValue, setPriceValue] = useState([0, maxPrice]);
+  const [startValue, setStartValue] = useState([0, maxPrice]);
 
   const [isActive, setIsActive] = useState(false);
   const [
@@ -36,19 +41,21 @@ export const PriceRangeFilter = (props: PriceRangeFilterProps) => {
   ] = React.useState<HTMLElement | null>(null);
 
   useEffect(() => {
-    const getMaxPrice = async () => {
-      const response = await api.get<CommonResponseType<{ maxPrice: number }>>
-      ('/books/maxPrice');
-
-      setMaxPrice(response.data.data.maxPrice);
-    };
-
-    getMaxPrice();
-
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setPriceValue([0, maxPrice]);
+    dispath(getMaxPrice())
+      .unwrap()
+      .then((data) => {
+        setMaxPrice(data.maxPrice);
+      });
   }, []);
 
+  useEffect(() => {
+      const min = Number(searchParams.get('minPrice'));
+      const max = Number(searchParams.get('maxPrice'));
+
+        setPriceValue([min,max]);
+    }, []);
+  
+  
   const handlePriceButtonClick: ButtonProps['onClick'] = (event) => {
     setAnchorPriceEl(event.currentTarget);
     setIsActive(true);

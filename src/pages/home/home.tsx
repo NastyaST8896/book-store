@@ -19,22 +19,28 @@ import { GenresFilter } from './elements/genres-filter.tsx';
 import { PriceRangeFilter } from './elements/price-range-filter.tsx';
 import { SortByFilter } from './elements/sort-by-filter.tsx';
 import { FreeBook } from './elements';
+import { useSearchParams } from 'react-router';
 
 export const Home = () => {
   const books = useAppSelector((state) => state.books);
+
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const [page, setPage] = useState(1);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
+
+    console.log(searchParams)
     dispatch(getBooks({
       page,
-      genres: books.activeFilters?.genres,
-      minPrice: books.activeFilters?.priceRange?.[0],
-      maxPrice: books.activeFilters?.priceRange?.[1],
-      sortBy: books.activeFilters?.sortBy,
+      genres: searchParams.getAll('genres'),
+      minPrice: Number(searchParams.get('minPrice')),
+      maxPrice: Number(searchParams.get('maxPrice')),
+      sortBy: String(searchParams.get('sortId')),
     }));
   }, [
+    searchParams,
     books.activeFilters?.priceRange,
     books.activeFilters?.genres,
     books.activeFilters?.sortBy,
@@ -61,19 +67,47 @@ export const Home = () => {
           <Grid container spacing="20px" size={8}>
             <Grid size={4}>
               <GenresFilter
-                onClose={(genres) => dispatch(setGenres(genres))}
+                onClose={(genres) => {
+                  const params = new URLSearchParams(searchParams);
+
+                  params.delete('genres');
+
+                  genres.forEach((genre) => params.append('genres', genre));
+
+                  setSearchParams(params);
+                }}
               />
             </Grid>
 
             <Grid size={4}>
               <PriceRangeFilter
-                onClose={(priceRange) => dispatch(setPriceRange(priceRange))}
+                onClose={(priceRange) => {
+                  const params = new URLSearchParams(searchParams);
+
+                  params.delete('minPrice');
+                  params.delete('maxPrice');
+
+                  params.append('minPrice', String(priceRange[0]));
+                  params.append('maxPrice', String(priceRange[1]));
+
+                  setSearchParams(params);
+                }
+                }
               />
             </Grid>
 
             <Grid size={4}>
               <SortByFilter
-                onClose={(sortName) => dispatch(setSortBy(sortName))}
+                onClose={(sortId) => {
+                  const params = new URLSearchParams(searchParams);
+
+                  params.delete('sortId');
+
+                  params.append('sortId', sortId);
+
+                  setSearchParams(params);
+                }
+                }
               />
             </Grid>
           </Grid>

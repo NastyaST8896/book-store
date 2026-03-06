@@ -1,4 +1,4 @@
-import { api } from '@redux/api.ts';
+import { api } from './api';
 import { IN_APP_ROUTES } from '@utils/routes.ts';
 import type {
   Book,

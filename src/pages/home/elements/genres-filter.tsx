@@ -4,8 +4,7 @@ import { CheckedIcon } from '@common/icons/checked-icon.tsx';
 import { DefaultCheckIcon } from '@common/icons/default-check-icon.tsx';
 import { RightArrowIcon } from '@common/icons/right-arrow-icon.tsx';
 import { StyledFilterButton } from '@common/styled-filter-button.tsx';
-import { api } from '@redux/api';
-import type { CommonResponseType, Genre } from '@utils/types.ts';
+import type { Genre } from '@utils/types.ts';
 
 import {
   type ButtonProps,
@@ -18,6 +17,9 @@ import {
   Popover
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { useAppDispatch } from '@redux/hooks';
+import { getAllGenres } from '@redux/thunks/genres-thunk';
+import { useSearchParams } from 'react-router';
 
 type GenresFilterProps = {
   onClose?: (value: string[]) => void;
@@ -38,6 +40,10 @@ function isSameArray(startCheckedGenres: string[], checkedGenres: string[]) {
 export const GenresFilter = (props: GenresFilterProps) => {
   const { onClose } = props;
 
+  const dispath = useAppDispatch();
+
+  const [searchParams] = useSearchParams();
+
   const [genres, setGenres] = useState<Genre[]>([]);
 
   const [isActive, setIsActive] = useState(false);
@@ -54,16 +60,17 @@ export const GenresFilter = (props: GenresFilterProps) => {
   ] = React.useState<string[]>([]);
 
   useEffect(() => {
-    const getGenres = async () => {
-      const response = await api.get<CommonResponseType<{ allGenres: Genre[] }>>
-      (
-        '/books/genres'
-      );
+    dispath(getAllGenres())
+      .unwrap()
+      .then((data) => {
+        setGenres(data.allGenres);
+      });
+  }, []);
 
-      setGenres(response.data.data.allGenres);
-    };
-
-    getGenres();
+  useEffect(() => {
+    const activeGenres = searchParams.getAll('genres');
+    if(activeGenres)
+    setCheckedGenres(activeGenres);
   }, []);
 
   const handleGenresButtonClick: ButtonProps['onClick'] = (event) => {
@@ -81,12 +88,12 @@ export const GenresFilter = (props: GenresFilterProps) => {
     }
   };
 
-  const handleToggle = (value: string) => () => {
-    const currentIndex = checkedGenres.indexOf(value);
+  const handleToggle = (value: {id: number, name: string}) => () => {
+    const currentIndex = checkedGenres.indexOf(String(value.id));
     const newCheckedGenres = [...checkedGenres];
 
     if (currentIndex === -1) {
-      newCheckedGenres.push(value);
+      newCheckedGenres.push(String(value.id));
     } else {
       newCheckedGenres.splice(currentIndex, 1);
     }
@@ -114,13 +121,13 @@ export const GenresFilter = (props: GenresFilterProps) => {
             <ListItem key={genre.name} disablePadding>
               <ListItemButton
                 role={undefined}
-                onClick={handleToggle(genre.name)}
+                onClick={handleToggle(genre)}
                 dense
               >
                 <ListItemIcon>
                   <Checkbox
                     edge="start"
-                    checked={checkedGenres.includes(genre.name)}
+                    checked={checkedGenres.includes(String(genre.id))}
                     tabIndex={-1}
                     disableRipple
                     icon={<DefaultCheckIcon />}

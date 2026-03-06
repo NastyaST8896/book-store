@@ -6,10 +6,10 @@ import {
   changeUserName,
   changeUserPassword,
   checkAuthUser,
-  getUserAvatar,
   getUserInfo,
   loginUser,
-  registerUser
+  registerUser,
+  // registerUser
 } from './thunk';
 
 type AuthState = {
@@ -34,8 +34,9 @@ export const authSlice = createSlice({
       .addCase(registerUser.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(registerUser.fulfilled, (state) => {
+      .addCase(registerUser.fulfilled, (state, action) => {
         state.isLoading = false;
+        console.log(action.payload)
       })
       .addCase(registerUser.rejected, (state) => {
         state.isLoading = false;
@@ -67,8 +68,8 @@ export const authSlice = createSlice({
         state.isLoading = false;
         if (!state.user?.fullName || !state.user?.email) {
           state.user = {
-            fullName: action.payload?.fullName || '',
-            email: action.payload?.email || ''
+            fullName: action.payload?.user.fullName || '',
+            email: action.payload?.user.email || ''
           };
         }
       })
@@ -92,7 +93,7 @@ export const authSlice = createSlice({
         state.isLoading = false;
         state.user = {
           email: state.user?.email || '',
-          fullName: action.payload.fullName
+          fullName: action.payload.user.fullName
         };
       })
       .addCase(changeUserName.rejected, (state) => {
@@ -103,8 +104,9 @@ export const authSlice = createSlice({
       .addCase(changeUserPassword.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(changeUserPassword.fulfilled, (state) => {
+      .addCase(changeUserPassword.fulfilled, (state, action) => {
         state.isLoading = false;
+        console.log(action.payload)
       })
       .addCase(changeUserPassword.rejected, (state) => {
         state.isLoading = false;
@@ -116,21 +118,9 @@ export const authSlice = createSlice({
       })
       .addCase(changeUserAvatar.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.avatar = action.payload.avatar;
+        state.avatar = action.payload;
       })
       .addCase(changeUserAvatar.rejected, (state) => {
-        state.isLoading = false;
-      })
-
-      // getUserAvatar
-      .addCase(getUserAvatar.pending, (state) => {
-        state.isLoading = true;
-      })
-      .addCase(getUserAvatar.fulfilled, (state) => {
-        state.isLoading = false;
-        // state.avatar = action.payload.
-      })
-      .addCase(getUserAvatar.rejected, (state) => {
         state.isLoading = false;
       })
 
@@ -141,10 +131,10 @@ export const authSlice = createSlice({
       .addCase(getUserInfo.fulfilled, (state, action) => {
         state.isLoading = false;
         state.user = {
-          email: action.payload.email,
-          fullName: action.payload.fullName,
+          email: action.payload.user.email,
+          fullName: action.payload.user.fullName,
         };
-        state.avatar = action.payload.avatar;
+        state.avatar = action.payload.user.avatar;
       })
       .addCase(getUserInfo.rejected, (state) => {
         state.isLoading = false;

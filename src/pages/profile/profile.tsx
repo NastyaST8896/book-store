@@ -123,8 +123,7 @@ export const Profile = () => {
   };
 
   const onSubmit: SubmitHandler<ProfileFormType> = (data) => {
-
-    if (data.fullName.trim() && isUserInfoDirty) {
+    if (data.fullName.trim() !== auth.user?.fullName && isUserInfoDirty) {
       dispatch(changeUserName({ fullName: data.fullName }));
 
       setIsUserInfoDirty((prevState) => !prevState);
@@ -134,6 +133,7 @@ export const Profile = () => {
       data.newPassword.trim()
       && data.oldPassword.trim()
       && isUserPasswordDirty) {
+
       dispatch(changeUserPassword({
         oldPassword: data.oldPassword,
         newPassword: data.newPassword
@@ -151,11 +151,13 @@ export const Profile = () => {
     <StyledMain>
       <Container maxWidth="md">
         <Grid container gap={3}>
-          <StyledAvatarGrid size={3}>
-            <img src={auth.avatar
+          <StyledCoverGrid
+            size={3}
+            img={auth.avatar
               ? `http://localhost:3000/${auth.avatar}`
-              : DefaultAvatar} alt="default avatar"
-            />
+              : DefaultAvatar
+            }
+          >
             <StyledRoundButtonBox>
               <StyledImgButton
                 component="label"
@@ -169,7 +171,7 @@ export const Profile = () => {
                 />
               </StyledImgButton>
             </StyledRoundButtonBox>
-          </StyledAvatarGrid>
+          </StyledCoverGrid>
 
           <Grid size={{ lg: 1, md: 0 }} />
 
@@ -375,7 +377,14 @@ const StyledConfirmButton = styled(Button)(({ theme }) => `
   }
 `);
 
-const StyledAvatarGrid = styled(Grid)(({ theme }) => `
+const StyledCoverGrid = styled(
+  (props: GridProps) => <Grid {...props} />,
+  { shouldForwardProp: (prop) => prop !== 'img' }
+)<{ img?: string }>(({ img = 'src/assets/img/no-cover.webp' }) => (`
+  background-image: url(${img});
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -383,9 +392,9 @@ const StyledAvatarGrid = styled(Grid)(({ theme }) => `
   width: 100%;
   height: 305px;
   border-radius: 16px;
-  background-color: ${theme.palette.appColor.light};
+  background-color: #F0F4EF;
   position: relative;
-`);
+`));
 
 const StyledRoundButtonBox = styled(Box)`
   position: absolute;
