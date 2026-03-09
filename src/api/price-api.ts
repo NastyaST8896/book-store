@@ -1,5 +1,6 @@
-import { api } from "./api";
-import type { CommonResponseType } from "@utils/types";
+import type { CommonResponseType } from '@utils/types';
+
+import { api } from './api';
 
 export const getMaxPriceApi = async () => {
   const response = await api.get<

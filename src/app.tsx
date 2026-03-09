@@ -5,12 +5,12 @@ import { PrivateRoute } from '@common/private-route.tsx';
 import { MainLayout } from './components/layouts/main-layout';
 import { Home } from './pages/home';
 import { Login } from './pages/login';
+import { Product } from './pages/product';
 import { Profile } from './pages/profile';
 import { Register } from './pages/register';
 import { checkAuthUser } from './redux/auth/thunk.ts';
 import { useAppDispatch } from './redux/hooks.ts';
 import { IN_APP_ROUTES } from './utils/routes.ts';
-import { Product } from './pages/product';
 
 export const App = () => {
   const dispatch = useAppDispatch();

@@ -1,7 +1,8 @@
-import { createAsyncThunk } from "@reduxjs/toolkit";
-import type { RootState } from "@redux/store.ts";
-import { getBookApi } from "../../api/book-api";
-import type { Book, BookProfile } from "@utils/types";
+import type { RootState } from '@redux/store.ts';
+import { createAsyncThunk } from '@reduxjs/toolkit';
+import type { Book, BookProfile } from '@utils/types';
+
+import { getBookApi } from '../../api/book-api';
 
 export const getBook = createAsyncThunk<
   {
@@ -18,6 +19,6 @@ export const getBook = createAsyncThunk<
     return {
       book: result.data.book,
       recomended: result.data.recommended
-    }
+    };
   }
 );

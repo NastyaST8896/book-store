@@ -1,4 +1,3 @@
-import { api } from './api';
 import { IN_APP_ROUTES } from '@utils/routes.ts';
 import type {
   Book,
@@ -6,6 +5,8 @@ import type {
   CommonResponseType,
   PaginationType
 } from '@utils/types';
+
+import { api } from './api';
 
 
 export const getBooksApi = async (params: BooksApiParams) => {
@@ -15,8 +16,8 @@ export const getBooksApi = async (params: BooksApiParams) => {
     {
       params:
         {
-          page: String(params.page),
-          genres: params.genres?.length && params.genres.join(','),
+          page: params.page,
+          genres: params.genres,
           maxPrice: params.maxPrice,
           minPrice: params.minPrice,
           sortBy: params.sortBy,

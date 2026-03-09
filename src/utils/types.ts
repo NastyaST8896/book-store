@@ -7,15 +7,15 @@ export type UserType = {
   password: string;
 };
 
-export type UserDataPayload = Pick<UserType, 'email' | 'password'>;
+export type UserDataPayload = Omit<UserType, 'fullName' | 'id'>;
 
-export type UserCheck = Pick<UserType, 'email' | 'fullName'>;
+export type UserCheck = Omit<UserType, 'password'>;
 
 export type UserRegister = Pick<UserType, 'email' | 'id'>;
 
 export type UserWidthAvatar = UserCheck & {
   avatar: string,
-}
+};
 
 export type UserNamePayload = Pick<UserType, 'fullName'>;
 
@@ -44,13 +44,14 @@ export type Book = {
   title: string;
   author: string;
   price: string;
-  rating: number;
+  booksRating: string;
   media: string;
   isFavorite?: boolean;
 };
 
 export type BookProfile = Book & {
   description: string;
+  rating: number;
 } | null;
 
 export type Genre = {
@@ -73,9 +74,9 @@ export type PaginationType = {
 };
 
 export type BooksApiParams = {
-  page: number,
-  genres?: string[],
-  maxPrice?: number,
-  minPrice?: number,
+  page?: string,
+  genres?: string,
+  maxPrice?: string,
+  minPrice?: string,
   sortBy?: string,
 };

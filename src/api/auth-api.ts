@@ -1,16 +1,16 @@
 import { IN_APP_ROUTES } from '@utils/routes';
 import type {
   CommonResponseType,
+  UserCheck,
   UserDataPayload,
   UserNamePayload,
   UserPasswordPayload,
-  UserCheck,
-  UserWidthAvatar,
-  UserRegister
-} from '@utils/types';
+  UserRegister,
+  UserWidthAvatar} from '@utils/types';
+
+import type { LoginUserResponseType } from '../redux/auth/thunk';
 
 import { api } from './api';
-import type { LoginUserResponseType } from '../redux/auth/thunk';
 
 export const register = async (userData: UserDataPayload) => {
   const response = await api.post<CommonResponseType<{ user: UserRegister }>>(
@@ -62,7 +62,7 @@ export const changePassword = async (userData: UserPasswordPayload) => {
   );
 
   return response.data.data.status;
-}
+};
 
 // export const refreshTokenUser = async (refreshToken: string) => {
 //   const response = await api.post<{

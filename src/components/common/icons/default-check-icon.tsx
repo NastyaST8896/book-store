@@ -9,5 +9,5 @@ export const DefaultCheckIcon = () => {
     >
       <circle cx="12" cy="12" r="11.5" fill="white" stroke="#344966" />
     </svg>
-  )
-}
+  );
+};

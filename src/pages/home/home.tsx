@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router';
 import { BookCard } from '@common/book-card';
-import { setGenres, setPriceRange, setSortBy } from '@redux/books/slice.ts';
 import { getBooks } from '@redux/books/thunk.ts';
 import { useAppDispatch, useAppSelector } from '@redux/hooks.ts';
+import { getAllGenres } from '@redux/thunks/genres-thunk.ts';
+import { getMaxPrice } from '@redux/thunks/price-thunk.ts';
+import type { Genre } from '@utils/types.ts';
 
 import {
   Box,
@@ -19,37 +22,84 @@ import { GenresFilter } from './elements/genres-filter.tsx';
 import { PriceRangeFilter } from './elements/price-range-filter.tsx';
 import { SortByFilter } from './elements/sort-by-filter.tsx';
 import { FreeBook } from './elements';
-import { useSearchParams } from 'react-router';
+
+const sortNames = [
+  { id: 1, name: 'Price' },
+  { id: 2, name: 'Name' },
+  { id: 3, name: 'Author name' },
+  { id: 4, name: 'Rating' },
+  { id: 5, name: 'Date of issue' },
+];
 
 export const Home = () => {
   const books = useAppSelector((state) => state.books);
 
   const [searchParams, setSearchParams] = useSearchParams();
+  const [maxPrice, setMaxPrice] = useState(Infinity);
+  const [genres, setGenres] = useState<Genre[]>([]);
 
-  const [page, setPage] = useState(1);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
+    dispatch(getMaxPrice())
+      .unwrap()
+      .then((data) => setMaxPrice(data.maxPrice));
 
-    console.log(searchParams)
+    dispatch(getAllGenres())
+      .unwrap()
+      .then((data) => setGenres(data.allGenres));
+  }, [dispatch]);
+
+  useEffect(() => {
     dispatch(getBooks({
-      page,
-      genres: searchParams.has('genres') ? searchParams.getAll('genres') : undefined,
-      minPrice: Number(searchParams.get('minPrice')),
-      maxPrice: Number(searchParams.get('maxPrice')),
-      sortBy: String(searchParams.get('sortId')),
+      page: searchParams.get('page'),
+      genres: searchParams.get('genres'),
+      minPrice: searchParams.get('minPrice'),
+      maxPrice: searchParams.get('maxPrice'),
+      sortBy: searchParams.get('sortId'),
     }));
-  }, [
-    searchParams,
-    books.activeFilters?.priceRange,
-    books.activeFilters?.genres,
-    books.activeFilters?.sortBy,
-    dispatch,
-    page
-  ]);
+  }, [searchParams, dispatch]);
 
   const handlePaginationChange: PaginationProps['onChange'] = (_, value) => {
-    setPage(value);
+    const params = new URLSearchParams(searchParams);
+
+    params.set('page', String(value));
+
+    setSearchParams(params);
+  };
+
+  const handlePriceRangeChange = (priceRange: number[]) => {
+    const params = new URLSearchParams(searchParams);
+
+    params.delete('minPrice');
+    params.delete('maxPrice');
+
+    params.append('minPrice', String(priceRange[0]));
+    params.append('maxPrice', String(priceRange[1]));
+
+    setSearchParams(params);
+  };
+
+  const handleGenresChange = (genres: string[]) => {
+    const params = new URLSearchParams(searchParams);
+
+    params.delete('genres');
+
+    if (genres.length) {
+      params.append('genres', genres.join(','));
+    }
+
+    setSearchParams(params);
+  };
+
+  const handleSortByChange = (sortId: string) => {
+    const params = new URLSearchParams(searchParams);
+
+    params.delete('sortId');
+
+    params.append('sortId', sortId);
+
+    setSearchParams(params);
   };
 
   return (
@@ -67,47 +117,32 @@ export const Home = () => {
           <Grid container spacing="20px" size={8}>
             <Grid size={4}>
               <GenresFilter
-                onClose={(genres) => {
-                  const params = new URLSearchParams(searchParams);
-
-                  params.delete('genres');
-
-                  genres.forEach((genre) => params.append('genres', genre));
-
-                  setSearchParams(params);
-                }}
+                genres={genres}
+                selectedGenres={searchParams.get('genres')?.split(',') || []}
+                onClose={handleGenresChange}
               />
             </Grid>
 
             <Grid size={4}>
               <PriceRangeFilter
-                onClose={(priceRange) => {
-                  const params = new URLSearchParams(searchParams);
-
-                  params.delete('minPrice');
-                  params.delete('maxPrice');
-
-                  params.append('minPrice', String(priceRange[0]));
-                  params.append('maxPrice', String(priceRange[1]));
-
-                  setSearchParams(params);
-                }
-                }
+                value={[
+                  Number(searchParams.get('minPrice')),
+                  Number(searchParams.get('maxPrice')) || Number(maxPrice),
+                ]}
+                maxPrice={maxPrice}
+                onClose={handlePriceRangeChange}
               />
             </Grid>
 
             <Grid size={4}>
               <SortByFilter
-                onClose={(sortId) => {
-                  const params = new URLSearchParams(searchParams);
-
-                  params.delete('sortId');
-
-                  params.append('sortId', sortId);
-
-                  setSearchParams(params);
+                sortNames={sortNames}
+                sortName={
+                  sortNames.find((sort) =>
+                    sort.id === Number(searchParams.get('sortId')))?.name
+                    || ''
                 }
-                }
+                onClose={handleSortByChange}
               />
             </Grid>
           </Grid>
@@ -139,7 +174,7 @@ export const Home = () => {
           <StyledPagination
             color="secondary"
             count={books.pagination.totalPages}
-            page={page}
+            page={Number(searchParams.get('page')) || 1}
             onChange={handlePaginationChange}
           />
         </StyledPaginationBox>

@@ -14,7 +14,7 @@ import {
 
 type AuthState = {
   isLoading: boolean;
-  user: Nullable<Omit<UserType, 'id' | 'password'>>;
+  user: Nullable<Omit<UserType, 'password'>>;
   avatar: string | null;
 };
 
@@ -36,7 +36,7 @@ export const authSlice = createSlice({
       })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.isLoading = false;
-        console.log(action.payload)
+        console.log(action.payload);
       })
       .addCase(registerUser.rejected, (state) => {
         state.isLoading = false;
@@ -50,7 +50,8 @@ export const authSlice = createSlice({
         state.isLoading = false;
         state.user = {
           email: action.payload.user.email,
-          fullName: action.payload.user.fullName || ''
+          fullName: action.payload.user.fullName || '',
+          id: action.payload.user.id
         };
 
         localStorage.setItem('accessToken', action.payload.accessToken);
@@ -69,7 +70,8 @@ export const authSlice = createSlice({
         if (!state.user?.fullName || !state.user?.email) {
           state.user = {
             fullName: action.payload?.user.fullName || '',
-            email: action.payload?.user.email || ''
+            email: action.payload?.user.email || '',
+            id: action.payload.user.id || '',
           };
         }
       })
@@ -92,8 +94,9 @@ export const authSlice = createSlice({
       .addCase(changeUserName.fulfilled, (state, action) => {
         state.isLoading = false;
         state.user = {
+          id: state.user?.id || '',
           email: state.user?.email || '',
-          fullName: action.payload.user.fullName
+          fullName: action.payload.user.fullName,
         };
       })
       .addCase(changeUserName.rejected, (state) => {
@@ -106,7 +109,7 @@ export const authSlice = createSlice({
       })
       .addCase(changeUserPassword.fulfilled, (state, action) => {
         state.isLoading = false;
-        console.log(action.payload)
+        console.log(action.payload);
       })
       .addCase(changeUserPassword.rejected, (state) => {
         state.isLoading = false;
@@ -131,6 +134,7 @@ export const authSlice = createSlice({
       .addCase(getUserInfo.fulfilled, (state, action) => {
         state.isLoading = false;
         state.user = {
+          id: state.user?.id || '',
           email: action.payload.user.email,
           fullName: action.payload.user.fullName,
         };

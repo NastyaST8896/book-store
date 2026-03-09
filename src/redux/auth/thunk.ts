@@ -8,8 +8,6 @@ import type {
 } from '@utils/types';
 import type { Nullable, UserDataPayload } from '@utils/types';
 
-import type { RootState } from '../store.ts';
-
 import {
   changeAvatar,
   changeName,
@@ -19,11 +17,12 @@ import {
   login,
   register
 } from '../../api/auth-api.ts';
+import type { RootState } from '../store.ts';
 
 export type LoginUserResponseType = {
   accessToken: string;
   refreshToken: string;
-  user: Pick<UserType, 'email'> & {
+  user: Pick<UserType, 'email' | 'id'> & {
     fullName: Nullable<string>,
     avatar: Nullable<string>
   };
@@ -36,7 +35,7 @@ export const registerUser = createAsyncThunk<
   async (userData) => {
     const result = await register(userData);
 
-    return result.data.user
+    return result.data.user;
   }
 );
 
@@ -45,7 +44,7 @@ export const loginUser = createAsyncThunk<
   {
     accessToken: string,
     refreshToken: string,
-    user: Pick<UserType, 'email'> & {
+    user: Pick<UserType, 'email' | 'id'> & {
       fullName: Nullable<string>,
       avatar: Nullable<string>
     }
@@ -60,7 +59,7 @@ export const loginUser = createAsyncThunk<
       user: result.data.params.user,
       accessToken: result.data.params.accessToken,
       refreshToken: result.data.params.refreshToken
-    }
+    };
   }
 );
 
@@ -69,12 +68,12 @@ export const checkAuthUser = createAsyncThunk<
   { user: UserCheck }, void, { state: RootState }
 >(
   IN_APP_ROUTES.checkAuth.pathName,
-  async (_) => {
+  async () => {
     const result = await checkAuth();
 
     return {
       user: result.data.user
-    }
+    };
   }
 );
 
@@ -118,12 +117,12 @@ export const getUserInfo = createAsyncThunk<
   { state: RootState }
 >(
   IN_APP_ROUTES.getInfo.pathName,
-  async (_) => {
+  async () => {
     const result = await getInfo();
 
     return {
       user: result.data.user,
-    }
+    };
   }
 );
 
@@ -138,7 +137,7 @@ export const changeUserName = createAsyncThunk<
 
     return {
       user: result.data.user
-    }
+    };
   }
 );
 
@@ -152,7 +151,7 @@ export const changeUserPassword = createAsyncThunk<
   async (userData) => {
     const result = await changePassword(userData);
 
-    return result
+    return result;
   }
 );
 
@@ -165,7 +164,7 @@ export const changeUserAvatar = createAsyncThunk<
   IN_APP_ROUTES.changeAvatar.pathName,
   async ({ file }) => {
 
-    if (!file) return "";
+    if (!file) return '';
 
 
     const formData = new FormData();
@@ -178,6 +177,6 @@ export const changeUserAvatar = createAsyncThunk<
 
     const result = await changeAvatar(formData);
 
-    return result.data.avatar
+    return result.data.avatar;
   }
 );

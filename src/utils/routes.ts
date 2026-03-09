@@ -1,7 +1,3 @@
-type getBook = {
-  path: string;
-  };
-
 export const IN_APP_ROUTES = {
   home: {
     path: '/',
@@ -54,10 +50,15 @@ export const IN_APP_ROUTES = {
   getBook: {
     set path(id: string) {
       this.path = `/book/${id}`;
+
       return;
     },
     get path() {
-        return this.path;
+      return this.path;
     },
+  },
+  setBookRating: {
+    path: '/books/rating',
+    pathName: 'rating',
   }
 } as const;

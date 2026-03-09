@@ -33,5 +33,5 @@ export const ArrowIcon = () => {
         </g>
       </g>
     </svg>
-  )
-}
+  );
+};

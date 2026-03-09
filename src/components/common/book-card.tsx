@@ -1,4 +1,6 @@
-import type { MouseEventHandler } from 'react';
+import {
+  type MouseEventHandler,
+} from 'react';
 import { useNavigate } from 'react-router';
 import { HeartIcon } from '@common/icons/heart-icon.tsx';
 import { StyledButton } from '@common/styled-button.tsx';
@@ -92,7 +94,7 @@ export const BookCard = (props: BookCardProps) => {
           size={12}
         >
           <StyledRating
-            value={book.rating}
+            value={+book.booksRating}
             precision={0.1}
             size="large"
             readOnly={true}
@@ -105,7 +107,7 @@ export const BookCard = (props: BookCardProps) => {
                 color: theme.palette.appColor.darkGrey
               })}
             >
-              {book.rating ? book.rating.toPrecision(2) : '0.0'}
+              {book.booksRating ? book.booksRating : '0.0'}
             </Typography>
           </Box>
         </Grid>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { ArrowIcon } from '@common/icons/arrow-icon.tsx';
 import { CheckedIcon } from '@common/icons/checked-icon.tsx';
 import { DefaultCheckIcon } from '@common/icons/default-check-icon.tsx';
@@ -17,12 +17,11 @@ import {
   Popover
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { useAppDispatch } from '@redux/hooks';
-import { getAllGenres } from '@redux/thunks/genres-thunk';
-import { useSearchParams } from 'react-router';
 
 type GenresFilterProps = {
   onClose?: (value: string[]) => void;
+  genres: Genre[];
+  selectedGenres: string[];
 };
 
 function isSameArray(startCheckedGenres: string[], checkedGenres: string[]) {
@@ -32,19 +31,11 @@ function isSameArray(startCheckedGenres: string[], checkedGenres: string[]) {
 
   const setCheckedGenres = new Set(checkedGenres);
 
-
   return startCheckedGenres.every((item) => setCheckedGenres.has(item));
-
 }
 
 export const GenresFilter = (props: GenresFilterProps) => {
-  const { onClose } = props;
-
-  const dispath = useAppDispatch();
-
-  const [searchParams] = useSearchParams();
-
-  const [genres, setGenres] = useState<Genre[]>([]);
+  const { onClose, genres, selectedGenres } = props;
 
   const [isActive, setIsActive] = useState(false);
   const [
@@ -52,26 +43,12 @@ export const GenresFilter = (props: GenresFilterProps) => {
     setAnchorGenresEl
   ] = React.useState<HTMLElement | null>(null);
 
-  const [checkedGenres, setCheckedGenres] = React.useState<string[]>([]);
+  const [checkedGenres, setCheckedGenres] = useState<string[]>(selectedGenres);
 
   const [
     startCheckedGenres,
     setStartCheckedGenres
   ] = React.useState<string[]>([]);
-
-  useEffect(() => {
-    dispath(getAllGenres())
-      .unwrap()
-      .then((data) => {
-        setGenres(data.allGenres);
-      });
-  }, []);
-
-  useEffect(() => {
-    const activeGenres = searchParams.getAll('genres');
-    if(activeGenres)
-    setCheckedGenres(activeGenres);
-  }, []);
 
   const handleGenresButtonClick: ButtonProps['onClick'] = (event) => {
     setAnchorGenresEl(event.currentTarget);

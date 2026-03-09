@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { ArrowIcon } from '@common/icons/arrow-icon';
 import { RightArrowIcon } from '@common/icons/right-arrow-icon';
 import { StyledFilterButton } from '@common/styled-filter-button';
@@ -12,43 +12,31 @@ import {
   Popover
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { useSearchParams } from 'react-router';
+
+type SortByType = {
+  id: number,
+  name: string,
+};
 
 type SortByFilterProps = {
-  onClose?: (value: string) => void
+  sortName: string;
+  onClose?: (value: string) => void,
+  sortNames: SortByType[],
 };
 
 export const SortByFilter = (props: SortByFilterProps) => {
-  const { onClose } = props;
+  const { onClose, sortName, sortNames } = props;
 
-  const [searchParams] = useSearchParams();
-
-  const sortNames = [
-    {id: 1, name: 'Price'},
-    {id: 2, name: 'Name'},
-    {id: 3, name: 'Author name'},
-    {id: 4, name: 'Rating'},
-    {id: 5, name: 'Date of issue'},
-  ];
   const [isActive, setIsActive] = useState(false);
 
   const [startName, setStartName] = useState('');
 
-  const [currentName, setCurrentName] = useState('');
+  const [currentName, setCurrentName] = useState(sortName);
 
   const [
     anchorSortByEl,
     setAnchorSortByEl
   ] = React.useState<HTMLElement | null>(null);
-
-  useEffect(() => {
-      const active = searchParams.get('sortId');
-
-      const activeName = sortNames
-      .find((sort) => sort.id === Number(active))?.name;
-      if(activeName)
-      setCurrentName(activeName);
-    }, []);
 
   const handleSortByButtonClick: ButtonProps['onClick'] = (event) => {
     setAnchorSortByEl(event.currentTarget);
@@ -61,9 +49,9 @@ export const SortByFilter = (props: SortByFilterProps) => {
     setIsActive(false);
 
     if (onClose && startName !== currentName) {
-
       const currentSort = sortNames.find((sort) => sort.name === currentName);
-      const currentId = String(currentSort?.id) as string
+      const currentId = String(currentSort?.id);
+
       onClose(currentId);
     }
   };
@@ -173,3 +161,4 @@ const StyledListItemText = styled(ListItemText)(({ theme }) => `
   color: ${theme.palette.appColor.darkBlue};
 }
 `);
+

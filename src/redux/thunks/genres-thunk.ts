@@ -1,10 +1,11 @@
-import { createAsyncThunk } from "@reduxjs/toolkit";
-import type { Genre } from "@utils/types";
-import { getGenresApi } from "../../api/genres-api";
+import { createAsyncThunk } from '@reduxjs/toolkit';
+import type { Genre } from '@utils/types';
+
+import { getGenresApi } from '../../api/genres-api';
 
 export const getAllGenres = createAsyncThunk<{allGenres: Genre[]}, void>(
-  "genres",
-  async (_) => {
+  'genres',
+  async () => {
     const result = await getGenresApi();
 
     return {

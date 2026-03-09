@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { ArrowIcon } from '@common/icons/arrow-icon.tsx';
 import { RightArrowIcon } from '@common/icons/right-arrow-icon.tsx';
 import { StyledFilterButton } from '@common/styled-filter-button.tsx';
@@ -12,50 +12,24 @@ import {
   Typography
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { useAppDispatch } from '@redux/hooks';
-import { getMaxPrice } from '@redux/thunks/price-thunk';
-import { useSearchParams } from 'react-router';
 
 type PriceRangeFilterProps = {
   onClose?: (value: number[]) => void;
+  maxPrice: number;
+  value: number[];
 };
 
 export const PriceRangeFilter = (props: PriceRangeFilterProps) => {
-  const {
-    onClose
-  } = props;
+  const { onClose, maxPrice, value } = props;
 
-  const dispath = useAppDispatch();
-
-  const [searchParams] = useSearchParams();
-
-  const [maxPrice, setMaxPrice] = useState(Infinity);
-
-  const [priceValue, setPriceValue] = useState([0, maxPrice]);
-  const [startValue, setStartValue] = useState([0, maxPrice]);
-
+  const [priceValue, setPriceValue] = useState(value);
+  const [startValue, setStartValue] = useState([priceValue[0], priceValue[1]]);
   const [isActive, setIsActive] = useState(false);
   const [
     anchorPriceEl,
     setAnchorPriceEl
   ] = React.useState<HTMLElement | null>(null);
 
-  useEffect(() => {
-    dispath(getMaxPrice())
-      .unwrap()
-      .then((data) => {
-        setMaxPrice(data.maxPrice);
-      });
-  }, []);
-
-  useEffect(() => {
-      const min = Number(searchParams.get('minPrice'));
-      const max = Number(searchParams.get('maxPrice'));
-
-        setPriceValue([min,max]);
-    }, []);
-  
-  
   const handlePriceButtonClick: ButtonProps['onClick'] = (event) => {
     setAnchorPriceEl(event.currentTarget);
     setIsActive(true);
@@ -115,9 +89,12 @@ export const PriceRangeFilter = (props: PriceRangeFilterProps) => {
         />
 
         <StyledBox>
-          {marks.map((_, index) => (
+          {marks.map((mark, index) => (
             <StyledTypography key={index}>
-              $ {priceValue[index].toFixed(2)}
+              {priceValue[index] === Infinity
+                ? `$ ${mark.value}`
+                : `$ ${priceValue[index].toFixed(2)}`
+              }
             </StyledTypography>
           ))}
         </StyledBox>

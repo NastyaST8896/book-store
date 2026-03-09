@@ -1,8 +1,14 @@
+import { type SyntheticEvent, useEffect, useState } from 'react';
+import { useParams } from 'react-router';
 import { BookCard } from '@common/book-card';
 import { HeartIcon } from '@common/icons/heart-icon';
 import { RatingArrowIcon } from '@common/icons/rating-arrow-icon';
 import { StarIcon } from '@common/icons/star-icon';
 import { StyledButton } from '@common/styled-button';
+import { setBookRating } from '@redux/books/thunk.ts';
+import { useAppDispatch, useAppSelector } from '@redux/hooks';
+import { getBook } from '@redux/thunks/book-thunk';
+import type { Book, BookProfile } from '@utils/types';
 
 import {
   Box,
@@ -15,19 +21,19 @@ import {
   Typography
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { getBook } from '@redux/thunks/book-thunk';
-import { useAppDispatch } from '@redux/hooks';
-import type { Book, BookProfile } from '@utils/types';
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router';
 
 export const Product = () => {
-  const dispath = useAppDispatch();
+  const dispatch = useAppDispatch();
+
+  const auth = useAppSelector((state) => {
+    return state.auth;
+  });
+
+  const [rating, setRating] = useState<number>(0);
 
   const [book, setBook] = useState<BookProfile>(null);
 
   const [recommended, setRecommended] = useState<Book[]>([]);
-
 
 
   const description = book?.description;
@@ -36,14 +42,26 @@ export const Product = () => {
 
   useEffect(() => {
     if (id) {
-      dispath(getBook(+id))
+      dispatch(getBook(+id))
         .unwrap()
         .then((data) => {
           setBook(data.book);
           setRecommended(data.recomended);
-        })
+        });
     }
-  }, []);
+  }, [dispatch, id]);
+
+  const handleRatingChange = (_: SyntheticEvent<Element, Event>, newRating: number | null) => {
+    if (newRating && auth.user?.id && book) {
+      dispatch(setBookRating({
+        bookId: book.id,
+        userId: +auth.user.id,
+        rating: newRating
+      }))
+        .unwrap()
+        .then(() => setRating(newRating));
+    }
+  };
 
   return (
     <main>
@@ -60,7 +78,7 @@ export const Product = () => {
             <StyledIconButton /*transparent={!book.isFavorite}*/>
               <HeartIcon
                 fill="none"
-              /*fill={book.isFavorite ? 'white' : 'none'}*/
+                /*fill={book.isFavorite ? 'white' : 'none'}*/
               />
             </StyledIconButton>
           </StyledCoverGrid>
@@ -97,10 +115,11 @@ export const Product = () => {
 
                 <Grid>
                   <StyledRating
-                    // value={0}
+                    value={rating}
                     precision={0.1}
                     defaultValue={0}
                     size="large"
+                    onChange={handleRatingChange}
                   />
                 </Grid>
 
@@ -174,7 +193,7 @@ export const Product = () => {
 
           <Grid
             container
-            columnSpacing='20px'
+            columnSpacing="20px"
           >
             {recommended.map((book) => (
               <BookCard

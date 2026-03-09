@@ -16,5 +16,5 @@ export const CheckedIcon = () => {
         strokeLinejoin="round"
       />
     </svg>
-  )
-}
+  );
+};
