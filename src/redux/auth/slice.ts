@@ -51,7 +51,7 @@ export const authSlice = createSlice({
         state.user = {
           email: action.payload.user.email,
           fullName: action.payload.user.fullName || '',
-          id: action.payload.user.id
+          id: action.payload.user.id || ''
         };
 
         localStorage.setItem('accessToken', action.payload.accessToken);

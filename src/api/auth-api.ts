@@ -22,7 +22,7 @@ export const register = async (userData: UserDataPayload) => {
 };
 
 export const login = async (userData: UserDataPayload) => {
-  const response = await api.post<CommonResponseType<{params: LoginUserResponseType}>>(
+  const response = await api.post<CommonResponseType<LoginUserResponseType>>(
     IN_APP_ROUTES.login.path,
     userData
   );

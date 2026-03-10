@@ -54,11 +54,11 @@ export const loginUser = createAsyncThunk<
   IN_APP_ROUTES.login.pathName,
   async (userData) => {
     const result = await login(userData);
-
+    
     return {
-      user: result.data.params.user,
-      accessToken: result.data.params.accessToken,
-      refreshToken: result.data.params.refreshToken
+      user: result.data.user,
+      accessToken: result.data.accessToken,
+      refreshToken: result.data.refreshToken
     };
   }
 );

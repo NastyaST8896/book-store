@@ -37,11 +37,13 @@ export const getBooks = createAsyncThunk<
   });
 
 export const setBookRating = createAsyncThunk<
-  void,
+  { booksRating: number },
   { bookId: number, userId: number, rating: number },
   { state: RootState }
 >(
   IN_APP_ROUTES.setBookRating.pathName,
   async ({ bookId, userId, rating }) => {
-    await setRating({bookId, userId, rating});
+    const result = await setRating({bookId, userId, rating});
+
+    return result.data
   });

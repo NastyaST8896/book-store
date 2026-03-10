@@ -29,7 +29,7 @@ export const Product = () => {
     return state.auth;
   });
 
-  const [rating, setRating] = useState<number>(0);
+  const [rating, setRating] = useState<number | null>(0);
 
   const [book, setBook] = useState<BookProfile>(null);
 
@@ -42,11 +42,12 @@ export const Product = () => {
 
   useEffect(() => {
     if (id) {
-      dispatch(getBook(+id))
+      dispatch(getBook({ id, userId: auth.user?.id || null }))
         .unwrap()
         .then((data) => {
           setBook(data.book);
           setRecommended(data.recomended);
+          setRating(data.book?.userRating || null);
         });
     }
   }, [dispatch, id]);
@@ -59,7 +60,10 @@ export const Product = () => {
         rating: newRating
       }))
         .unwrap()
-        .then(() => setRating(newRating));
+        .then((data) => {
+          setRating(newRating);
+          setBook({...book, booksRating: String(data.booksRating)})
+        });
     }
   };
 
@@ -78,7 +82,7 @@ export const Product = () => {
             <StyledIconButton /*transparent={!book.isFavorite}*/>
               <HeartIcon
                 fill="none"
-                /*fill={book.isFavorite ? 'white' : 'none'}*/
+              /*fill={book.isFavorite ? 'white' : 'none'}*/
               />
             </StyledIconButton>
           </StyledCoverGrid>
@@ -108,7 +112,7 @@ export const Product = () => {
                     variant="subtitle1"
                     sx={{ fontWeight: '400', color: '#B9BAC3' }}
                   >
-                    {book?.rating}
+                    {book?.booksRating}
                   </Typography>
                 </Grid>
 
@@ -117,9 +121,10 @@ export const Product = () => {
                   <StyledRating
                     value={rating}
                     precision={0.1}
-                    defaultValue={0}
+                    defaultValue={auth.user ? book?.userRating : 0}
                     size="large"
                     onChange={handleRatingChange}
+                    readOnly={auth.user ? false : true}
                   />
                 </Grid>
 

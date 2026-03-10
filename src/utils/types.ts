@@ -52,6 +52,7 @@ export type Book = {
 export type BookProfile = Book & {
   description: string;
   rating: number;
+  userRating: number;
 } | null;
 
 export type Genre = {

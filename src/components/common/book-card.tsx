@@ -56,7 +56,9 @@ export const BookCard = (props: BookCardProps) => {
       </StyledCoverGrid>
 
       <Grid rowSpacing="20px" container width="100%">
-        <Grid onClick={handleBookClick(String(book.id))}>
+        <Grid
+          onClick={handleBookClick(String(book.id))} sx={{ cursor: 'pointer' }}
+        >
           <Typography
             title={book.title}
             variant={'subtitle2'}
@@ -131,6 +133,7 @@ const StyledCoverGrid = styled(
   backgroundSize: 'cover',
   backgroundPosition: 'center center',
   borderRadius: 16,
+  cursor: 'pointer'
 }));
 
 const StyledIconButton = styled(
