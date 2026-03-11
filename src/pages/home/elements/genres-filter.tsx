@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ArrowIcon } from '@common/icons/arrow-icon.tsx';
 import { CheckedIcon } from '@common/icons/checked-icon.tsx';
 import { DefaultCheckIcon } from '@common/icons/default-check-icon.tsx';
@@ -49,6 +49,10 @@ export const GenresFilter = (props: GenresFilterProps) => {
     startCheckedGenres,
     setStartCheckedGenres
   ] = React.useState<string[]>([]);
+
+   useEffect(() => {
+    setCheckedGenres(selectedGenres)
+  }, [selectedGenres]);
 
   const handleGenresButtonClick: ButtonProps['onClick'] = (event) => {
     setAnchorGenresEl(event.currentTarget);

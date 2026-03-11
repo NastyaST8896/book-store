@@ -1,4 +1,4 @@
-import { Link } from 'react-router';
+import { Link, useSearchParams } from 'react-router';
 import Logo from '@assets/img/logo.svg';
 import Search from '@assets/img/search.svg';
 import { CartIcon } from '@common/icons/cart-icon';
@@ -18,12 +18,50 @@ import {
   Typography
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { useEffect, useState, type ChangeEvent } from 'react';
+
+const setValueForSearch = (value: string) => {
+  const [searchValue, setSearchValue] = useState(value);
+
+  useEffect(() => {
+    const newSearhValue = setTimeout(() => {
+      setSearchValue(value);
+    }, 2000);
+
+    return () => { clearTimeout(newSearhValue) }
+  }, [value]);
+
+  return searchValue;
+};
 
 
 export const Header = () => {
   const auth = useAppSelector((state) => {
     return state.auth;
   });
+
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const [inputValue, setInputValue] = useState('')
+  const searchValue = setValueForSearch(inputValue)
+
+  useEffect(() => {
+    if (searchValue) {
+      setSearchParams({});
+      const params = new URLSearchParams(searchParams);
+
+      params.set('searchValue', searchValue);
+
+      setSearchParams(params);
+    }
+
+  }, [searchValue])
+
+  const handleInputValueChange = (
+    event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+  ) => {
+    setInputValue(event.target.value)
+  };
 
   return (
     <StyledHeader>
@@ -58,6 +96,8 @@ export const Header = () => {
                   <img src={Search} alt="Search" />
                 </InputAdornment>
               }
+              onChange={handleInputValueChange}
+              value={inputValue}
               placeholder="Search"
             />
           </StyledGridEnd>
@@ -194,7 +234,7 @@ const StyledAuthLink = styled(Link)`
   width: 48px;
 `;
 
-const StyledCatalogLink = styled(Link)(({theme}) => `
+const StyledCatalogLink = styled(Link)(({ theme }) => `
    text-decoration: none;
   color: ${theme.palette.appColor.darkBlue};
 `);

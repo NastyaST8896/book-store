@@ -41,7 +41,7 @@ export const FreeBook = () => {
               Buy two books and get one for free
             </Typography>
           </Box>
-          <StyledChooseButton width={230} variant="contained">
+          <StyledChooseButton sx={{width: '230px'}} variant="contained">
             Choose a book
           </StyledChooseButton>
         </Grid>

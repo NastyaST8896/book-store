@@ -97,7 +97,7 @@ export const BookCard = (props: BookCardProps) => {
         >
           <StyledRating
             value={+book.booksRating}
-            precision={0.1}
+            precision={1}
             size="large"
             readOnly={true}
           />

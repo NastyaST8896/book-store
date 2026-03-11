@@ -56,13 +56,12 @@ export const Product = () => {
     if (newRating && auth.user?.id && book) {
       dispatch(setBookRating({
         bookId: book.id,
-        userId: +auth.user.id,
         rating: newRating
       }))
         .unwrap()
         .then((data) => {
           setRating(newRating);
-          setBook({...book, booksRating: String(data.booksRating)})
+          setBook({ ...book, booksRating: String(data.booksRating) })
         });
     }
   };
@@ -120,7 +119,7 @@ export const Product = () => {
                 <Grid>
                   <StyledRating
                     value={rating}
-                    precision={0.1}
+                    precision={1}
                     defaultValue={auth.user ? book?.userRating : 0}
                     size="large"
                     onChange={handleRatingChange}

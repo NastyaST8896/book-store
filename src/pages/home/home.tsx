@@ -57,6 +57,7 @@ export const Home = () => {
       minPrice: searchParams.get('minPrice'),
       maxPrice: searchParams.get('maxPrice'),
       sortBy: searchParams.get('sortId'),
+      searchValue: searchParams.get('searchValue'),
     }));
   }, [searchParams, dispatch]);
 

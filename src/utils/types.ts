@@ -80,4 +80,5 @@ export type BooksApiParams = {
   maxPrice?: string,
   minPrice?: string,
   sortBy?: string,
+  searchValue?: string,
 };

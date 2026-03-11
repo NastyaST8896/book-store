@@ -21,6 +21,7 @@ export const getBooksApi = async (params: BooksApiParams) => {
           maxPrice: params.maxPrice,
           minPrice: params.minPrice,
           sortBy: params.sortBy,
+          searchValue: params.searchValue,
         }
     }
   );

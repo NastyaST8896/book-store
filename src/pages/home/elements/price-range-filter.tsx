@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ArrowIcon } from '@common/icons/arrow-icon.tsx';
 import { RightArrowIcon } from '@common/icons/right-arrow-icon.tsx';
 import { StyledFilterButton } from '@common/styled-filter-button.tsx';
@@ -29,6 +29,10 @@ export const PriceRangeFilter = (props: PriceRangeFilterProps) => {
     anchorPriceEl,
     setAnchorPriceEl
   ] = React.useState<HTMLElement | null>(null);
+
+   useEffect(() => {
+    setPriceValue(value)
+  }, [value]);
 
   const handlePriceButtonClick: ButtonProps['onClick'] = (event) => {
     setAnchorPriceEl(event.currentTarget);

@@ -51,7 +51,7 @@ export const booksSlice = createSlice({
       })
       .addCase(setBookRating.rejected, (state) => {
         state.isLoading = false;
-      });
+      })
   },
 });
 

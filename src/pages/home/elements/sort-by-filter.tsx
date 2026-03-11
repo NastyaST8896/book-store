@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ArrowIcon } from '@common/icons/arrow-icon';
 import { RightArrowIcon } from '@common/icons/right-arrow-icon';
 import { StyledFilterButton } from '@common/styled-filter-button';
@@ -37,6 +37,10 @@ export const SortByFilter = (props: SortByFilterProps) => {
     anchorSortByEl,
     setAnchorSortByEl
   ] = React.useState<HTMLElement | null>(null);
+
+     useEffect(() => {
+      setCurrentName(sortName)
+    }, [sortName]);
 
   const handleSortByButtonClick: ButtonProps['onClick'] = (event) => {
     setAnchorSortByEl(event.currentTarget);
