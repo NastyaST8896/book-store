@@ -1,4 +1,4 @@
-import Books from '@assets/img/books.svg';
+import Books from '@assets/img/books-background.svg';
 import ReadingGirl from '@assets/img/reading-girl.svg';
 import { StyledButton } from '@common/styled-button.tsx';
 

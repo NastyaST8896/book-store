@@ -15,6 +15,10 @@ export const IN_APP_ROUTES = {
     path: '/profile',
     pathName: 'profileUser'
   },
+  cart: {
+    path:'/cart',
+    pathName: 'BooksCart'
+  },
   checkAuth: {
     path: '/check-auth',
     pathName: 'checkAuthUser'
@@ -61,4 +65,6 @@ export const IN_APP_ROUTES = {
     path: '/books/rating',
     pathName: 'rating',
   }
+
+
 } as const;

@@ -11,6 +11,7 @@ import { Register } from './pages/register';
 import { checkAuthUser } from './redux/auth/thunk.ts';
 import { useAppDispatch } from './redux/hooks.ts';
 import { IN_APP_ROUTES } from './utils/routes.ts';
+import { Cart } from './pages/cart';
 
 export const App = () => {
   const dispatch = useAppDispatch();
@@ -54,6 +55,7 @@ export const App = () => {
             }
           >
             <Route path="profile" element={<Profile />} />
+            <Route path="cart" element={<Cart />} />
           </Route>
         </Route>
       </Routes>

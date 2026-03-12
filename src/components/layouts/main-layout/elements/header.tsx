@@ -129,7 +129,7 @@ export const Header = () => {
             {auth.user
               ? (
                 <StyledBox>
-                  <StyledAuthLink to="#">
+                  <StyledAuthLink to={IN_APP_ROUTES.cart.path}>
                     <StyledRoundButton icon={<CartIcon />} />
                   </StyledAuthLink>
                   <StyledAuthLink to="#">
