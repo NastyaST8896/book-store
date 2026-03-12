@@ -1,5 +1,5 @@
-import { type ChangeEvent,useEffect, useState } from 'react';
-import { Link, useSearchParams } from 'react-router';
+import { type ChangeEvent, useEffect, useState } from 'react';
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router';
 import Logo from '@assets/img/logo.svg';
 import Search from '@assets/img/search.svg';
 import { CartIcon } from '@common/icons/cart-icon';
@@ -38,7 +38,7 @@ const queryFilters = [
   'genres',
   'minPrice',
   'maxPrice',
-  'sortBy',
+  'sortId',
   'searchValue',
 ];
 
@@ -47,13 +47,17 @@ export const Header = () => {
     return state.auth;
   });
 
+  const navigate = useNavigate();
+  const location = useLocation();
+
+
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [inputValue, setInputValue] = useState('');
-  const searchValue = useDebounceSetSearchValue(inputValue);
+  const searchValue = useDebounceSetSearchValue(inputValue.trim());
 
   useEffect(() => {
-    if (searchParams.get('searchValue') !== searchValue) {
+    if (searchParams.get('searchValue') !== searchValue && searchValue) {
       queryFilters.forEach((filter) => searchParams.delete(filter));
 
       if (searchValue) {
@@ -61,8 +65,19 @@ export const Header = () => {
       }
 
       setSearchParams(searchParams);
+    } else if (!searchValue) {
+
+      searchParams.delete('searchValue');
+
+      setSearchParams(searchParams);
     }
   }, [searchParams, searchValue, setSearchParams]);
+
+  const handleInputFocus = () => {
+    if(location.pathname !== IN_APP_ROUTES.home.path) {
+      navigate(IN_APP_ROUTES.home.path);
+    }
+  }
 
   const handleInputValueChange = (
     event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
@@ -103,6 +118,7 @@ export const Header = () => {
                   <img src={Search} alt="Search" />
                 </InputAdornment>
               }
+              onFocus={handleInputFocus}
               onChange={handleInputValueChange}
               value={inputValue}
               placeholder="Search"

@@ -34,8 +34,7 @@ export const Product = () => {
   const [book, setBook] = useState<BookProfile>(null);
 
   const [recommended, setRecommended] = useState<Book[]>([]);
-
-
+  
   const description = book?.description;
 
   const { id } = useParams();
