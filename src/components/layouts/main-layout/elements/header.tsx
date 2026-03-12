@@ -1,3 +1,4 @@
+import { type ChangeEvent,useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router';
 import Logo from '@assets/img/logo.svg';
 import Search from '@assets/img/search.svg';
@@ -18,22 +19,28 @@ import {
   Typography
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { useEffect, useState, type ChangeEvent } from 'react';
 
-const setValueForSearch = (value: string) => {
+const useDebounceSetSearchValue = (value: string) => {
   const [searchValue, setSearchValue] = useState(value);
 
   useEffect(() => {
-    const newSearhValue = setTimeout(() => {
+    const timerId = setTimeout(() => {
       setSearchValue(value);
     }, 2000);
 
-    return () => { clearTimeout(newSearhValue) }
+    return () => clearTimeout(timerId);
   }, [value]);
 
   return searchValue;
 };
 
+const queryFilters = [
+  'genres',
+  'minPrice',
+  'maxPrice',
+  'sortBy',
+  'searchValue',
+];
 
 export const Header = () => {
   const auth = useAppSelector((state) => {
@@ -42,25 +49,25 @@ export const Header = () => {
 
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const [inputValue, setInputValue] = useState('')
-  const searchValue = setValueForSearch(inputValue)
+  const [inputValue, setInputValue] = useState('');
+  const searchValue = useDebounceSetSearchValue(inputValue);
 
   useEffect(() => {
-    if (searchValue) {
-      setSearchParams({});
-      const params = new URLSearchParams(searchParams);
+    if (searchParams.get('searchValue') !== searchValue) {
+      queryFilters.forEach((filter) => searchParams.delete(filter));
 
-      params.set('searchValue', searchValue);
+      if (searchValue) {
+        searchParams.set('searchValue', searchValue);
+      }
 
-      setSearchParams(params);
+      setSearchParams(searchParams);
     }
-
-  }, [searchValue])
+  }, [searchParams, searchValue, setSearchParams]);
 
   const handleInputValueChange = (
     event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
   ) => {
-    setInputValue(event.target.value)
+    setInputValue(event.target.value);
   };
 
   return (
