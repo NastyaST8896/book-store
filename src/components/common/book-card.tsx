@@ -26,8 +26,8 @@ export const BookCard = (props: BookCardProps) => {
 
   const navigate = useNavigate();
 
-  const handleBookClick = (id: string) => () => {
-    navigate(`/product/${id}`);
+  const handleBookClick = () => {
+    navigate(`/product/${book.id}`);
   };
 
   const handleIconButtonClick: MouseEventHandler<HTMLButtonElement> = (e) => {
@@ -44,7 +44,7 @@ export const BookCard = (props: BookCardProps) => {
       rowSpacing="30px"
     >
       <StyledCoverGrid
-        onClick={handleBookClick(String(book.id))}
+        onClick={handleBookClick}
         img={`http://localhost:3000/${book.media}`}
       >
         <StyledIconButton
@@ -57,7 +57,7 @@ export const BookCard = (props: BookCardProps) => {
 
       <Grid rowSpacing="20px" container width="100%">
         <Grid
-          onClick={handleBookClick(String(book.id))} sx={{ cursor: 'pointer' }}
+          onClick={handleBookClick} sx={{ cursor: 'pointer' }}
         >
           <Typography
             title={book.title}

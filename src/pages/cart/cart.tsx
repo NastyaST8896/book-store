@@ -1,50 +1,106 @@
-import { Container, Grid, Typography, Box, type GridProps } from "@mui/material";
+import {
+  Container,
+  Grid,
+  Typography,
+  Box,
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
 import Books from '@assets/img/books.svg';
 import { StyledButton } from "@common/styled-button";
+import { useState } from "react";
+import { BookCardForCart } from "./elements/book-card-for-cart";
 
 export const Cart = () => {
+  const [isFilled, setIsFilled] = useState(true);
+  const books = [
+    {
+      id: 1,
+      title: 'The Weight of Things',
+      author: 'Marianne Flitz',
+      price: 14.99,
+      media: 'src/assets/img/book1.png',
+    },
+    {
+      id: 2,
+      title: 'milk and honey',
+      author: 'Rupi Kaur',
+      price: 19.99,
+      media: 'src/assets/img/book1.png',
+    },
+  ];
+
   return (
     <>
-      {/* <StyledEmptyCartMain>
-        <Container maxWidth="md">
-          <Grid
-            container
-            spacing={{lg: 13, md: 8, sm: 5, xs: 5 }}
-            justifyContent='center'
-            alignItems='center'
-            direction={{lg: 'row', md:'row', sm:'row', xs:'column-reverse'}}
-          >
-            <StyledImgBooksGrid>
-              <StyledImgBooks src={Books} />
-            </StyledImgBooksGrid>
-            <StyledEmptyCartInfoGrid container spacing='60px'>
-              <StyledTextInfoBox>
-                <Typography variant="h1">Your cart is empty</Typography>
+      {isFilled ? (
+        <StyledCartMain>
+          <Container maxWidth="md">
+            <Grid container gap='50px'>
 
-                <StyledTypography variant="subtitle2">
-                  Add items to cart to make a purchase. Go to the catalogue no.
-                </StyledTypography>
-              </StyledTextInfoBox>
+              <Grid size={12}>
+                {books.map((book) => (
+                  <BookCardForCart
+                    key={book.id}
+                    book={book}
+                  />
+                ))}
+              </Grid>
 
-              <StyledButton>Go to catalog</StyledButton>
-            </StyledEmptyCartInfoGrid>
-          </Grid>
-        </Container>
-      </StyledEmptyCartMain> */}
+              <Grid>
+                <Grid>
 
-      <StyledCartMain>
-        <Container maxWidth="md">
-          <Grid container flexDirection='column'>
-            <Grid container gap={3}>
-              <StyledCoverGrid
-                // onClick={handleBookClick(String(book.id))}
-                // img='src/assets/img/book1.png'
-              ></StyledCoverGrid>
+                </Grid>
+
+                <Grid container size={12} spacing='30px'>
+                  <Grid size={12}>
+                    <StyledPriceTypography variant="h2">
+                      Total:
+                      <StyledTotalSpan> 34.98</StyledTotalSpan>
+                    </StyledPriceTypography>
+                  </Grid>
+
+                  <Grid size={12} display='flex' gap='20px'>
+                    <StyledOutlineButton>Continue shopping</StyledOutlineButton>
+                    <StyledButton>Chekout</StyledButton>
+                  </Grid>
+                </Grid>
+              </Grid>
             </Grid>
-          </Grid>
-        </Container>
-      </StyledCartMain>
+          </Container>
+        </StyledCartMain>
+      ) : (
+        <StyledEmptyCartMain>
+          <Container maxWidth="md">
+            <Grid
+              container
+              spacing={{ lg: 13, md: 8, sm: 5, xs: 5 }}
+              justifyContent='center'
+              alignItems='center'
+              direction={{
+                lg: 'row',
+                md: 'row',
+                sm: 'row',
+                xs: 'column-reverse'
+              }}
+            >
+              <StyledImgBooksGrid>
+                <StyledImgBooks src={Books} />
+              </StyledImgBooksGrid>
+              <StyledEmptyCartInfoGrid container spacing='60px'>
+                <StyledTextInfoBox>
+                  <Typography variant="h1">Your cart is empty</Typography>
+
+                  <StyledTypography variant="subtitle2">
+                    Add items to cart to make a purchase.
+                    Go to the catalogue no.
+                  </StyledTypography>
+                </StyledTextInfoBox>
+
+                <StyledButton>Go to catalog</StyledButton>
+              </StyledEmptyCartInfoGrid>
+            </Grid>
+          </Container>
+        </StyledEmptyCartMain>
+      )}
     </>
   )
 }
@@ -85,17 +141,19 @@ const StyledCartMain = styled('main')`
   padding: 36px 0 110px 0;
 `;
 
-const StyledCoverGrid = styled(
-  (props: GridProps) => <Grid {...props} />,
-  { shouldForwardProp: (prop) => prop !== 'img' }
-)<{ img?: string }>(({ img = 'src/assets/img/no-cover.webp' }) => ({
-  height: 289,
-  maxWidth: 198,
-  width: '100%',
-  backgroundImage: `url(${img})`,
-  backgroundRepeat: 'no-repeat',
-  backgroundSize: 'cover',
-  backgroundPosition: 'center center',
-  borderRadius: 16,
-  cursor: 'pointer'
-}));
+const StyledTotalSpan = styled('span')(({ theme }) => `
+  font-weight: 700;
+  font-size: 36px;
+  color: ${theme.palette.appColor.dark};
+`);
+
+const StyledOutlineButton = styled(StyledButton)(({ theme }) => `
+  color: ${theme.palette.appColor.dark};
+  background-color: transparent;
+  border: 1px solid ${theme.palette.appColor.dark};
+`);
+
+const StyledPriceTypography = styled(Typography)(({ theme }) => `
+    color: ${theme.palette.appColor.dark};
+    font-size: 36px;
+`);
