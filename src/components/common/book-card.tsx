@@ -15,6 +15,8 @@ import {
   Typography
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { useAppDispatch } from '@redux/hooks';
+import { addBookInCart } from '@redux/cart-books/thunk';
 
 type BookCardProps = {
   book: Book,
@@ -23,6 +25,8 @@ type BookCardProps = {
 
 export const BookCard = (props: BookCardProps) => {
   const { book } = props;
+
+  const dispatch = useAppDispatch();
 
   const navigate = useNavigate();
 
@@ -37,7 +41,7 @@ export const BookCard = (props: BookCardProps) => {
   };
 
   const handleBookPriceButtonClick = () => {
-    
+    dispatch(addBookInCart({bookId: book.id}))
   };
 
   return (

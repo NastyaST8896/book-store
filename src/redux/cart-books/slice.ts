@@ -29,11 +29,12 @@ export const booksSlice = createSlice({
   extraReducers: (builder) => {
     builder
 
-      // setBookRating
+      // addBookInCart
       .addCase(addBookInCart.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(addBookInCart.fulfilled, (state) => {
+      .addCase(addBookInCart.fulfilled, (state, action) => {
+        console.log(action.payload.status)
         state.isLoading = false;
       })
       .addCase(addBookInCart.rejected, (state) => {

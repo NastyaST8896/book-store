@@ -21,6 +21,7 @@ import {
   Typography
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { addBookInCart } from '@redux/cart-books/thunk';
 
 export const Product = () => {
   const dispatch = useAppDispatch();
@@ -64,6 +65,10 @@ export const Product = () => {
         });
     }
   };
+
+  const handleProductButtonClick = () => {
+     dispatch(addBookInCart({bookId: book?.id || 0}))
+  }
 
   return (
     <main>
@@ -179,6 +184,7 @@ export const Product = () => {
                     Hardcover
                   </Typography>
                   <StyledButton
+                    onClick={handleProductButtonClick}
                     buttonHeight={50}
                     sx={{ fontSize: '20px' }}
                   >
