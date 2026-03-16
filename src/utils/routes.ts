@@ -64,7 +64,10 @@ export const IN_APP_ROUTES = {
   setBookRating: {
     path: '/books/rating',
     pathName: 'rating',
+  },
+  addBookInCart: {
+    path: '/cart/add-book-in-cart',
+    pathName: 'book-in-cart',
   }
-
 
 } as const;

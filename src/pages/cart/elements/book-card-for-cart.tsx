@@ -2,6 +2,7 @@ import { DeleteIcon } from "@common/icons/delete-icon";
 import NumberSpinner from "@common/number-spinner";
 import { Box, Grid, IconButton, Typography, type GridProps } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import { formatPrice } from "@utils/formatters";
 
 type CartBook = {
   id: number,
@@ -52,7 +53,7 @@ export const BookCardForCart = (props: BookCardForCartProps) => {
 
           <Grid>
             <StyledPriceTypography variant="h2">
-              $${book.price} USD
+              {formatPrice(String(book.price))}
             </StyledPriceTypography>
           </Grid>
         </Grid>

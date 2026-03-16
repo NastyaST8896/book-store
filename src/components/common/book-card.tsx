@@ -36,6 +36,10 @@ export const BookCard = (props: BookCardProps) => {
     // toggleLike()
   };
 
+  const handleBookPriceButtonClick = () => {
+    
+  };
+
   return (
     <Grid
       container
@@ -115,7 +119,7 @@ export const BookCard = (props: BookCardProps) => {
         </Grid>
       </Grid>
 
-      <StyledButton buttonHeight={48} sx={{ fontSize: '20px' }}>
+      <StyledButton onClick={handleBookPriceButtonClick} buttonHeight={48} sx={{ fontSize: '20px' }}>
         {formatPrice(book.price)}
       </StyledButton>
     </Grid>
