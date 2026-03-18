@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { addBookInCart } from "./thunk";
+import { getCartBooks } from "./thunk";
 
 export type CartBookType = {
   id: number,
@@ -14,12 +14,14 @@ type CartBooksState = {
   isLoading: boolean;
   books: CartBookType[];
   totalPrice: number;
+  cart: boolean;
 };
 
 const initialState: CartBooksState = {
   isLoading: false,
   books: [],
   totalPrice: 0,
+  cart: false
 };
 
 export const booksSlice = createSlice({
@@ -29,16 +31,19 @@ export const booksSlice = createSlice({
   extraReducers: (builder) => {
     builder
 
-      // addBookInCart
-      .addCase(addBookInCart.pending, (state) => {
+      //  getCartBooks
+      .addCase(getCartBooks.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(addBookInCart.fulfilled, (state, action) => {
-        console.log(action.payload.status)
+      .addCase(getCartBooks.fulfilled, (state, action) => {
         state.isLoading = false;
+        state.books = action.payload.books;
+        state.totalPrice = action.payload.totalPrice;
+        state.cart = true
       })
-      .addCase(addBookInCart.rejected, (state) => {
+      .addCase(getCartBooks.rejected, (state) => {
         state.isLoading = false;
+        state.cart = false;
       })
   },
 });

@@ -8,20 +8,32 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import OpenInFullIcon from '@mui/icons-material/OpenInFull';
 import { styled } from '@mui/material/styles';
+import { useAppDispatch } from '@redux/hooks';
+import { addBookInCart, getCartBooks } from '@redux/cart-books/thunk';
 
 export default function NumberSpinner({
   id: idProp,
   label,
   error,
+  bookId,
   ...other
 }: BaseNumberField.Root.Props & {
   label?: React.ReactNode;
   error?: boolean;
+  bookId: number;
 }) {
   let id = React.useId();
   if (idProp) {
     id = idProp;
   }
+
+  const dispatch = useAppDispatch();
+
+  const handleIncrementButtonClick = () => {
+    dispatch(addBookInCart({ bookId: bookId }))
+      .unwrap()
+      .then(() => dispatch(getCartBooks()));
+  };
   return (
     <BaseNumberField.Root
       {...other}
@@ -137,6 +149,7 @@ export default function NumberSpinner({
                   border: 'none'
                 },
               }}
+              onClick={handleIncrementButtonClick}
             />
           }
         >

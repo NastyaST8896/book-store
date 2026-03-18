@@ -66,8 +66,12 @@ export const IN_APP_ROUTES = {
     pathName: 'rating',
   },
   addBookInCart: {
-    path: '/cart/add-book-in-cart',
+    path: '/cart/add-book',
     pathName: 'book-in-cart',
-  }
+  },
+  getCartBooks: {
+    path: '/cart/books',
+    pathName: 'cart-books'
+  },
 
 } as const;

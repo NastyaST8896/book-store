@@ -16,7 +16,7 @@ import {
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { useAppDispatch } from '@redux/hooks';
-import { addBookInCart } from '@redux/cart-books/thunk';
+import { addBookInCart, getCartBooks } from '@redux/cart-books/thunk';
 
 type BookCardProps = {
   book: Book,
@@ -41,7 +41,9 @@ export const BookCard = (props: BookCardProps) => {
   };
 
   const handleBookPriceButtonClick = () => {
-    dispatch(addBookInCart({bookId: book.id}))
+    dispatch(addBookInCart({ bookId: book.id }))
+      .unwrap()
+      .then(() => dispatch(getCartBooks()));
   };
 
   return (
@@ -123,7 +125,11 @@ export const BookCard = (props: BookCardProps) => {
         </Grid>
       </Grid>
 
-      <StyledButton onClick={handleBookPriceButtonClick} buttonHeight={48} sx={{ fontSize: '20px' }}>
+      <StyledButton
+        onClick={handleBookPriceButtonClick}
+        buttonHeight={48}
+        sx={{ fontSize: '20px' }}
+      >
         {formatPrice(book.price)}
       </StyledButton>
     </Grid>

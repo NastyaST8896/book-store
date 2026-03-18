@@ -21,7 +21,7 @@ import {
   Typography
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { addBookInCart } from '@redux/cart-books/thunk';
+import { addBookInCart, getCartBooks } from '@redux/cart-books/thunk';
 
 export const Product = () => {
   const dispatch = useAppDispatch();
@@ -35,7 +35,7 @@ export const Product = () => {
   const [book, setBook] = useState<BookProfile>(null);
 
   const [recommended, setRecommended] = useState<Book[]>([]);
-  
+
   const description = book?.description;
 
   const { id } = useParams();
@@ -52,7 +52,10 @@ export const Product = () => {
     }
   }, [dispatch, id]);
 
-  const handleRatingChange = (_: SyntheticEvent<Element, Event>, newRating: number | null) => {
+  const handleRatingChange = (
+    _: SyntheticEvent<Element, Event>,
+    newRating: number | null
+  ) => {
     if (newRating && auth.user?.id && book) {
       dispatch(setBookRating({
         bookId: book.id,
@@ -67,7 +70,9 @@ export const Product = () => {
   };
 
   const handleProductButtonClick = () => {
-     dispatch(addBookInCart({bookId: book?.id || 0}))
+    dispatch(addBookInCart({ bookId: book?.id || 0 }))
+      .unwrap()
+      .then(() => dispatch(getCartBooks()));
   }
 
   return (

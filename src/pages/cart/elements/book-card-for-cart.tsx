@@ -1,19 +1,18 @@
 import { DeleteIcon } from "@common/icons/delete-icon";
 import NumberSpinner from "@common/number-spinner";
-import { Box, Grid, IconButton, Typography, type GridProps } from "@mui/material";
+import {
+  Box,
+  Grid,
+  IconButton,
+  Typography,
+  type GridProps
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
+import type { CartBookType } from "@redux/cart-books/slice";
 import { formatPrice } from "@utils/formatters";
 
-type CartBook = {
-  id: number,
-  title: string,
-  author: string,
-  price: number,
-  media: string,
-}
-
 type BookCardForCartProps = {
-  book: CartBook,
+  book: CartBookType,
 };
 
 export const BookCardForCart = (props: BookCardForCartProps) => {
@@ -22,8 +21,7 @@ export const BookCardForCart = (props: BookCardForCartProps) => {
     <>
       <Grid container gap={3} alignItems='center'>
         <StyledCoverGrid
-          // onClick={handleBookClick(String(book.id))}
-          img={`${book.media}`}
+          img={`http://localhost:3000/${book.media}`}
         ></StyledCoverGrid>
 
         <Grid container rowSpacing={7} flexDirection='column'>
@@ -39,11 +37,13 @@ export const BookCardForCart = (props: BookCardForCartProps) => {
             alignItems='center'
             justifyContent='flex-start'
             container
-            spacing={8}>
+            spacing={8}
+          >
             <NumberSpinner
               min={1}
               max={100}
-              defaultValue={1}
+              defaultValue={book.count}
+              bookId={book.id}
             />
 
             <IconButton>
@@ -53,7 +53,7 @@ export const BookCardForCart = (props: BookCardForCartProps) => {
 
           <Grid>
             <StyledPriceTypography variant="h2">
-              {formatPrice(String(book.price))}
+              {formatPrice(book.price)}
             </StyledPriceTypography>
           </Grid>
         </Grid>

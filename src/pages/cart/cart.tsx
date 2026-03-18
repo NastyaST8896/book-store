@@ -7,37 +7,29 @@ import {
 import { styled } from "@mui/material/styles";
 import Books from '@assets/img/books.svg';
 import { StyledButton } from "@common/styled-button";
-import { useState } from "react";
 import { BookCardForCart } from "./elements/book-card-for-cart";
+import { useAppDispatch, useAppSelector } from "@redux/hooks";
+import { useEffect } from "react";
+import { getCartBooks } from "@redux/cart-books/thunk";
 
 export const Cart = () => {
-  const [isFilled, setIsFilled] = useState(true);
-  const books = [
-    {
-      id: 1,
-      title: 'The Weight of Things',
-      author: 'Marianne Flitz',
-      price: 14.99,
-      media: 'src/assets/img/book1.png',
-    },
-    {
-      id: 2,
-      title: 'milk and honey',
-      author: 'Rupi Kaur',
-      price: 19.99,
-      media: 'src/assets/img/book1.png',
-    },
-  ];
+  const cart = useAppSelector((state) => state.cartBooks);
+
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(getCartBooks());
+  }, [])
 
   return (
     <>
-      {isFilled ? (
+      { cart.cart ? (
         <StyledCartMain>
           <Container maxWidth="md">
             <Grid container gap='50px'>
 
               <Grid size={12}>
-                {books.map((book) => (
+                {cart.books?.map((book) => (
                   <BookCardForCart
                     key={book.id}
                     book={book}
@@ -54,7 +46,7 @@ export const Cart = () => {
                   <Grid size={12}>
                     <StyledPriceTypography variant="h2">
                       Total:
-                      <StyledTotalSpan> 34.98</StyledTotalSpan>
+                      <StyledTotalSpan>{cart.totalPrice}</StyledTotalSpan>
                     </StyledPriceTypography>
                   </Grid>
 
