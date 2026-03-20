@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { NumberField as BaseNumberField } from '@base-ui/react/number-field';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -29,11 +29,50 @@ export default function NumberSpinner({
 
   const dispatch = useAppDispatch();
 
+  const [isStopClick, setIsStopClick] = useState(false);
+  const timerRef = useRef<number | null>(null);
+
+  const currentValueRef = useRef<number>(1);
+
+  const getCurrentValue = useCallback(() => {
+    const inputElement = document.getElementById(id) as HTMLInputElement;
+    return inputElement ? Number(inputElement.value) : 1;
+  }, [id]);
+
+  const debounceClick = useCallback((callback: () => any) => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+
+    timerRef.current = setTimeout(() => {
+      callback();
+      setIsStopClick(false);
+    }, 1000);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    }
+  }, [])
+
   const handleIncrementButtonClick = () => {
-    dispatch(addBookInCart({ bookId: bookId }))
-      .unwrap()
-      .then(() => dispatch(getCartBooks()));
+
+    const currentValue = getCurrentValue();
+
+    if (isStopClick) return;
+
+    setIsStopClick(true);
+
+    debounceClick(() => {
+      dispatch(addBookInCart({ bookId: bookId, quantity: currentValue }))
+        .unwrap()
+        .then(() => dispatch(getCartBooks()));
+    });
   };
+
   return (
     <BaseNumberField.Root
       {...other}
@@ -100,37 +139,44 @@ export default function NumberSpinner({
 
         <BaseNumberField.Input
           id={id}
-          render={(props, state) => (
-            <StyledOutlinedInput
-              inputRef={props.ref}
-              value={state.inputValue}
-              onBlur={props.onBlur}
-              onChange={props.onChange}
-              onKeyUp={props.onKeyUp}
-              onKeyDown={props.onKeyDown}
-              onFocus={props.onFocus}
-              slotProps={{
-                input: {
-                  ...props,
-                  size:
-                    Math.max(
-                      (other.min?.toString() || '').length,
-                      state.inputValue.length || 1,
-                    ) + 1,
-                  sx: {
-                    textAlign: 'center',
+          render={(props, state) => {
+
+            React.useEffect(() => {
+              currentValueRef.current = Number(state.inputValue) || 1;
+            }, [state.inputValue]);
+
+            return (
+              <StyledOutlinedInput
+                inputRef={props.ref}
+                value={state.inputValue}
+                onBlur={props.onBlur}
+                onChange={props.onChange}
+                onKeyUp={props.onKeyUp}
+                onKeyDown={props.onKeyDown}
+                onFocus={props.onFocus}
+                slotProps={{
+                  input: {
+                    ...props,
+                    size:
+                      Math.max(
+                        (other.min?.toString() || '').length,
+                        state.inputValue.length || 1,
+                      ) + 1,
+                    sx: {
+                      textAlign: 'center',
+                    },
                   },
-                },
-              }}
-              sx={{
-                pr: 0,
-                borderRadius: 0,
-                flex: 1,
-                '&.MuiInputBase-inputSizeSmall': { padding: 0 },
-                '& .MuiOutlinedInput-notchedOutline': { border: 'none' }
-              }}
-            />
-          )}
+                }}
+                sx={{
+                  pr: 0,
+                  borderRadius: 0,
+                  flex: 1,
+                  '&.MuiInputBase-inputSizeSmall': { padding: 0 },
+                  '& .MuiOutlinedInput-notchedOutline': { border: 'none' }
+                }}
+              />
+            )
+          }}
         />
 
         <BaseNumberField.Increment

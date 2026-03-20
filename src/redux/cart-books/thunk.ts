@@ -6,12 +6,12 @@ import type { CartBookType } from "./slice";
 
 export const addBookInCart = createAsyncThunk<
   { status: string },
-  { bookId: number },
+  { bookId: number, quantity: number },
   { state: RootState }
 >(
   IN_APP_ROUTES.addBookInCart.pathName,
-  async ({ bookId }) => {
-    const result = await addCartBook(bookId);
+  async ({ bookId, quantity }) => {
+    const result = await addCartBook(bookId, quantity);
 
     return result.data
   });
