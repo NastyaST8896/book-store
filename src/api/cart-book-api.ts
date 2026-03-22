@@ -1,9 +1,10 @@
-import type { CommonResponseType } from "@utils/types";
-import { api } from "./api";
-import { IN_APP_ROUTES } from "@utils/routes";
-import type { CartBookType } from "@redux/cart-books/slice";
+import type { CartBookType } from '@redux/cart-books/slice';
+import { IN_APP_ROUTES } from '@utils/routes';
+import type { CommonResponseType } from '@utils/types';
 
-export const addCartBook = async (bookId: number, quantity: number) => {
+import { api } from './api';
+
+export const addCartBook = async (bookId: number, quantity?: number) => {
   const response = await api.post<CommonResponseType<{ status: string }>>(
     IN_APP_ROUTES.addBookInCart.path,
     { bookId, quantity }

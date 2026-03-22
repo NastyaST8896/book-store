@@ -1,29 +1,30 @@
+import { useEffect } from 'react';
+import Books from '@assets/img/books.svg';
+import { StyledButton } from '@common/styled-button';
+import { getCartBooks } from '@redux/cart-books/thunk';
+import { useAppDispatch, useAppSelector } from '@redux/hooks';
+
 import {
+  Box,
   Container,
   Grid,
   Typography,
-  Box,
-} from "@mui/material";
-import { styled } from "@mui/material/styles";
-import Books from '@assets/img/books.svg';
-import { StyledButton } from "@common/styled-button";
-import { BookCardForCart } from "./elements/book-card-for-cart";
-import { useAppDispatch, useAppSelector } from "@redux/hooks";
-import { useEffect } from "react";
-import { getCartBooks } from "@redux/cart-books/thunk";
+} from '@mui/material';
+import { styled } from '@mui/material/styles';
+
+import { BookCardForCart } from './elements/book-card-for-cart';
 
 export const Cart = () => {
   const cart = useAppSelector((state) => state.cartBooks);
-
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     dispatch(getCartBooks());
-  }, [])
+  }, [dispatch]);
 
   return (
     <>
-      { cart.cart ? (
+      { cart.books.length ? (
         <StyledCartMain>
           <Container maxWidth="md">
             <Grid container gap='50px'>
@@ -45,14 +46,14 @@ export const Cart = () => {
                 <Grid container size={12} spacing='30px'>
                   <Grid size={12}>
                     <StyledPriceTypography variant="h2">
-                      Total:
+                      {'Total: '}
                       <StyledTotalSpan>{cart.totalPrice}</StyledTotalSpan>
                     </StyledPriceTypography>
                   </Grid>
 
                   <Grid size={12} display='flex' gap='20px'>
                     <StyledOutlineButton>Continue shopping</StyledOutlineButton>
-                    <StyledButton>Chekout</StyledButton>
+                    <StyledButton>Checkout</StyledButton>
                   </Grid>
                 </Grid>
               </Grid>
@@ -94,8 +95,8 @@ export const Cart = () => {
         </StyledEmptyCartMain>
       )}
     </>
-  )
-}
+  );
+};
 
 const StyledEmptyCartMain = styled('main')`
   padding: 94px 0 148px 0;
@@ -113,7 +114,7 @@ const StyledTextInfoBox = styled(Box)`
 
 const StyledTypography = styled(Typography)`
   font-size: 24px;
-`
+`;
 
 const StyledImgBooksGrid = styled(Grid)`
   @media (max-width: 1000px) {

@@ -7,6 +7,7 @@ import { HeartIcon } from '@common/icons/heart-icon';
 import { ProfileIcon } from '@common/icons/profile-icon';
 import { StyledRoundButton } from '@common/styled-round-button.tsx';
 import { useAppSelector } from '@redux/hooks';
+import { useDebounce } from '@utils/hooks.ts';
 import { IN_APP_ROUTES } from '@utils/routes';
 
 import {
@@ -19,20 +20,6 @@ import {
   Typography
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-
-const useDebounceSetSearchValue = (value: string) => {
-  const [searchValue, setSearchValue] = useState(value);
-
-  useEffect(() => {
-    const timerId = setTimeout(() => {
-      setSearchValue(value);
-    }, 200);
-
-    return () => clearTimeout(timerId);
-  }, [value]);
-
-  return searchValue;
-};
 
 const queryFilters = [
   'genres',
@@ -54,20 +41,15 @@ export const Header = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [inputValue, setInputValue] = useState('');
-  const searchValue = useDebounceSetSearchValue(inputValue.trim());
+  const searchValue = useDebounce<string>(inputValue.trim());
 
   useEffect(() => {
-    if (searchParams.get('searchValue') !== searchValue && searchValue) {
+    if (searchParams.get('searchValue') !== searchValue) {
       queryFilters.forEach((filter) => searchParams.delete(filter));
 
       if (searchValue) {
         searchParams.set('searchValue', searchValue);
       }
-
-      setSearchParams(searchParams);
-    } else if (!searchValue) {
-
-      searchParams.delete('searchValue');
 
       setSearchParams(searchParams);
     }
@@ -77,7 +59,7 @@ export const Header = () => {
     if(location.pathname !== IN_APP_ROUTES.home.path) {
       navigate(IN_APP_ROUTES.home.path);
     }
-  }
+  };
 
   const handleInputValueChange = (
     event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>

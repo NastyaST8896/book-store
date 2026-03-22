@@ -4,6 +4,8 @@ import {
 import { useNavigate } from 'react-router';
 import { HeartIcon } from '@common/icons/heart-icon.tsx';
 import { StyledButton } from '@common/styled-button.tsx';
+import { addBookInCart, getCartBooks } from '@redux/cart-books/thunk';
+import { useAppDispatch } from '@redux/hooks';
 import { formatPrice } from '@utils/formatters.ts';
 import type { Book } from '@utils/types.ts';
 
@@ -15,8 +17,6 @@ import {
   Typography
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { useAppDispatch } from '@redux/hooks';
-import { addBookInCart, getCartBooks } from '@redux/cart-books/thunk';
 
 type BookCardProps = {
   book: Book,
