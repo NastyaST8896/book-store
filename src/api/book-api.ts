@@ -2,7 +2,8 @@ import type { Book, BookProfile, CommonResponseType } from '@utils/types';
 
 import { api } from './api';
 
-export const getBookApi = async (params: {id: string, userId?: string}) => {
+export const getBookApi = async (params: { id: string, userId?: string }) => {
+
   const response = await api.get<CommonResponseType<
     {
       book: BookProfile,
@@ -11,14 +12,17 @@ export const getBookApi = async (params: {id: string, userId?: string}) => {
     {
       userId: string
     }
-    >>(`/books/${params.id}`,
+  >>(`/books/${params.id}`,
+    {
+      params:
       {
-        params:
-        {
-          userId: params.userId
-        }
+        userId: params.userId
       }
-    );
+    }
+  );
 
-  return response.data;
-};
+  return {
+    book: response.data.data.book,
+    recomended: response.data.data.recommended,
+  };
+}

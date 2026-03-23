@@ -8,5 +8,7 @@ export const getMaxPriceApi = async () => {
     '/books/maxPrice',
   );
 
-  return response.data;
+  return {
+      maxPrice: response.data.data.maxPrice,
+    };
 };

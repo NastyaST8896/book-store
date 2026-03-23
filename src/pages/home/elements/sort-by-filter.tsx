@@ -12,6 +12,7 @@ import {
   Popover
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { useSearchParams } from 'react-router';
 
 type SortByType = {
   id: number,
@@ -20,12 +21,13 @@ type SortByType = {
 
 type SortByFilterProps = {
   sortName: string;
-  onClose?: (value: string) => void,
   sortNames: SortByType[],
 };
 
 export const SortByFilter = (props: SortByFilterProps) => {
-  const { onClose, sortName, sortNames } = props;
+  const { sortName, sortNames } = props;
+
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const [isActive, setIsActive] = useState(false);
 
@@ -38,9 +40,9 @@ export const SortByFilter = (props: SortByFilterProps) => {
     setAnchorSortByEl
   ] = React.useState<HTMLElement | null>(null);
 
-     useEffect(() => {
-      setCurrentName(sortName)
-    }, [sortName]);
+  useEffect(() => {
+    setCurrentName(sortName)
+  }, [sortName]);
 
   const handleSortByButtonClick: ButtonProps['onClick'] = (event) => {
     setAnchorSortByEl(event.currentTarget);
@@ -52,11 +54,17 @@ export const SortByFilter = (props: SortByFilterProps) => {
     setAnchorSortByEl(null);
     setIsActive(false);
 
-    if (onClose && startName !== currentName) {
+    if (startName !== currentName) {
       const currentSort = sortNames.find((sort) => sort.name === currentName);
       const currentId = String(currentSort?.id);
 
-      onClose(currentId);
+      const params = new URLSearchParams(searchParams);
+
+      params.delete('sortId');
+
+      params.append('sortId', currentId);
+
+      setSearchParams(params);
     }
   };
 
@@ -79,6 +87,8 @@ export const SortByFilter = (props: SortByFilterProps) => {
         anchorEl={anchorSortByEl}
         onClose={handleSortByClose}
         anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
+        transformOrigin={{ horizontal: 'left', vertical: 'top' }}
+        disableScrollLock={true}
       >
         <StyledList>
           {sortNames.map((name, index) => (
@@ -97,7 +107,7 @@ export const SortByFilter = (props: SortByFilterProps) => {
             </ListItem>
           ))}
         </StyledList>
-      </StyledPriceRangePopover>
+      </StyledPriceRangePopover >
     </>
   );
 };

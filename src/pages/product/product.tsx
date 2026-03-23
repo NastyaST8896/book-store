@@ -7,8 +7,7 @@ import { StarIcon } from '@common/icons/star-icon';
 import { StyledButton } from '@common/styled-button';
 import { setBookRating } from '@redux/books/thunk.ts';
 import { useAppDispatch, useAppSelector } from '@redux/hooks';
-import { getBook } from '@redux/thunks/book-thunk';
-import type { Book, BookProfile } from '@utils/types';
+import type { Book } from '@utils/types';
 
 import {
   Box,
@@ -22,17 +21,26 @@ import {
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { addBookInCart, getCartBooks } from '@redux/cart-books/thunk';
+import { getBookApi } from '../../api/book-api';
 
 export const Product = () => {
   const dispatch = useAppDispatch();
 
-  const auth = useAppSelector((state) => {
-    return state.auth;
+  const user = useAppSelector((state) => {
+    return state.user;
   });
 
-  const [rating, setRating] = useState<number | null>(0);
-
-  const [book, setBook] = useState<BookProfile>(null);
+  const [book, setBook] = useState({
+    id: 0,
+    title: '',
+    author: '',
+    price: '',
+    booksRating: '0.0',
+    media: '',
+    description: '',
+    rating: 0,
+    userRating: 0.0,
+  });
 
   const [recommended, setRecommended] = useState<Book[]>([]);
 
@@ -42,29 +50,38 @@ export const Product = () => {
 
   useEffect(() => {
     if (id) {
-      dispatch(getBook({ id, userId: auth.user?.id || null }))
-        .unwrap()
-        .then((data) => {
-          setBook(data.book);
-          setRecommended(data.recomended);
-          setRating(data.book?.userRating || null);
+      const getProductData = async () => {
+        const result = await getBookApi({
+          id,
+          ...(user.user?.id && { userId: user.user?.id }),
         });
+
+        if(result.book) {
+          setBook(result.book);
+        }
+        setRecommended(result.recomended);
+      }
+
+      getProductData()
     }
-  }, [dispatch, id]);
+  }, [id]);
 
   const handleRatingChange = (
     _: SyntheticEvent<Element, Event>,
     newRating: number | null
   ) => {
-    if (newRating && auth.user?.id && book) {
+    if (newRating && user.user?.id && book) {
       dispatch(setBookRating({
         bookId: book.id,
         rating: newRating
       }))
         .unwrap()
         .then((data) => {
-          setRating(newRating);
-          setBook({ ...book, booksRating: String(data.booksRating) })
+          setBook({
+            ...book,
+            booksRating: String(data.booksRating),
+            userRating: data.userRating,
+          })
         });
     }
   };
@@ -74,6 +91,8 @@ export const Product = () => {
       .unwrap()
       .then(() => dispatch(getCartBooks()));
   }
+
+  console.log(book)
 
   return (
     <main>
@@ -85,7 +104,7 @@ export const Product = () => {
           padding="36px 0 60px 0"
         >
           <StyledCoverGrid
-            img={`http://localhost:3000/${book?.media}`}
+            img={book?.media}
           >
             <StyledIconButton /*transparent={!book.isFavorite}*/>
               <HeartIcon
@@ -127,12 +146,11 @@ export const Product = () => {
 
                 <Grid>
                   <StyledRating
-                    value={rating}
+                    value={user.user ? book?.userRating : 0}
                     precision={1}
-                    defaultValue={auth.user ? book?.userRating : 0}
                     size="large"
                     onChange={handleRatingChange}
-                    readOnly={auth.user ? false : true}
+                    readOnly={user.user ? false : true}
                   />
                 </Grid>
 

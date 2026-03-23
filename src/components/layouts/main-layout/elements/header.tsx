@@ -31,7 +31,7 @@ const queryFilters = [
 
 export const Header = () => {
   const auth = useAppSelector((state) => {
-    return state.auth;
+    return state.user;
   });
 
   const navigate = useNavigate();
@@ -44,7 +44,7 @@ export const Header = () => {
   const searchValue = useDebounce<string>(inputValue.trim());
 
   useEffect(() => {
-    if (searchParams.get('searchValue') !== searchValue) {
+    if (searchParams.get('searchValue') !== searchValue, searchValue !== '') {
       queryFilters.forEach((filter) => searchParams.delete(filter));
 
       if (searchValue) {
@@ -92,7 +92,8 @@ export const Header = () => {
               </Typography>
             </StyledCatalogLink>
 
-            <StyledInput
+            {location.pathname === IN_APP_ROUTES.home.path && (
+              <StyledInput
               fullWidth={true}
               disableUnderline={true}
               startAdornment={
@@ -105,6 +106,8 @@ export const Header = () => {
               value={inputValue}
               placeholder="Search"
             />
+            )}
+            
           </StyledGridEnd>
 
           <Grid size={{ md: 'auto', sm: 4, xs: 'auto' }}>

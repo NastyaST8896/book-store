@@ -8,7 +8,7 @@ import type {
   UserRegister,
   UserWidthAvatar} from '@utils/types';
 
-import type { LoginUserResponseType } from '../redux/auth/thunk';
+import type { LoginUserResponseType } from '../redux/user/thunk';
 
 import { api } from './api';
 

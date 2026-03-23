@@ -6,7 +6,7 @@ import { HideIcon } from '@common/icons/hide-icon';
 import { MailIcon } from '@common/icons/mail-icon';
 import { ViewIcon } from '@common/icons/view-icon';
 import { StyledButton } from '@common/styled-button';
-import { loginUser } from '@redux/auth/thunk';
+import { loginUser } from '@redux/user/thunk';
 import { useAppDispatch } from '@redux/hooks';
 import { IN_APP_ROUTES } from '@utils/routes';
 import type { LoginFormType } from '@utils/types.ts';

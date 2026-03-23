@@ -43,7 +43,7 @@ export const getBooks = createAsyncThunk<
   });
 
 export const setBookRating = createAsyncThunk<
-  { booksRating: number },
+  { booksRating: number, userRating: number},
   { bookId: number, rating: number },
   { state: RootState }
 >(

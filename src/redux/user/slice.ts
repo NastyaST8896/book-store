@@ -12,20 +12,20 @@ import {
   // registerUser
 } from './thunk';
 
-type AuthState = {
+type UserState = {
   isLoading: boolean;
   user: Nullable<Omit<UserType, 'password'>>;
   avatar: string | null;
 };
 
-const initialState: AuthState = {
+const initialState: UserState = {
   isLoading: false,
   user: null,
   avatar: null
 };
 
-export const authSlice = createSlice({
-  name: 'auth',
+export const userSlice = createSlice({
+  name: 'user',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -148,4 +148,4 @@ export const authSlice = createSlice({
 
 // export const {} = authSlice.actions;
 
-export const authReducer = authSlice.reducer;
+export const userReducer = userSlice.reducer;

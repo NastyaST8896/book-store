@@ -12,15 +12,16 @@ import {
   Typography
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { useSearchParams } from 'react-router';
 
 type PriceRangeFilterProps = {
-  onClose?: (value: number[]) => void;
   maxPrice: number;
   value: number[];
 };
 
 export const PriceRangeFilter = (props: PriceRangeFilterProps) => {
-  const { onClose, maxPrice, value } = props;
+  const { maxPrice, value } = props;
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const [priceValue, setPriceValue] = useState(value);
   const [startValue, setStartValue] = useState([priceValue[0], priceValue[1]]);
@@ -30,7 +31,7 @@ export const PriceRangeFilter = (props: PriceRangeFilterProps) => {
     setAnchorPriceEl
   ] = React.useState<HTMLElement | null>(null);
 
-   useEffect(() => {
+  useEffect(() => {
     setPriceValue(value)
   }, [value]);
 
@@ -61,8 +62,16 @@ export const PriceRangeFilter = (props: PriceRangeFilterProps) => {
     setAnchorPriceEl(null);
     setIsActive(false);
 
-    if (onClose && startValue.join(',') !== priceValue.join(',')) {
-      onClose(priceValue);
+    if (startValue.join(',') !== priceValue.join(',')) {
+      const params = new URLSearchParams(searchParams);
+
+      params.delete('minPrice');
+      params.delete('maxPrice');
+
+      params.append('minPrice', String(priceValue[0]));
+      params.append('maxPrice', String(priceValue[1]));
+
+      setSearchParams(params);
     }
   };
 

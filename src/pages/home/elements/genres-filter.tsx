@@ -17,9 +17,9 @@ import {
   Popover
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { useSearchParams } from 'react-router';
 
 type GenresFilterProps = {
-  onClose?: (value: string[]) => void;
   genres: Genre[];
   selectedGenres: string[];
 };
@@ -35,7 +35,9 @@ function isSameArray(startCheckedGenres: string[], checkedGenres: string[]) {
 }
 
 export const GenresFilter = (props: GenresFilterProps) => {
-  const { onClose, genres, selectedGenres } = props;
+  const { genres, selectedGenres } = props;
+
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const [isActive, setIsActive] = useState(false);
   const [
@@ -50,7 +52,7 @@ export const GenresFilter = (props: GenresFilterProps) => {
     setStartCheckedGenres
   ] = React.useState<string[]>([]);
 
-   useEffect(() => {
+  useEffect(() => {
     setCheckedGenres(selectedGenres)
   }, [selectedGenres]);
 
@@ -64,12 +66,20 @@ export const GenresFilter = (props: GenresFilterProps) => {
     setAnchorGenresEl(null);
     setIsActive(false);
 
-    if (onClose && !isSameArray(startCheckedGenres, checkedGenres)) {
-      onClose(checkedGenres);
-    }
+    if (!isSameArray(startCheckedGenres, checkedGenres)) {
+      const params = new URLSearchParams(searchParams);
+
+      params.delete('genres');
+
+      if (genres.length) {
+        params.append('genres', checkedGenres.join(','));
+      }
+
+      setSearchParams(params);
+    };
   };
 
-  const handleToggle = (value: {id: number, name: string}) => () => {
+  const handleToggle = (value: { id: number, name: string }) => () => {
     const currentIndex = checkedGenres.indexOf(String(value.id));
     const newCheckedGenres = [...checkedGenres];
 

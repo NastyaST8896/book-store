@@ -8,5 +8,7 @@ export const getGenresApi = async () => {
     '/books/genres',
   );
 
-  return response.data;
+  return {
+      allGenres: response.data.data.allGenres,
+    };
 };

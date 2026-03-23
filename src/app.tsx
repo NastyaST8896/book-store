@@ -8,7 +8,7 @@ import { Login } from './pages/login';
 import { Product } from './pages/product';
 import { Profile } from './pages/profile';
 import { Register } from './pages/register';
-import { checkAuthUser } from './redux/auth/thunk.ts';
+import { checkAuthUser } from './redux/user/thunk.ts';
 import { useAppDispatch } from './redux/hooks.ts';
 import { IN_APP_ROUTES } from './utils/routes.ts';
 import { Cart } from './pages/cart';

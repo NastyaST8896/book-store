@@ -8,7 +8,7 @@ type PrivateRouteProps = {
 };
 
 export const PrivateRoute: React.FC<PrivateRouteProps> = ({ protectVariant, redirectTo }) => {
-  const auth = useAppSelector(state => state.auth);
+  const auth = useAppSelector(state => state.user);
 
   const location = useLocation();
 

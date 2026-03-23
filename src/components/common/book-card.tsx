@@ -22,7 +22,6 @@ type BookCardProps = {
   book: Book,
 };
 
-
 export const BookCard = (props: BookCardProps) => {
   const { book } = props;
 
@@ -32,6 +31,7 @@ export const BookCard = (props: BookCardProps) => {
 
   const handleBookClick = () => {
     navigate(`/product/${book.id}`);
+    window.scrollTo({top: 0, behavior: 'smooth'});
   };
 
   const handleIconButtonClick: MouseEventHandler<HTMLButtonElement> = (e) => {
@@ -55,7 +55,7 @@ export const BookCard = (props: BookCardProps) => {
     >
       <StyledCoverGrid
         onClick={handleBookClick}
-        img={`http://localhost:3000/${book.media}`}
+        img={book.media}
       >
         <StyledIconButton
           onClick={handleIconButtonClick}
@@ -71,7 +71,7 @@ export const BookCard = (props: BookCardProps) => {
         >
           <Typography
             title={book.title}
-            variant={'subtitle2'}
+            variant='subtitle2'
             fontWeight={500}
             sx={{
               overflow: 'hidden',
@@ -84,9 +84,9 @@ export const BookCard = (props: BookCardProps) => {
 
           <Typography
             title={book.author}
-            variant={'subtitle2'}
+            variant='subtitle2'
             fontWeight={500}
-            color={'#B9BAC3'}
+            color='#B9BAC3'
             sx={{
               overflow: 'hidden',
               whiteSpace: 'nowrap',
@@ -114,7 +114,7 @@ export const BookCard = (props: BookCardProps) => {
 
           <Box sx={{ mr: 2 }}>
             <Typography
-              variant={'subtitle1'}
+              variant='subtitle1'
               sx={(theme) => ({
                 color: theme.palette.appColor.darkGrey
               })}

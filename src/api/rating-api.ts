@@ -9,7 +9,10 @@ type RatingDataType = {
 };
 
 export const setRating = async (bookRatingData: RatingDataType) => {
-  const response = await api.post<CommonResponseType<{ booksRating: number }>>(
+  const response = await api.post<CommonResponseType<{ 
+    booksRating: number, 
+    userRating: number 
+  }>>(
     IN_APP_ROUTES.setBookRating.path,
     {
       bookId: bookRatingData.bookId,

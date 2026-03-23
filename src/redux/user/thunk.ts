@@ -16,7 +16,7 @@ import {
   getInfo,
   login,
   register
-} from '../../api/auth-api.ts';
+} from '../../api/user-api.ts';
 import type { RootState } from '../store.ts';
 
 export type LoginUserResponseType = {

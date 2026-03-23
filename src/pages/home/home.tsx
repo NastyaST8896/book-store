@@ -3,8 +3,6 @@ import { useSearchParams } from 'react-router';
 import { BookCard } from '@common/book-card';
 import { getBooks } from '@redux/books/thunk.ts';
 import { useAppDispatch, useAppSelector } from '@redux/hooks.ts';
-import { getAllGenres } from '@redux/thunks/genres-thunk.ts';
-import { getMaxPrice } from '@redux/thunks/price-thunk.ts';
 import type { Genre } from '@utils/types.ts';
 
 import {
@@ -22,6 +20,8 @@ import { GenresFilter } from './elements/genres-filter.tsx';
 import { PriceRangeFilter } from './elements/price-range-filter.tsx';
 import { SortByFilter } from './elements/sort-by-filter.tsx';
 import { FreeBook } from './elements';
+import { getGenresApi } from '../../api/genres-api.ts';
+import { getMaxPriceApi } from '../../api/price-api.ts';
 
 const sortNames = [
   { id: 1, name: 'Price' },
@@ -41,14 +41,21 @@ export const Home = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(getMaxPrice())
-      .unwrap()
-      .then((data) => setMaxPrice(data.maxPrice));
+    const getMaxPrice = async () => {
+      const maxPrice = await getMaxPriceApi();
 
-    dispatch(getAllGenres())
-      .unwrap()
-      .then((data) => setGenres(data.allGenres));
-  }, [dispatch]);
+      setMaxPrice(maxPrice.maxPrice)
+    };
+
+    const getGenres = async () => {
+      const genres = await getGenresApi();
+
+      setGenres(genres.allGenres)
+    };
+
+    getGenres();
+    getMaxPrice();
+  }, []);
 
   useEffect(() => {
     dispatch(getBooks({
@@ -65,40 +72,6 @@ export const Home = () => {
     const params = new URLSearchParams(searchParams);
 
     params.set('page', String(value));
-
-    setSearchParams(params);
-  };
-
-  const handlePriceRangeChange = (priceRange: number[]) => {
-    const params = new URLSearchParams(searchParams);
-
-    params.delete('minPrice');
-    params.delete('maxPrice');
-
-    params.append('minPrice', String(priceRange[0]));
-    params.append('maxPrice', String(priceRange[1]));
-
-    setSearchParams(params);
-  };
-
-  const handleGenresChange = (genres: string[]) => {
-    const params = new URLSearchParams(searchParams);
-
-    params.delete('genres');
-
-    if (genres.length) {
-      params.append('genres', genres.join(','));
-    }
-
-    setSearchParams(params);
-  };
-
-  const handleSortByChange = (sortId: string) => {
-    const params = new URLSearchParams(searchParams);
-
-    params.delete('sortId');
-
-    params.append('sortId', sortId);
 
     setSearchParams(params);
   };
@@ -120,7 +93,6 @@ export const Home = () => {
               <GenresFilter
                 genres={genres}
                 selectedGenres={searchParams.get('genres')?.split(',') || []}
-                onClose={handleGenresChange}
               />
             </Grid>
 
@@ -131,7 +103,6 @@ export const Home = () => {
                   Number(searchParams.get('maxPrice')) || Number(maxPrice),
                 ]}
                 maxPrice={maxPrice}
-                onClose={handlePriceRangeChange}
               />
             </Grid>
 
@@ -141,9 +112,8 @@ export const Home = () => {
                 sortName={
                   sortNames.find((sort) =>
                     sort.id === Number(searchParams.get('sortId')))?.name
-                    || ''
+                  || ''
                 }
-                onClose={handleSortByChange}
               />
             </Grid>
           </Grid>
@@ -156,18 +126,32 @@ export const Home = () => {
                 <CircularProgress size={100} />
               </StyledProgressBox>
             ) : (
-              <StyledGrid
-                container
-                columnSpacing={2}
-                rowSpacing={8}
-              >
-                {books.books.map((book) => (
-                  <BookCard
-                    key={book.id}
-                    book={book}
-                  />
-                ))}
-              </StyledGrid>
+              books.books.length ? (
+                <StyledGrid
+                  container
+                  columnSpacing={2}
+                  rowSpacing={8}
+                >
+                  {
+                    books.books.map((book) => (
+                      <BookCard
+                        key={book.id}
+                        book={book}
+                      />
+                    ))
+                  }
+                </StyledGrid>
+              ) : (
+                <StyledGrid
+                  maxWidth='500px'
+                  margin='0 auto'
+                >
+                  <Typography variant='h1' marginTop='40px' textAlign='center'>
+                    No books where found.
+                    Try changing the filtering parameters.
+                  </Typography>
+                </StyledGrid>
+              )
             )
         }
 
@@ -181,7 +165,7 @@ export const Home = () => {
         </StyledPaginationBox>
 
       </Container>
-    </main>
+    </main >
   );
 };
 

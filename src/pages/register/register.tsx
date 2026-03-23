@@ -5,7 +5,7 @@ import { HideIcon } from '@common/icons/hide-icon';
 import { MailIcon } from '@common/icons/mail-icon';
 import { ViewIcon } from '@common/icons/view-icon';
 import { StyledButton } from '@common/styled-button';
-import { registerUser } from '@redux/auth/thunk';
+import { registerUser } from '@redux/user/thunk';
 import { useAppDispatch,useAppSelector } from '@redux/hooks';
 import type { RegisterFormType } from '@utils/types';
 import {
@@ -21,7 +21,7 @@ import { FormStyledInput } from './elements/form-styled-input';
 
 
 export const Register = () => {
-  const auth = useAppSelector(state => state.auth);
+  const auth = useAppSelector(state => state.user);
 
   const dispatch = useAppDispatch();
 

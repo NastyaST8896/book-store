@@ -12,7 +12,7 @@ import {
   changeUserName,
   changeUserPassword,
   getUserInfo
-} from '@redux/auth/thunk';
+} from '@redux/user/thunk';
 import { useAppSelector } from '@redux/hooks';
 import { useAppDispatch } from '@redux/hooks';
 import type { ProfileFormType, } from '@utils/types';
@@ -39,7 +39,7 @@ const requiredNameValidator = createRequiredValidator('Name is required');
 const requiredEmailValidator = createRequiredValidator('Email is required');
 
 export const Profile = () => {
-  const auth = useAppSelector(state => state.auth);
+  const auth = useAppSelector(state => state.user);
 
   const dispatch = useAppDispatch();
 
