@@ -67,9 +67,11 @@ export const PriceRangeFilter = (props: PriceRangeFilterProps) => {
 
       params.delete('minPrice');
       params.delete('maxPrice');
+      params.delete('page');
 
       params.append('minPrice', String(priceValue[0]));
       params.append('maxPrice', String(priceValue[1]));
+      params.append('page', '1');
 
       setSearchParams(params);
     }

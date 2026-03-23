@@ -70,9 +70,11 @@ export const GenresFilter = (props: GenresFilterProps) => {
       const params = new URLSearchParams(searchParams);
 
       params.delete('genres');
+      params.delete('page');
 
       if (genres.length) {
         params.append('genres', checkedGenres.join(','));
+        params.append('page', '1')
       }
 
       setSearchParams(params);
