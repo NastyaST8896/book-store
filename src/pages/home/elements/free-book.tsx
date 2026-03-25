@@ -6,6 +6,13 @@ import { Box, Grid, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 export const FreeBook = () => {
+
+  const handleChooseButtonClick = () => {
+    window.scrollTo({
+      top: 560,
+      behavior: 'smooth'
+    })
+  }
   return (
     <StyledDiv>
       <StyledDivImgBooks>
@@ -41,7 +48,11 @@ export const FreeBook = () => {
               Buy two books and get one for free
             </Typography>
           </Box>
-          <StyledChooseButton sx={{width: '230px'}} variant="contained">
+          <StyledChooseButton
+            onClick={handleChooseButtonClick}
+            sx={{ width: '230px' }}
+            variant="contained"
+          >
             Choose a book
           </StyledChooseButton>
         </Grid>
