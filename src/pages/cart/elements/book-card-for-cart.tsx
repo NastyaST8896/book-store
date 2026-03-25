@@ -16,6 +16,7 @@ import {
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { formatPrice } from '@utils/formatters';
+import { useNavigate } from 'react-router';
 
 type BookCardForCartProps = {
   book: CartBookType,
@@ -25,6 +26,8 @@ export const BookCardForCart = (props: BookCardForCartProps) => {
   const { book } = props;
 
   const dispatch = useAppDispatch();
+
+  const navigate = useNavigate();
 
   const [booksCount, setBooksCount] = useState(book.count);
 
@@ -45,50 +48,56 @@ export const BookCardForCart = (props: BookCardForCartProps) => {
 
   const handleDeleteButton = () => {
     dispatch(addBookInCart({ bookId: book.id, quantity: 0 }))
-        .unwrap()
-        .then(() => dispatch(getCartBooks()));
+      .unwrap()
+      .then(() => dispatch(getCartBooks()));
+  }
+
+  const handleBookCoverClick = () => {
+    navigate(`/product/${book.id}`);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   return (
-      <Grid container gap={3} alignItems="center">
-        <StyledCoverGrid
-          img={book.media}
-        ></StyledCoverGrid>
+    <Grid container gap={3} alignItems="center">
+      <StyledCoverGrid
+        img={book.media}
+        onClick={handleBookCoverClick}
+      ></StyledCoverGrid>
 
-        <Grid container rowSpacing={7} flexDirection="column">
-          <Grid>
-            <Typography variant="h1">{book.title}</Typography>
+      <Grid container rowSpacing={7} flexDirection="column">
+        <Grid>
+          <Typography variant="h1">{book.title}</Typography>
 
-            <StyledAuthorTypography variant="h2">
-              {book.author}
-            </StyledAuthorTypography>
-          </Grid>
+          <StyledAuthorTypography variant="h2">
+            {book.author}
+          </StyledAuthorTypography>
+        </Grid>
 
-          <Grid
-            alignItems="center"
-            justifyContent="flex-start"
-            container
-            spacing={8}
-          >
-            <NumberSpinner
-              min={1}
-              max={book.availableCount}
-              defaultValue={book.count}
-              onChange={handleBooksCountChange}
-            />
+        <Grid
+          alignItems="center"
+          justifyContent="flex-start"
+          container
+          spacing={8}
+        >
+          <NumberSpinner
+            min={1}
+            max={book.availableCount}
+            defaultValue={book.count}
+            onChange={handleBooksCountChange}
+          />
 
-            <IconButton onClick={handleDeleteButton}>
-              <DeleteIcon />
-            </IconButton>
-          </Grid>
+          <IconButton onClick={handleDeleteButton}>
+            <DeleteIcon />
+          </IconButton>
+        </Grid>
 
-          <Grid>
-            <StyledPriceTypography variant="h2">
-              {formatPrice(String(book.price))}
-            </StyledPriceTypography>
-          </Grid>
+        <Grid>
+          <StyledPriceTypography variant="h2">
+            {formatPrice(String(book.price))}
+          </StyledPriceTypography>
         </Grid>
       </Grid>
+    </Grid>
   );
 };
 
