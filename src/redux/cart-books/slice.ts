@@ -9,6 +9,7 @@ export type CartBookType = {
   price: string,
   media: string,
   count: number,
+  availableCount: number,
 };
 
 type CartBooksState = {

@@ -68,7 +68,7 @@ export const BookCardForCart = (props: BookCardForCartProps) => {
           >
             <NumberSpinner
               min={1}
-              max={100}
+              max={book.availableCount}
               defaultValue={book.count}
               onChange={handleBooksCountChange}
             />
