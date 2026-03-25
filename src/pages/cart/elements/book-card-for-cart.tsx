@@ -7,16 +7,15 @@ import { NumberSpinner } from '@common/number-spinner';
 import type { CartBookType } from '@redux/cart-books/slice';
 import { addBookInCart, getCartBooks } from '@redux/cart-books/thunk.ts';
 import { useAppDispatch } from '@redux/hooks.ts';
-import { formatPrice } from '@utils/formatters';
 import { useDebounce } from '@utils/hooks.ts';
 
 import {
-  Box,
   Grid,
   type GridProps, IconButton,
   Typography
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { formatPrice } from '@utils/formatters';
 
 type BookCardForCartProps = {
   book: CartBookType,
@@ -44,11 +43,16 @@ export const BookCardForCart = (props: BookCardForCartProps) => {
 
   }, [debouncedBooksCount, dispatch]);
 
+  const handleDeleteButton = () => {
+    dispatch(addBookInCart({ bookId: book.id, quantity: 0 }))
+        .unwrap()
+        .then(() => dispatch(getCartBooks()));
+  }
+
   return (
-    <>
       <Grid container gap={3} alignItems="center">
         <StyledCoverGrid
-          img={`http://localhost:3000/${book.media}`}
+          img={book.media}
         ></StyledCoverGrid>
 
         <Grid container rowSpacing={7} flexDirection="column">
@@ -73,27 +77,18 @@ export const BookCardForCart = (props: BookCardForCartProps) => {
               onChange={handleBooksCountChange}
             />
 
-            <IconButton>
+            <IconButton onClick={handleDeleteButton}>
               <DeleteIcon />
             </IconButton>
           </Grid>
 
           <Grid>
             <StyledPriceTypography variant="h2">
-              {formatPrice(book.price)}
+              {formatPrice(String(book.price))}
             </StyledPriceTypography>
           </Grid>
         </Grid>
       </Grid>
-
-      <Box sx={{
-        height: '1px',
-        width: '100%',
-        backgroundColor: '#D6D8E7',
-        margin: '40px 0'
-      }}
-      />
-    </>
   );
 };
 
@@ -121,3 +116,4 @@ const StyledPriceTypography = styled(Typography)(({ theme }) => `
     color: ${theme.palette.appColor.dark};
     font-size: 36px;
 `);
+
