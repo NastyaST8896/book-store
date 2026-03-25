@@ -13,14 +13,22 @@ import {
 import { styled } from '@mui/material/styles';
 
 import { BookCardForCart } from './elements/book-card-for-cart';
+import { useNavigate } from 'react-router';
+import { IN_APP_ROUTES } from '@utils/routes';
 
 export const Cart = () => {
   const cart = useAppSelector((state) => state.cartBooks);
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     dispatch(getCartBooks());
   }, [dispatch]);
+
+  const handleButtonClick = () => {
+    navigate(IN_APP_ROUTES.home.path);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
 
   return (
     <>
@@ -53,8 +61,10 @@ export const Cart = () => {
                     </StyledPriceTypography>
                   </Grid>
 
-                  <Grid size={12} display='flex' gap='20px'>
-                    <StyledOutlineButton>Continue shopping</StyledOutlineButton>
+                  <StyledButtonsGrid size={12}>
+                    <StyledOutlineButton onClick={handleButtonClick}>
+                      Continue shopping
+                    </StyledOutlineButton>
                     <StyledButton>Checkout</StyledButton>
                   </Grid>
                 </Grid>
