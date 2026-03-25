@@ -142,15 +142,12 @@ export const Home = () => {
                   }
                 </StyledGrid>
               ) : (
-                <StyledGrid
-                  maxWidth='500px'
-                  margin='0 auto'
-                >
-                  <Typography variant='h1' marginTop='40px' textAlign='center'>
+                <StyledWithoutBooksGrid>
+                  <StyledWithoutBooksTypography variant='h1'>
                     No books where found.
                     Try changing the filtering parameters.
-                  </Typography>
-                </StyledGrid>
+                  </StyledWithoutBooksTypography>
+                </StyledWithoutBooksGrid>
               )
             )
         }
@@ -175,6 +172,18 @@ const StyledFreeBookBox = styled(Box)`
 
 const StyledGrid = styled(Grid)`
   padding: 20px 0 40px 0;
+`;
+
+const StyledWithoutBooksGrid = styled(Grid)`
+  padding: 20px 0 40px 0;
+  max-width: 500px;
+  width: 100%;
+  margin: 0 auto;
+`;
+
+const StyledWithoutBooksTypography = styled(Typography)`
+  margin-top: 40px; 
+  text-align: center;
 `;
 
 const StyledPagination = styled(Pagination)(({ theme }) => `

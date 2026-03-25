@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import Books from '@assets/img/books.svg';
 import { StyledButton } from '@common/styled-button';
 import { getCartBooks } from '@redux/cart-books/thunk';
@@ -32,11 +32,10 @@ export const Cart = () => {
 
   return (
     <>
-      { cart.books.length ? (
+      {cart.books.length ? (
         <StyledCartMain>
           <Container maxWidth="md">
             <Grid container gap='50px'>
-
               <Grid size={12}>
                 {cart.books?.map((book, index) => (
                   <React.Fragment key={book.id}>
@@ -49,10 +48,6 @@ export const Cart = () => {
               </Grid>
 
               <Grid>
-                <Grid>
-
-                </Grid>
-
                 <Grid container size={12} spacing='30px'>
                   <Grid size={12}>
                     <StyledPriceTypography variant="h2">
@@ -66,7 +61,7 @@ export const Cart = () => {
                       Continue shopping
                     </StyledOutlineButton>
                     <StyledButton>Checkout</StyledButton>
-                  </Grid>
+                  </StyledButtonsGrid>
                 </Grid>
               </Grid>
             </Grid>
@@ -75,11 +70,9 @@ export const Cart = () => {
       ) : (
         <StyledEmptyCartMain>
           <Container maxWidth="md">
-            <Grid
+            <StyledEmptyCartGrid
               container
               spacing={{ lg: 13, md: 8, sm: 5, xs: 5 }}
-              justifyContent='center'
-              alignItems='center'
               direction={{
                 lg: 'row',
                 md: 'row',
@@ -100,9 +93,11 @@ export const Cart = () => {
                   </StyledTypography>
                 </StyledTextInfoBox>
 
-                <StyledButton>Go to catalog</StyledButton>
+                <StyledButton onClick={handleButtonClick}>
+                  Go to catalog
+                </StyledButton>
               </StyledEmptyCartInfoGrid>
-            </Grid>
+            </StyledEmptyCartGrid>
           </Container>
         </StyledEmptyCartMain>
       )}
@@ -152,6 +147,11 @@ const StyledTotalSpan = styled('span')(({ theme }) => `
   color: ${theme.palette.appColor.dark};
 `);
 
+const StyledButtonsGrid = styled(Grid)`
+  display: flex;
+  gap: 20px;
+`;
+
 const StyledOutlineButton = styled(StyledButton)(({ theme }) => `
   color: ${theme.palette.appColor.dark};
   background-color: transparent;
@@ -161,4 +161,17 @@ const StyledOutlineButton = styled(StyledButton)(({ theme }) => `
 const StyledPriceTypography = styled(Typography)(({ theme }) => `
     color: ${theme.palette.appColor.dark};
     font-size: 36px;
+`);
+
+const StyledEmptyCartGrid = styled(Grid)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const StyledBox = styled(Box)(({ theme }) => `
+  height: 1px;
+  width: 100%;
+  background-color: ${theme.palette.appColor.lightGrey};
+  margin: 40px 0;
 `);
