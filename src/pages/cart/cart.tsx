@@ -30,11 +30,13 @@ export const Cart = () => {
             <Grid container gap='50px'>
 
               <Grid size={12}>
-                {cart.books?.map((book) => (
-                  <BookCardForCart
-                    key={book.id}
-                    book={book}
-                  />
+                {cart.books?.map((book, index) => (
+                  <React.Fragment key={book.id}>
+                    <BookCardForCart book={book} />
+
+                    {index !== (cart.books.length - 1) && <StyledBox />}
+                  </React.Fragment>
+
                 ))}
               </Grid>
 
