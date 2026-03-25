@@ -128,7 +128,7 @@ export const ProductBook = (props: ProductBookProps) => {
             </StyledButtonTypography>
 
             {book.count ? (
-              <StyledSpinnerGrid>
+              <StyledSpinnerBox>
                 <NumberSpinner
                   min={1}
                   max={book.availableCount}
@@ -138,7 +138,7 @@ export const ProductBook = (props: ProductBookProps) => {
                 <IconButton onClick={handleDeleteButton}>
                   <DeleteIcon />
                 </IconButton>
-              </StyledSpinnerGrid>
+              </StyledSpinnerBox>
             ) : (
               <StyledButton
                 onClick={handleProductButtonClick}
@@ -241,10 +241,11 @@ const StyledIconButton = styled(
   }
 }));
 
-const StyledSpinnerGrid = styled(Grid)`
+const StyledSpinnerBox = styled(Box)`
   display: flex; 
-  justify-content: space-evenly;
+  align-items: center;
   background-color: #3449665f;
-  padding: 6px 0;
-  border-radius: 16px; 
+  padding: 8px;
+  border-radius: 16px;
+  gap: 40px
 `;
