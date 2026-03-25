@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router';
 import { HeartIcon } from '@common/icons/heart-icon.tsx';
 import { StyledButton } from '@common/styled-button.tsx';
 import { addBookInCart, getCartBooks } from '@redux/cart-books/thunk';
-import { useAppDispatch } from '@redux/hooks';
+import { useAppDispatch, useAppSelector } from '@redux/hooks';
 import { formatPrice } from '@utils/formatters.ts';
 import type { Book } from '@utils/types.ts';
 
@@ -25,13 +25,17 @@ type BookCardProps = {
 export const BookCard = (props: BookCardProps) => {
   const { book } = props;
 
+  const cart = useAppSelector((state) => {
+    return state.cartBooks;
+  });
+
   const dispatch = useAppDispatch();
 
   const navigate = useNavigate();
 
   const handleBookClick = () => {
     navigate(`/product/${book.id}`);
-    window.scrollTo({top: 0, behavior: 'smooth'});
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleIconButtonClick: MouseEventHandler<HTMLButtonElement> = (e) => {
@@ -41,7 +45,14 @@ export const BookCard = (props: BookCardProps) => {
   };
 
   const handleBookPriceButtonClick = () => {
-    dispatch(addBookInCart({ bookId: book.id }))
+    let currentBook;
+    if (cart.books.length) {
+      currentBook = cart.books.find((cartBook) => cartBook.id === book.id);
+    }
+    dispatch(addBookInCart({ 
+      bookId: book.id, 
+      quantity: currentBook ? (currentBook.count + 1) : 1 
+    }))
       .unwrap()
       .then(() => dispatch(getCartBooks()));
   };
