@@ -91,6 +91,8 @@ export const PriceRangeFilter = (props: PriceRangeFilterProps) => {
         anchorEl={anchorPriceEl}
         onClose={handlePriceRangeClose}
         anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
+        disableScrollLock={true}
+        marginThreshold={null}
       >
         <StyledSlider
           aria-label="price range"

@@ -61,8 +61,11 @@ export const SortByFilter = (props: SortByFilterProps) => {
       const params = new URLSearchParams(searchParams);
 
       params.delete('sortId');
+      params.delete('page');
 
       params.append('sortId', currentId);
+      params.append('page', '1');
+
 
       setSearchParams(params);
     }
@@ -87,8 +90,8 @@ export const SortByFilter = (props: SortByFilterProps) => {
         anchorEl={anchorSortByEl}
         onClose={handleSortByClose}
         anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
-        transformOrigin={{ horizontal: 'left', vertical: 'top' }}
         disableScrollLock={true}
+        marginThreshold={null}
       >
         <StyledList>
           {sortNames.map((name, index) => (

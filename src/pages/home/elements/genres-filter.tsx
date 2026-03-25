@@ -108,6 +108,8 @@ export const GenresFilter = (props: GenresFilterProps) => {
         anchorEl={anchorGenresEl}
         onClose={handleGenresClose}
         anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
+        disableScrollLock={true}
+        marginThreshold={null}
       >
         <StyledList>
           {genres.map((genre) => (
