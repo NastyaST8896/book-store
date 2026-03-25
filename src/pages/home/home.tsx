@@ -33,6 +33,7 @@ const sortNames = [
 
 export const Home = () => {
   const books = useAppSelector((state) => state.books);
+  const cartBooks = useAppSelector((state) => state.cartBooks.books)
 
   const [searchParams, setSearchParams] = useSearchParams();
   const [maxPrice, setMaxPrice] = useState(Infinity);
@@ -66,7 +67,7 @@ export const Home = () => {
       sortBy: searchParams.get('sortId'),
       searchValue: searchParams.get('searchValue'),
     }));
-  }, [searchParams, dispatch]);
+  }, [searchParams, dispatch, cartBooks]);
 
   const handlePaginationChange: PaginationProps['onChange'] = (_, value) => {
     const params = new URLSearchParams(searchParams);

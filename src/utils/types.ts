@@ -47,6 +47,8 @@ export type Book = {
   booksRating: string;
   media: string;
   isFavorite?: boolean;
+  availableCount: number;
+  count: number;
 };
 
 export type BookProfile = Book & {
@@ -93,4 +95,6 @@ export type ProductBookType = {
   description: string;
   rating: number;
   userRating: number;
+  count: number;
+  availableCount: number;
 }

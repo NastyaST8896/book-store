@@ -20,6 +20,24 @@ export const Product = () => {
     return state.user;
   });
 
+  const cartBooks = useAppSelector((state) => {
+    return state.cartBooks;
+  });
+
+  const { id } = useParams();
+
+  const books = useAppSelector((state) => {
+    return state.books.books
+  })
+
+  let currentBook
+  if (id) {
+    currentBook = books
+      .find((book) => {
+        return book.id === +id;
+      })
+  }
+
   const [book, setBook] = useState({
     id: 0,
     title: '',
@@ -30,11 +48,13 @@ export const Product = () => {
     description: '',
     rating: 0,
     userRating: 0.0,
+    count: 0,
+    availableCount: 1,
   });
 
-  const [recommended, setRecommended] = useState<Book[]>([]);
+  
 
-  const { id } = useParams();
+  const [recommended, setRecommended] = useState<Book[]>([]);
 
   useEffect(() => {
     if (id) {
@@ -52,7 +72,7 @@ export const Product = () => {
 
       getProductData()
     }
-  }, [id]);
+  }, [id, cartBooks]);
 
   const handleBookChange = (newBook: ProductBookType) => {
     setBook(newBook)
@@ -62,7 +82,10 @@ export const Product = () => {
     <main>
       <Container maxWidth="md">
 
-        <ProductBook book={book} onChange={handleBookChange} />
+        <ProductBook
+          book={book}
+          onChange={handleBookChange}
+        />
 
 
         <StyledBox>

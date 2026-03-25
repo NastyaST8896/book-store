@@ -13,6 +13,11 @@ import { StyledButton } from '@common/styled-button';
 import { addBookInCart, getCartBooks } from '@redux/cart-books/thunk';
 import type { ProductBookType } from '@utils/types';
 import { ProductBookRating } from './product-book-rating';
+import { NumberSpinner } from '@common/number-spinner';
+import { DeleteIcon } from '@common/icons/delete-icon';
+import { useEffect, useState } from 'react';
+import { useDebounce } from '@utils/hooks';
+import type { NumberFieldRootProps } from '@base-ui/react';
 
 type ProductBookProps = {
   book: ProductBookType,
@@ -22,16 +27,44 @@ type ProductBookProps = {
 export const ProductBook = (props: ProductBookProps) => {
   const { book, onChange } = props;
 
+  const [bookCount, setBookCount] = useState(book.count);
+
   const dispatch = useAppDispatch();
 
   const cart = useAppSelector((state) => {
-    return state.cartBooks;
+    return state.cartBooks.books;
   });
+
+  const debouncedBooksCount = useDebounce<number>(bookCount, 500);
+  
+    useEffect(() => {
+      if (debouncedBooksCount !== book.count) {
+        dispatch(addBookInCart({ bookId: book.id, quantity: bookCount }))
+          .unwrap()
+          .then(() => {
+            dispatch(getCartBooks())
+            onChange({...book, count: debouncedBooksCount})
+          });
+      }
+  
+    }, [debouncedBooksCount, dispatch]);
+    
+      const handleBooksCountChange: NumberFieldRootProps['onValueChange'] = 
+      (count) => {
+        setBookCount(count || 0);
+      };
+    
+      const handleDeleteButton = () => {
+        dispatch(addBookInCart({ bookId: book.id, quantity: 0 }))
+          .unwrap()
+          .then(() => dispatch(getCartBooks()));
+      }
+  
 
   const handleProductButtonClick = () => {
     let currentBook;
-    if (cart.books.length) {
-      currentBook = cart.books.find((cartBook) => cartBook.id === book.id);
+    if (cart.length) {
+      currentBook = cart.find((cartBook) => cartBook.id === book.id);
     }
     dispatch(addBookInCart({
       bookId: book?.id,
@@ -94,13 +127,27 @@ export const ProductBook = (props: ProductBookProps) => {
               Hardcover
             </StyledButtonTypography>
 
-            <StyledButton
-              onClick={handleProductButtonClick}
-              buttonHeight={50}
-              sx={{ fontSize: '20px' }}
-            >
-              $ {book.price} USD
-            </StyledButton>
+            {book.count ? (
+              <StyledSpinnerGrid>
+                <NumberSpinner
+                  min={1}
+                  max={book.availableCount}
+                  defaultValue={book.count}
+                  onChange={handleBooksCountChange}
+                />
+                <IconButton onClick={handleDeleteButton}>
+                  <DeleteIcon />
+                </IconButton>
+              </StyledSpinnerGrid>
+            ) : (
+              <StyledButton
+                onClick={handleProductButtonClick}
+                buttonHeight={50}
+                sx={{ fontSize: '20px' }}
+              >
+                $ {book.price} USD
+              </StyledButton>
+            )}
           </StyledButtonBox>
         </StyledButtonsBox>
       </StyledBookInfoGrid>
@@ -193,3 +240,11 @@ const StyledIconButton = styled(
     opacity: 1
   }
 }));
+
+const StyledSpinnerGrid = styled(Grid)`
+  display: flex; 
+  justify-content: space-evenly;
+  background-color: #3449665f;
+  padding: 6px 0;
+  border-radius: 16px; 
+`;
