@@ -82,3 +82,15 @@ export type BooksApiParams = {
   sortBy?: string,
   searchValue?: string,
 };
+
+export type ProductBookType = {
+  id: number;
+  title: string;
+  author: string;
+  price: string;
+  booksRating: string;
+  media: string;
+  description: string;
+  rating: number;
+  userRating: number;
+}
