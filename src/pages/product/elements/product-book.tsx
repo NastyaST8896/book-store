@@ -130,7 +130,7 @@ export const ProductBook = (props: ProductBookProps) => {
             {book.count ? (
               <StyledSpinnerBox>
                 <NumberSpinner
-                  min={1}
+                  min={0}
                   max={book.availableCount}
                   defaultValue={book.count}
                   onChange={handleBooksCountChange}

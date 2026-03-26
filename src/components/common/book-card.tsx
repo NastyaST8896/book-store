@@ -171,7 +171,7 @@ export const BookCard = (props: BookCardProps) => {
       {book.count ? (
         <StyledSpinnerGrid>
           <NumberSpinner
-            min={1}
+            min={0}
             max={book.availableCount}
             defaultValue={book.count}
             onChange={handleBooksCountChange}

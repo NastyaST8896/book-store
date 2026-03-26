@@ -80,7 +80,7 @@ export const BookCardForCart = (props: BookCardForCartProps) => {
           spacing={8}
         >
           <NumberSpinner
-            min={1}
+            min={0}
             max={book.availableCount}
             defaultValue={book.count}
             onChange={handleBooksCountChange}
