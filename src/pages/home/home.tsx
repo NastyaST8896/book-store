@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router';
 import { BookCard } from '@common/book-card';
 import { getBooks } from '@redux/books/thunk.ts';
@@ -22,6 +22,7 @@ import { SortByFilter } from './elements/sort-by-filter.tsx';
 import { FreeBook } from './elements';
 import { getGenresApi } from '../../api/genres-api.ts';
 import { getMaxPriceApi } from '../../api/price-api.ts';
+import { getCartBooks } from '@redux/cart-books/thunk.ts';
 
 const sortNames = [
   { id: 1, name: 'Price' },
@@ -33,7 +34,7 @@ const sortNames = [
 
 export const Home = () => {
   const books = useAppSelector((state) => state.books);
-  const cartBooks = useAppSelector((state) => state.cartBooks.books)
+  const cartBooks = useAppSelector((state) => state.cartBooks.books);
 
   const [searchParams, setSearchParams] = useSearchParams();
   const [maxPrice, setMaxPrice] = useState(Infinity);
@@ -58,6 +59,22 @@ export const Home = () => {
     getMaxPrice();
   }, []);
 
+  const getBookWidthCount = () => {
+    const newBooks = books.books.map((book) => {
+      const cartBook = cartBooks.find((bookInCart) => {
+        return bookInCart.id === book.id;
+      })
+
+      if (cartBook) {
+        return { ...book, count: cartBook.count };
+      }
+
+      return book;
+    });
+
+    return newBooks;
+  }
+
   useEffect(() => {
     dispatch(getBooks({
       page: searchParams.get('page'),
@@ -67,7 +84,13 @@ export const Home = () => {
       sortBy: searchParams.get('sortId'),
       searchValue: searchParams.get('searchValue'),
     }));
-  }, [searchParams, dispatch, cartBooks]);
+
+    dispatch(getCartBooks());
+  }, [searchParams, dispatch]);
+
+  const mergedBooks = useMemo(() => {
+     return getBookWidthCount();
+  }, [books.books, cartBooks])
 
   const handlePaginationChange: PaginationProps['onChange'] = (_, value) => {
     const params = new URLSearchParams(searchParams);
@@ -127,14 +150,14 @@ export const Home = () => {
                 <CircularProgress size={100} />
               </StyledProgressBox>
             ) : (
-              books.books.length ? (
+              mergedBooks.length ? (
                 <StyledGrid
                   container
                   columnSpacing={2}
                   rowSpacing={8}
                 >
                   {
-                    books.books.map((book) => (
+                    mergedBooks.map((book) => (
                       <BookCard
                         key={book.id}
                         book={book}

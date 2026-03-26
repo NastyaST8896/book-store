@@ -37,7 +37,7 @@ export const Cart = () => {
           <Container maxWidth="md">
             <Grid container gap='50px'>
               <Grid size={12}>
-                {cart.books?.map((book, index) => (
+                {cart.books.map((book, index) => (
                   <React.Fragment key={book.id}>
                     <BookCardForCart book={book} />
 
