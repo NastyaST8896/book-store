@@ -34,6 +34,17 @@ export const Header = () => {
     return state.user;
   });
 
+  const cartBooks = useAppSelector((state) => {
+    return state.cartBooks.books
+  });
+
+  const allCount = cartBooks.map((book) => {
+    return book.count
+  });
+
+  const totalCount = allCount.reduce((sum, item) => sum + item, 0);
+
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -115,7 +126,7 @@ export const Header = () => {
               ? (
                 <StyledBox>
                   <StyledAuthLink to={IN_APP_ROUTES.cart.path}>
-                    <StyledRoundButton icon={<CartIcon />} />
+                    <StyledRoundButton icon={<CartIcon />} count={totalCount} />
                   </StyledAuthLink>
                   <StyledAuthLink to="#">
                     <StyledRoundButton icon={<HeartIcon fill='none' />} />
