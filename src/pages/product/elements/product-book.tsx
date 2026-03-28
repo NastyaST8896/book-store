@@ -22,7 +22,7 @@ import type { NumberFieldRootProps } from '@base-ui/react';
 type ProductBookProps = {
   book: ProductBookType,
   onChange: (newBook: ProductBookType) => void,
-}
+};
 
 export const ProductBook = (props: ProductBookProps) => {
   const { book, onChange } = props;
@@ -36,33 +36,34 @@ export const ProductBook = (props: ProductBookProps) => {
   });
 
   const debouncedBooksCount = useDebounce<number>(bookCount, 500);
-  
-    useEffect(() => {
-      if (debouncedBooksCount !== book.count) {
-        dispatch(addBookInCart({ bookId: book.id, quantity: bookCount }))
-          .unwrap()
-          .then(() => {
-            dispatch(getCartBooks())
-            onChange({...book, count: debouncedBooksCount})
-          });
-      }
-  
-    }, [debouncedBooksCount, dispatch]);
-    
-      const handleBooksCountChange: NumberFieldRootProps['onValueChange'] = 
-      (count) => {
-        setBookCount(count || 0);
-      };
-    
-      const handleDeleteButton = () => {
-        dispatch(addBookInCart({ bookId: book.id, quantity: 0 }))
-          .unwrap()
-          .then(() => dispatch(getCartBooks()));
-      }
-  
+
+  useEffect(() => {
+    if (debouncedBooksCount !== book.count) {
+      dispatch(addBookInCart({ bookId: book.id, quantity: bookCount }))
+        .unwrap()
+        .then(() => {
+          dispatch(getCartBooks());
+          onChange({ ...book, count: debouncedBooksCount });
+        });
+    }
+
+  }, [debouncedBooksCount, dispatch]);
+
+  const handleBooksCountChange: NumberFieldRootProps['onValueChange'] =
+    (count) => {
+      setBookCount(count || 0);
+    };
+
+  const handleDeleteButton = () => {
+    dispatch(addBookInCart({ bookId: book.id, quantity: 0 }))
+      .unwrap()
+      .then(() => dispatch(getCartBooks()));
+  };
+
 
   const handleProductButtonClick = () => {
     let currentBook;
+
     if (cart.length) {
       currentBook = cart.find((cartBook) => cartBook.id === book.id);
     }
@@ -72,24 +73,24 @@ export const ProductBook = (props: ProductBookProps) => {
     }))
       .unwrap()
       .then(() => dispatch(getCartBooks()));
-  }
+  };
 
   return (
     <StyledBookGrid container>
-      <StyledCoverGrid img={book.media} >
+      <StyledCoverGrid img={book.media}>
         <StyledIconButton /*transparent={!book.isFavorite}*/>
           <HeartIcon
             fill="none"
-          /*fill={book.isFavorite ? 'white' : 'none'}*/
+            /*fill={book.isFavorite ? 'white' : 'none'}*/
           />
         </StyledIconButton>
       </StyledCoverGrid>
 
       <StyledBookInfoGrid>
-        <StyledInfoContainerGrid container >
+        <StyledInfoContainerGrid container>
           <Grid>
             <Typography variant="h1">{book.title}</Typography>
-            <StyledVariantH2Typography variant="h2" >
+            <StyledVariantH2Typography variant="h2">
               {book.author}
             </StyledVariantH2Typography>
           </Grid>
@@ -153,8 +154,8 @@ export const ProductBook = (props: ProductBookProps) => {
       </StyledBookInfoGrid>
 
     </StyledBookGrid>
-  )
-}
+  );
+};
 
 const StyledBookGrid = styled(Grid)`
   display: flex;
@@ -197,24 +198,24 @@ const StyledVariantH2Typography = styled(Typography)`
 `;
 
 const StyledDescriptionGrid = styled(Grid)`
-  display: flex; 
-  flex-direction: column; 
+  display: flex;
+  flex-direction: column;
   gap: 12px;
 `;
 
 const StyledDescriptionTextTypography = styled(Typography)`
-  font-size: 16px; 
+  font-size: 16px;
   white-space: pre-wrap;
 `;
 
 const StyledButtonsBox = styled(Box)`
-  display: flex; 
+  display: flex;
   gap: 82px;
 `;
 
 const StyledButtonBox = styled(Box)`
-  display: flex; 
-  flex-direction: column; 
+  display: flex;
+  flex-direction: column;
   gap: 14px;
 `;
 
@@ -242,7 +243,7 @@ const StyledIconButton = styled(
 }));
 
 const StyledSpinnerBox = styled(Box)`
-  display: flex; 
+  display: flex;
   align-items: center;
   background-color: #3449665f;
   padding: 8px;

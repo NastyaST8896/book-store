@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 import { BookCard } from '@common/book-card';
-import { useAppSelector } from '@redux/hooks';
+import { getCartBooks } from '@redux/cart-books/thunk.ts';
+import { useAppDispatch, useAppSelector } from '@redux/hooks';
 import type { Book, ProductBookType } from '@utils/types';
 
 import {
@@ -11,32 +12,19 @@ import {
   Typography
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
+
 import { getBookApi } from '../../api/book-api';
+
 import { ProductBook } from './elements';
 
 export const Product = () => {
-
-  const user = useAppSelector((state) => {
-    return state.user;
-  });
+  const dispatch = useAppDispatch();
 
   const cartBooks = useAppSelector((state) => {
-    return state.cartBooks;
+    return state.cartBooks.books;
   });
 
   const { id } = useParams();
-
-  const books = useAppSelector((state) => {
-    return state.books.books
-  })
-
-  let currentBook
-  if (id) {
-    currentBook = books
-      .find((book) => {
-        return book.id === +id;
-      })
-  }
 
   const [book, setBook] = useState({
     id: 0,
@@ -52,7 +40,6 @@ export const Product = () => {
     availableCount: 1,
   });
 
-  
 
   const [recommended, setRecommended] = useState<Book[]>([]);
 
@@ -60,30 +47,63 @@ export const Product = () => {
     if (id) {
       const getProductData = async () => {
         const result = await getBookApi({
-          id,
-          ...(user.user?.id && { userId: user.user?.id }),
+          id
         });
 
         if (result.book) {
           setBook(result.book);
         }
-        setRecommended(result.recomended);
+        setRecommended(result.recommended);
+
+        return;
+      };
+
+      getProductData();
+
+      dispatch(getCartBooks());
+    }
+  }, [dispatch, id]);
+
+  const mergedRecommendedBooks = useMemo(() => {
+    return recommended.map((book) => {
+      const cartBook = cartBooks.find((bookInCart) => {
+        return bookInCart.id === book.id;
+      });
+
+      if (cartBook) {
+        return { ...book, count: cartBook.count };
       }
 
-      getProductData()
+      return book;
+    });
+  }, [cartBooks, recommended]);
+
+  const mergedBook = useMemo(() => {
+    const cartBook = cartBooks.find((bookInCart) => {
+      return bookInCart.id === book.id;
+    });
+
+    if (cartBook) {
+      return { ...book, count: cartBook.count };
     }
-  }, [id, cartBooks]);
+
+    if(!cartBook && book.count > 0) {
+      return { ...book, count: 0 };
+    }
+
+    return book;
+  }, [book, cartBooks]);
 
   const handleBookChange = (newBook: ProductBookType) => {
-    setBook(newBook)
-  }
+    setBook(newBook);
+  };
 
   return (
     <main>
       <Container maxWidth="md">
 
         <ProductBook
-          book={book}
+          book={mergedBook}
           onChange={handleBookChange}
         />
 
@@ -95,7 +115,7 @@ export const Product = () => {
             container
             columnSpacing="20px"
           >
-            {recommended.map((book) => (
+            {mergedRecommendedBooks.map((book) => (
               <BookCard
                 key={book.id}
                 book={book}

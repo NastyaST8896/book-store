@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router';
 import { BookCard } from '@common/book-card';
 import { getBooks } from '@redux/books/thunk.ts';
+import { getCartBooks } from '@redux/cart-books/thunk.ts';
 import { useAppDispatch, useAppSelector } from '@redux/hooks.ts';
 import type { Genre } from '@utils/types.ts';
 
@@ -16,13 +17,13 @@ import {
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
+import { getGenresApi } from '../../api/genres-api.ts';
+import { getMaxPriceApi } from '../../api/price-api.ts';
+
 import { GenresFilter } from './elements/genres-filter.tsx';
 import { PriceRangeFilter } from './elements/price-range-filter.tsx';
 import { SortByFilter } from './elements/sort-by-filter.tsx';
 import { FreeBook } from './elements';
-import { getGenresApi } from '../../api/genres-api.ts';
-import { getMaxPriceApi } from '../../api/price-api.ts';
-import { getCartBooks } from '@redux/cart-books/thunk.ts';
 
 const sortNames = [
   { id: 1, name: 'Price' },
@@ -46,34 +47,18 @@ export const Home = () => {
     const getMaxPrice = async () => {
       const maxPrice = await getMaxPriceApi();
 
-      setMaxPrice(maxPrice.maxPrice)
+      setMaxPrice(maxPrice.maxPrice);
     };
 
     const getGenres = async () => {
       const genres = await getGenresApi();
 
-      setGenres(genres.allGenres)
+      setGenres(genres.allGenres);
     };
 
     getGenres();
     getMaxPrice();
   }, []);
-
-  const getBookWidthCount = () => {
-    const newBooks = books.books.map((book) => {
-      const cartBook = cartBooks.find((bookInCart) => {
-        return bookInCart.id === book.id;
-      })
-
-      if (cartBook) {
-        return { ...book, count: cartBook.count };
-      }
-
-      return book;
-    });
-
-    return newBooks;
-  }
 
   useEffect(() => {
     dispatch(getBooks({
@@ -89,8 +74,18 @@ export const Home = () => {
   }, [searchParams, dispatch]);
 
   const mergedBooks = useMemo(() => {
-     return getBookWidthCount();
-  }, [books.books, cartBooks])
+    return books.books.map((book) => {
+      const cartBook = cartBooks.find((bookInCart) => {
+        return bookInCart.id === book.id;
+      });
+
+      if (cartBook) {
+        return { ...book, count: cartBook.count };
+      }
+
+      return book;
+    });
+  }, [books.books, cartBooks]);
 
   const handlePaginationChange: PaginationProps['onChange'] = (_, value) => {
     const params = new URLSearchParams(searchParams);
@@ -167,7 +162,7 @@ export const Home = () => {
                 </StyledGrid>
               ) : (
                 <StyledWithoutBooksGrid>
-                  <StyledWithoutBooksTypography variant='h1'>
+                  <StyledWithoutBooksTypography variant="h1">
                     No books where found.
                     Try changing the filtering parameters.
                   </StyledWithoutBooksTypography>
@@ -186,7 +181,7 @@ export const Home = () => {
         </StyledPaginationBox>
 
       </Container>
-    </main >
+    </main>
   );
 };
 
@@ -206,7 +201,7 @@ const StyledWithoutBooksGrid = styled(Grid)`
 `;
 
 const StyledWithoutBooksTypography = styled(Typography)`
-  margin-top: 40px; 
+  margin-top: 40px;
   text-align: center;
 `;
 
