@@ -1,20 +1,21 @@
-import { styled } from '@mui/material/styles';
-import { StarIcon } from '@common/icons/star-icon';
-import { RatingArrowIcon } from '@common/icons/rating-arrow-icon';
-import { Grid, Rating, Typography } from '@mui/material';
 import type { SyntheticEvent } from 'react';
-import { useAppDispatch, useAppSelector } from '@redux/hooks';
+import { RatingArrowIcon } from '@common/icons/rating-arrow-icon';
+import { StarIcon } from '@common/icons/star-icon';
 import { setBookRating } from '@redux/books/thunk';
+import { useAppDispatch, useAppSelector } from '@redux/hooks';
 import type { ProductBookType } from '@utils/types';
+
+import { Grid, Rating, Typography } from '@mui/material';
+import { styled } from '@mui/material/styles';
 
 type ProductBookRatingProps = {
   book: ProductBookType,
   onChange: (newBook: ProductBookType) => void,
-}
+};
 export const ProductBookRating = (props: ProductBookRatingProps) => {
   const { onChange, book } = props;
 
-   const user = useAppSelector((state) => {
+  const user = useAppSelector((state) => {
     return state.user;
   });
 
@@ -35,13 +36,13 @@ export const ProductBookRating = (props: ProductBookRatingProps) => {
             ...book,
             booksRating: String(data.booksRating),
             userRating: data.userRating,
-          })
+          });
         });
     }
   };
 
   return (
-    <StyledRatingContainerGrid container >
+    <StyledRatingContainerGrid container>
       <StyledGeneralRatingGrid>
         <StarIcon />
 
@@ -56,7 +57,7 @@ export const ProductBookRating = (props: ProductBookRatingProps) => {
           precision={1}
           size="large"
           onChange={handleRatingChange}
-          readOnly={user.user ? false : true}
+          readOnly={!user.user}
         />
       </Grid>
 
@@ -68,13 +69,13 @@ export const ProductBookRating = (props: ProductBookRatingProps) => {
         </StyledRatingTypography>
       </StyledRatingTextGrid>
     </StyledRatingContainerGrid>
-  )
+  );
 };
 
 const StyledRatingContainerGrid = styled(Grid)`
   display: flex;
   flex-direction: row;
-  align-items:center;
+  align-items: center;
   gap: 40px;
 `;
 
@@ -90,7 +91,7 @@ const StyledRatingTypography = styled(Typography)(({ theme }) => `
 `);
 
 const StyledRatingTextGrid = styled(Grid)`
-  display: flex; 
+  display: flex;
   gap: 7px;
 `;
 

@@ -65,6 +65,7 @@ export const BookCard = (props: BookCardProps) => {
 
   const handleBookPriceButtonClick = () => {
     let currentBook;
+
     if (cart.books.length) {
       currentBook = cart.books.find((cartBook) => cartBook.id === book.id);
     }
@@ -74,7 +75,7 @@ export const BookCard = (props: BookCardProps) => {
     }))
       .unwrap()
       .then(() => {
-        dispatch(getCartBooks())
+        dispatch(getCartBooks());
 
       });
   };
@@ -87,7 +88,7 @@ export const BookCard = (props: BookCardProps) => {
     dispatch(addBookInCart({ bookId: book.id, quantity: 0 }))
       .unwrap()
       .then(() => dispatch(getCartBooks()));
-  }
+  };
 
   return (
     <Grid
@@ -114,7 +115,7 @@ export const BookCard = (props: BookCardProps) => {
         >
           <Typography
             title={book.title}
-            variant='subtitle2'
+            variant="subtitle2"
             fontWeight={500}
             sx={{
               overflow: 'hidden',
@@ -127,9 +128,9 @@ export const BookCard = (props: BookCardProps) => {
 
           <Typography
             title={book.author}
-            variant='subtitle2'
+            variant="subtitle2"
             fontWeight={500}
-            color='#B9BAC3'
+            color="#B9BAC3"
             sx={{
               overflow: 'hidden',
               whiteSpace: 'nowrap',
@@ -157,7 +158,7 @@ export const BookCard = (props: BookCardProps) => {
 
           <Box sx={{ mr: 2 }}>
             <Typography
-              variant='subtitle1'
+              variant="subtitle1"
               sx={(theme) => ({
                 color: theme.palette.appColor.darkGrey
               })}
@@ -244,9 +245,9 @@ const StyledRating = styled(Rating)(({ theme }) => ({
 }));
 
 const StyledSpinnerGrid = styled(Grid)`
-  display: flex; 
+  display: flex;
   justify-content: space-evenly;
   background-color: #3449665f;
   padding: 6px 0;
-  border-radius: 16px; 
+  border-radius: 16px;
 `;

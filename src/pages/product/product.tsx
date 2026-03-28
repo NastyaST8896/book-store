@@ -24,6 +24,10 @@ export const Product = () => {
     return state.cartBooks.books;
   });
 
+  const user = useAppSelector((state) => {
+    return state.user;
+  });
+
   const { id } = useParams();
 
   const [book, setBook] = useState({
@@ -47,7 +51,8 @@ export const Product = () => {
     if (id) {
       const getProductData = async () => {
         const result = await getBookApi({
-          id
+          id,
+          ...(user.user?.id && { userId: user.user?.id }),
         });
 
         if (result.book) {
