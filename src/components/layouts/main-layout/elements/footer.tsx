@@ -7,6 +7,19 @@ import { Box, Container, Grid } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 export const Footer = () => {
+
+  const handleScrollClick = () => {
+    window.scrollTo(0, 0);
+  };
+
+  const handleCatalogClick = () => {
+    window.scrollTo({
+      top: 560,
+      behavior: 'smooth',
+    });
+    ;
+  };
+
   return (
     <StyledFooter>
       <Container maxWidth="md">
@@ -23,10 +36,30 @@ export const Footer = () => {
           </Grid>
           <Grid size={2}>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-              <StyledLink to="#">Home Page</StyledLink>
-              <StyledLink to={IN_APP_ROUTES.home.path}>Catalog</StyledLink>
-              <StyledLink to="#">My Account</StyledLink>
-              <StyledLink to="#">Cart</StyledLink>
+              <StyledLink
+                to={IN_APP_ROUTES.home.path}
+                onClick={handleScrollClick}
+              >
+                Home Page
+              </StyledLink>
+
+              <StyledLink
+                to={IN_APP_ROUTES.home.path}
+                onClick={handleCatalogClick}
+              >
+                Catalog
+              </StyledLink>
+
+              <StyledLink to={IN_APP_ROUTES.profile.path}>
+                My Account
+              </StyledLink>
+
+              <StyledLink
+                to={IN_APP_ROUTES.cart.path}
+                onClick={handleScrollClick}
+              >
+                Cart
+              </StyledLink>
             </Box>
           </Grid>
           <Grid size={4} container spacing={2} flexDirection="column">
@@ -52,17 +85,17 @@ const StyledFooter = styled('footer')(({ theme }) => `
 `);
 
 const StyledMap = styled('img')`
-      max-width: 100%;
+  max-width: 100%;
 `;
 
 const StyledDiv = styled('div')`
-    font-size:20px;
-    font-weight: 400;
-    
-    @media (max-width: 834px) {
-        font-size: 16px;
-        font-weight: 500;
-    }
+  font-size: 20px;
+  font-weight: 400;
+
+  @media (max-width: 834px) {
+    font-size: 16px;
+    font-weight: 500;
+  }
 `;
 
 const StyledLink = styled(Link)(({ theme }) => `
@@ -78,10 +111,10 @@ const StyledLink = styled(Link)(({ theme }) => `
 `);
 
 const StyledGrid = styled(Grid)`
-    @media (max-width: 770px) {
-        flex-direction: column;
-        gap: 40px;
-        align-items: flex-start;
+  @media (max-width: 770px) {
+    flex-direction: column;
+    gap: 40px;
+    align-items: flex-start;
 
-    }
+  }
 `;

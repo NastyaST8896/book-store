@@ -35,11 +35,11 @@ export const Header = () => {
   });
 
   const cartBooks = useAppSelector((state) => {
-    return state.cartBooks.books
+    return state.cartBooks.books;
   });
 
   const allCount = cartBooks.map((book) => {
-    return book.count
+    return book.count;
   });
 
   const totalCount = allCount.reduce((sum, item) => sum + item, 0);
@@ -55,7 +55,7 @@ export const Header = () => {
   const searchValue = useDebounce<string>(inputValue.trim());
 
   useEffect(() => {
-    if (searchParams.get('searchValue') !== searchValue, searchValue !== '') {
+    if (searchParams.get('searchValue') !== searchValue && searchValue !== '') {
       queryFilters.forEach((filter) => searchParams.delete(filter));
 
       if (searchValue) {
@@ -67,7 +67,7 @@ export const Header = () => {
   }, [searchParams, searchValue, setSearchParams]);
 
   const handleInputFocus = () => {
-    if(location.pathname !== IN_APP_ROUTES.home.path) {
+    if (location.pathname !== IN_APP_ROUTES.home.path) {
       navigate(IN_APP_ROUTES.home.path);
     }
   };
@@ -105,20 +105,20 @@ export const Header = () => {
 
             {location.pathname === IN_APP_ROUTES.home.path && (
               <StyledInput
-              fullWidth={true}
-              disableUnderline={true}
-              startAdornment={
-                <InputAdornment position="start">
-                  <img src={Search} alt="Search" />
-                </InputAdornment>
-              }
-              onFocus={handleInputFocus}
-              onChange={handleInputValueChange}
-              value={inputValue}
-              placeholder="Search"
-            />
+                fullWidth={true}
+                disableUnderline={true}
+                startAdornment={
+                  <InputAdornment position="start">
+                    <img src={Search} alt="Search" />
+                  </InputAdornment>
+                }
+                onFocus={handleInputFocus}
+                onChange={handleInputValueChange}
+                value={inputValue}
+                placeholder="Search"
+              />
             )}
-            
+
           </StyledGridEnd>
 
           <Grid size={{ md: 'auto', sm: 4, xs: 'auto' }}>
@@ -129,7 +129,7 @@ export const Header = () => {
                     <StyledRoundButton icon={<CartIcon />} count={totalCount} />
                   </StyledAuthLink>
                   <StyledAuthLink to="#">
-                    <StyledRoundButton icon={<HeartIcon fill='none' />} />
+                    <StyledRoundButton icon={<HeartIcon fill="none" />} />
                   </StyledAuthLink>
                   <StyledAuthLink to={IN_APP_ROUTES.profile.path}>
                     <StyledRoundButton icon={<ProfileIcon />} />
@@ -239,7 +239,7 @@ const StyledGridEnd = styled(Grid)`
 
 const StyledIcon = styled('img')`
   @media (max-width: 600px) {
-      max-width: 100%;
+    max-width: 100%;
   }
 `;
 
