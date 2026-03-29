@@ -52,10 +52,14 @@ export const Header = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [inputValue, setInputValue] = useState('');
-  const searchValue = useDebounce<string>(inputValue.trim());
+  const searchValue = useDebounce<string>(inputValue.trim()) || null;
 
-  useEffect(() => {
-    if (searchParams.get('searchValue') !== searchValue && searchValue !== '') {
+  useEffect(function () {
+
+    console.log(searchValue);
+    console.log(searchParams.get('searchValue'));
+
+    if (searchParams.get('searchValue') !== searchValue) {
       queryFilters.forEach((filter) => searchParams.delete(filter));
 
       if (searchValue) {
