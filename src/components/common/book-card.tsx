@@ -1,14 +1,16 @@
 import {
+  type MouseEventHandler,
   useEffect,
   useState,
-  type MouseEventHandler,
 } from 'react';
 import { useNavigate } from 'react-router';
+import type { NumberFieldRootProps } from '@base-ui/react';
 import { HeartIcon } from '@common/icons/heart-icon.tsx';
 import { StyledButton } from '@common/styled-button.tsx';
 import { addBookInCart, getCartBooks } from '@redux/cart-books/thunk';
 import { useAppDispatch, useAppSelector } from '@redux/hooks';
 import { formatPrice } from '@utils/formatters.ts';
+import { useDebounce } from '@utils/hooks';
 import type { Book } from '@utils/types.ts';
 
 import {
@@ -19,10 +21,9 @@ import {
   Typography
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { NumberSpinner } from './number-spinner';
-import type { NumberFieldRootProps } from '@base-ui/react';
+
 import { DeleteIcon } from './icons/delete-icon';
-import { useDebounce } from '@utils/hooks';
+import { NumberSpinner } from './number-spinner';
 
 type BookCardProps = {
   book: Book,
@@ -151,7 +152,7 @@ export const BookCard = (props: BookCardProps) => {
         >
           <StyledRating
             value={+book.booksRating}
-            precision={1}
+            precision={0.1}
             size="large"
             readOnly={true}
           />
