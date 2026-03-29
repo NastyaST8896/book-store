@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router';
 import { ArrowIcon } from '@common/icons/arrow-icon';
 import { RightArrowIcon } from '@common/icons/right-arrow-icon';
 import { StyledFilterButton } from '@common/styled-filter-button';
@@ -12,7 +13,6 @@ import {
   Popover
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { useSearchParams } from 'react-router';
 
 type SortByType = {
   id: number,
@@ -144,7 +144,7 @@ const StyledPriceRangePopover = styled(Popover)(({ theme }) => `
   }
   
   & .MuiButtonBase-root {
-      padding: 6px;
+      padding: 6px 15px;
       
       & .MuiListItemIcon-root {
         display: block;
