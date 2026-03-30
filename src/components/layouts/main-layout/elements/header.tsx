@@ -56,9 +56,6 @@ export const Header = () => {
 
   useEffect(function () {
 
-    console.log(searchValue);
-    console.log(searchParams.get('searchValue'));
-
     if (searchParams.get('searchValue') !== searchValue) {
       queryFilters.forEach((filter) => searchParams.delete(filter));
 

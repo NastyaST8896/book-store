@@ -13,5 +13,10 @@ export const StyledButton = styled(
   textTransform: 'none',
   height: buttonHeight,
   color: theme.palette.appColor.light,
-  padding: '10px 50px'
+  padding: '10px 50px',
+
+   [theme.breakpoints.down(770)]: {
+    padding: '3px 20px',
+    fontSize: '14px'
+  }
 }));

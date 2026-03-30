@@ -97,10 +97,14 @@ export const BookCard = (props: BookCardProps) => {
       size={{ md: 3, sm: 4, xs: 6 }}
       sx={{ flexDirection: 'column' }}
       rowSpacing="30px"
+      height={{ lg: '709px', md: '583px', sm: '583px', xs: '391px' }}
+      width={{ lg: '305px', md: '250px', sm: '250px', xs: '135px' }}
     >
       <StyledCoverGrid
         onClick={handleBookClick}
         img={book.media}
+        height={{ lg: '488px', md: '362px', sm: '362px', xs: '182px' }}
+        width={{ lg: '305px', md: '244px', sm: '244px', xs: '125px' }}
       >
         <StyledIconButton
           onClick={handleIconButtonClick}
@@ -153,7 +157,6 @@ export const BookCard = (props: BookCardProps) => {
           <StyledRating
             value={+book.booksRating}
             precision={0.1}
-            size="large"
             readOnly={true}
           />
 
@@ -200,7 +203,6 @@ const StyledCoverGrid = styled(
   { shouldForwardProp: (prop) => prop !== 'img' }
 )<{ img?: string }>(({ img = 'src/assets/img/no-cover.webp' }) => ({
   position: 'relative',
-  height: 455,
   backgroundImage: `url(${img})`,
   backgroundRepeat: 'no-repeat',
   backgroundSize: 'cover',
@@ -225,6 +227,21 @@ const StyledIconButton = styled(
   '&:hover': {
     backgroundColor: theme.palette.appColor.darkBlue,
     opacity: 1
+  },
+
+  [theme.breakpoints.down(1000)]: {
+    maxWidth: 38,
+    width: '100%',
+    height: 38,
+    left: 16,
+    top: 16,
+  },
+
+  [theme.breakpoints.down(770)]: {
+    maxWidth: 25,
+    width: '100%',
+    height: 25,
+    padding: '7px',
   }
 }));
 
