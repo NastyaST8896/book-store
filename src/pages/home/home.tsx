@@ -78,6 +78,7 @@ export const Home = () => {
       const cartBook = cartBooks.find((bookInCart) => {
         return bookInCart.id === book.id;
       });
+      // cartBooksObj[book.id]
 
       if (cartBook) {
         return { ...book, count: cartBook.count };
