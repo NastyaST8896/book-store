@@ -9,16 +9,45 @@ import {
   Box,
   Container,
   Grid,
-  Typography
+  Typography,
+  useMediaQuery
 } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import { styled, useTheme } from '@mui/material/styles';
 
 import { getBookApi } from '../../api/book-api';
 
-import { ProductBook } from './elements';
+import { Comment, ProductBook } from './elements';
 
 export const Product = () => {
   const dispatch = useAppDispatch();
+
+  const comments = [
+    {
+      id: 1,
+      name: 'Floyd Miles',
+      date: 'Left a comment two days ago',
+      text: 'Love this so much! This book opened up a new world for me!'
+        + 'I advise everyone to get acquainted with the author of this book.'
+        + 'He is awesome!',
+      img: '/src/assets/img/floyd.svg',
+    },
+
+    {
+      id: 2,
+      name: 'Annette Black',
+      date: 'Left a comment two days ago',
+      text: 'This book is amazing! If you are a romantic person, read it.',
+      img: '/src/assets/img/annette.svg'
+    },
+  ]
+
+  const theme = useTheme();
+  const mobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const tabletFrom = useMediaQuery(theme.breakpoints.down('md'));
+  const tabletTo = useMediaQuery(theme.breakpoints.up('sm'));
+  const desktop = useMediaQuery(theme.breakpoints.up('md'));
+
+
 
   const cartBooks = useAppSelector((state) => {
     return state.cartBooks.books;
@@ -92,7 +121,7 @@ export const Product = () => {
       return { ...book, count: cartBook.count };
     }
 
-    if(!cartBook && book.count > 0) {
+    if (!cartBook && book.count > 0) {
       return { ...book, count: 0 };
     }
 
@@ -112,27 +141,78 @@ export const Product = () => {
           onChange={handleBookChange}
         />
 
+        <StyledCommentsBox>
+          <Typography variant='h1'>Comments</Typography>
+
+          <Box>
+            {comments.map((comment) => {
+              return <Comment key={comment.id} comment={comment} />
+            })}
+          </Box>
+
+
+        </StyledCommentsBox>
 
         <StyledBox>
           <Typography variant="h1">Recommendations</Typography>
 
-          <Grid
-            container
-            columnSpacing="20px"
-          >
-            {mergedRecommendedBooks.map((book) => (
-              <BookCard
-                key={book.id}
-                book={book}
-              />
-            ))}
-          </Grid>
+          {mobile && (
+            <Grid
+              container
+              columnSpacing="20px"
+            >
+              {mergedRecommendedBooks
+                .filter((_, index) => index < 2)
+                .map((book) => (
+                  <BookCard
+                    key={book.id}
+                    book={book}
+                  />
+                ))}
+            </Grid>
+          )}
+
+          {tabletTo && tabletFrom && (
+            <Grid
+              container
+              columnSpacing="20px"
+            >
+              {mergedRecommendedBooks
+                .filter((_, index) => index < 3)
+                .map((book) => (
+                  <BookCard
+                    key={book.id}
+                    book={book}
+                  />
+                ))}
+            </Grid>
+          )}
+
+          {desktop && (
+            <Grid
+              container
+              columnSpacing="20px"
+            >
+              {mergedRecommendedBooks.map((book) => (
+                <BookCard
+                  key={book.id}
+                  book={book}
+                />
+              ))}
+            </Grid>
+          )}
         </StyledBox>
 
       </Container>
     </main>
   );
 };
+
+const StyledCommentsBox = styled(Box)`
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+`;
 
 const StyledBox = styled(Box)`
   display: flex;
