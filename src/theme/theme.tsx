@@ -45,6 +45,9 @@ export const theme = createTheme({
       '@media (max-width:1000px)': {
         fontSize: '32px',
       },
+      '@media (max-width:650px)': {
+        fontSize: '18px',
+      },
     },
 
     h2: {
@@ -65,6 +68,9 @@ export const theme = createTheme({
       color: '#344966',
       '@media (max-width:834px)': {
         fontSize: '16px',
+      },
+      '@media (max-width:650px)': {
+        fontSize: '14px',
       },
     }
   },

@@ -17,9 +17,10 @@ import {
   FilledInput,
   Grid,
   InputAdornment,
-  Typography
+  Typography,
+  useMediaQuery
 } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import { styled, useTheme } from '@mui/material/styles';
 
 const queryFilters = [
   'genres',
@@ -47,6 +48,10 @@ export const Header = () => {
 
   const navigate = useNavigate();
   const location = useLocation();
+
+  const theme = useTheme();
+  const mobile = useMediaQuery(theme.breakpoints.down('sm'));
+
 
 
   const [searchParams, setSearchParams] = useSearchParams();
@@ -94,65 +99,136 @@ export const Header = () => {
             <Link to={IN_APP_ROUTES.home.path}>
               <StyledIcon src={Logo} alt="book room" />
             </Link>
-
           </Grid>
 
-          <StyledGridEnd size={{ lg: 7, md: 6, sm: 4, xs: 12 }}>
-            <StyledCatalogLink to={IN_APP_ROUTES.home.path}>
-              <Typography variant="subtitle1" fontWeight={500}>
-                Catalog
-              </Typography>
-            </StyledCatalogLink>
+          {mobile && (
+            <>
+              <StyledCatalogLink to={IN_APP_ROUTES.home.path}>
+                <Typography variant="subtitle1" fontWeight={500}>
+                  Catalog
+                </Typography>
+              </StyledCatalogLink>
 
-            {location.pathname === IN_APP_ROUTES.home.path && (
-              <StyledInput
-                fullWidth={true}
-                disableUnderline={true}
-                startAdornment={
-                  <InputAdornment position="start">
-                    <img src={Search} alt="Search" />
-                  </InputAdornment>
+              <Grid size={{ md: 'auto', sm: 4, xs: 'auto' }}>
+                {auth.user
+                  ? (
+                    <StyledBox>
+                      <StyledAuthLink to={IN_APP_ROUTES.cart.path}>
+                        <StyledRoundButton
+                          icon={<CartIcon />}
+                          count={totalCount}
+                        />
+                      </StyledAuthLink>
+                      <StyledAuthLink to="#">
+                        <StyledRoundButton icon={<HeartIcon fill="none" />} />
+                      </StyledAuthLink>
+                      <StyledAuthLink to={IN_APP_ROUTES.profile.path}>
+                        <StyledRoundButton icon={<ProfileIcon />} />
+                      </StyledAuthLink>
+                    </StyledBox>
+                  ) : (
+                    <StyledButton variant="contained">
+                      <StyledLink
+                        to={IN_APP_ROUTES.login.path}
+                      >
+                        Log In
+                      </StyledLink>
+                      /
+                      <StyledLink
+                        to={IN_APP_ROUTES.register.path}
+                      >
+                        Sign Up
+                      </StyledLink>
+                    </StyledButton>
+                  )
                 }
-                onFocus={handleInputFocus}
-                onChange={handleInputValueChange}
-                value={inputValue}
-                placeholder="Search"
-              />
-            )}
+              </Grid>
 
-          </StyledGridEnd>
+              <StyledGridEnd size={{ lg: 7, md: 6, sm: 6, xs: 12 }}>
+                {location.pathname === IN_APP_ROUTES.home.path && (
+                  <StyledInput
+                    fullWidth={true}
+                    disableUnderline={true}
+                    startAdornment={
+                      <InputAdornment position="start">
+                        <img src={Search} alt="Search" />
+                      </InputAdornment>
+                    }
+                    onFocus={handleInputFocus}
+                    onChange={handleInputValueChange}
+                    value={inputValue}
+                    placeholder="Search"
+                  />
+                )}
 
-          <Grid size={{ md: 'auto', sm: 4, xs: 'auto' }}>
-            {auth.user
-              ? (
-                <StyledBox>
-                  <StyledAuthLink to={IN_APP_ROUTES.cart.path}>
-                    <StyledRoundButton icon={<CartIcon />} count={totalCount} />
-                  </StyledAuthLink>
-                  <StyledAuthLink to="#">
-                    <StyledRoundButton icon={<HeartIcon fill="none" />} />
-                  </StyledAuthLink>
-                  <StyledAuthLink to={IN_APP_ROUTES.profile.path}>
-                    <StyledRoundButton icon={<ProfileIcon />} />
-                  </StyledAuthLink>
-                </StyledBox>
-              ) : (
-                <StyledButton variant="contained">
-                  <StyledLink
-                    to={IN_APP_ROUTES.login.path}
-                  >
-                    Log In
-                  </StyledLink>
-                  /
-                  <StyledLink
-                    to={IN_APP_ROUTES.register.path}
-                  >
-                    Sign Up
-                  </StyledLink>
-                </StyledButton>
-              )
-            }
-          </Grid>
+              </StyledGridEnd>
+            </>
+          )}
+
+          {!mobile && (
+            <>
+              <StyledGridEnd size={{ lg: 7, md: 6, sm: 6, xs: 12 }}>
+                <StyledCatalogLink to={IN_APP_ROUTES.home.path}>
+                  <Typography variant="subtitle1" fontWeight={500}>
+                    Catalog
+                  </Typography>
+                </StyledCatalogLink>
+
+                {location.pathname === IN_APP_ROUTES.home.path && (
+                  <StyledInput
+                    fullWidth={true}
+                    disableUnderline={true}
+                    startAdornment={
+                      <InputAdornment position="start">
+                        <img src={Search} alt="Search" />
+                      </InputAdornment>
+                    }
+                    onFocus={handleInputFocus}
+                    onChange={handleInputValueChange}
+                    value={inputValue}
+                    placeholder="Search"
+                  />
+                )}
+
+              </StyledGridEnd>
+
+              <StyledButtonGrid size={{ md: 3, sm: 4, xs: 'auto' }}>
+                {auth.user
+                  ? (
+                    <StyledBox>
+                      <StyledAuthLink to={IN_APP_ROUTES.cart.path}>
+                        <StyledRoundButton
+                          icon={<CartIcon />}
+                          count={totalCount}
+                        />
+                      </StyledAuthLink>
+                      <StyledAuthLink to="#">
+                        <StyledRoundButton icon={<HeartIcon fill="none" />} />
+                      </StyledAuthLink>
+                      <StyledAuthLink to={IN_APP_ROUTES.profile.path}>
+                        <StyledRoundButton icon={<ProfileIcon />} />
+                      </StyledAuthLink>
+                    </StyledBox>
+                  ) : (
+                    <StyledButton variant="contained">
+                      <StyledLink
+                        to={IN_APP_ROUTES.login.path}
+                      >
+                        Log In/
+                      </StyledLink>
+                      
+                      <StyledLink
+                        to={IN_APP_ROUTES.register.path}
+                      >
+                        Sign Up
+                      </StyledLink>
+                    </StyledButton>
+                  )
+                }
+              </StyledButtonGrid>
+            </>
+          )
+          }
         </Grid>
       </Container>
     </StyledHeader>
@@ -165,15 +241,18 @@ const StyledHeader = styled('header')`
 
 const StyledButton = styled(Button)`
   border-radius: 16px;
-  width: 230px;
+  max-width: 230px;
+  width: 100%;
   height: 44px;
   text-transform: none;
+  text-align: center;
 
   @media (max-width: 600px) {
-    width: 140px;
+    max-width: 140px;
+    width: 100%;
     height: 38px;
-    padding: 10px 17px;
-    align-items: normal;
+    padding: 10px 15px;
+    text-align: center;
   }
 `;
 
@@ -220,10 +299,11 @@ const StyledInput = styled(FilledInput)(({ theme }) => `
 const StyledLink = styled(Link)(({ theme }) => `
   text-decoration: none;
   color: ${theme.palette.appColor.light};
+  text-align: center;
 
   @media (max-width: 600px) {
-    width: 135px;
-    height: 38px;
+    width: 45px;
+    height: 20px;
     font-size: 12px;
   }
 `);
@@ -232,26 +312,37 @@ const StyledGridEnd = styled(Grid)`
   display: flex;
   align-items: center;
   gap: 36px;
-
-  @media (max-width: 770px) {
-    order: 2;
-  }
 `;
 
 const StyledIcon = styled('img')`
   @media (max-width: 600px) {
-    max-width: 100%;
+    width: 62px;
   }
 `;
 
 const StyledBox = styled(Box)`
   display: flex;
   justify-content: space-between;
-  width: 200px;
+  max-width: 200px;
+  width: 100%;
+
+  @media (max-width: 770px) {
+    justify-content: center;
+    gap: 5px;
+  }
+`;
+
+const StyledButtonGrid = styled(Grid)`
+  display: flex;
+  justify-content: flex-end;
 `;
 
 const StyledAuthLink = styled(Link)`
   width: 48px;
+
+  @media (max-width: 600px) {
+    width: 32px;
+  }
 `;
 
 const StyledCatalogLink = styled(Link)(({ theme }) => `

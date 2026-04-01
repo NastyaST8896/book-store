@@ -99,45 +99,45 @@ export const Home = () => {
   return (
     <main>
       <Container maxWidth="md">
-        <StyledFreeBookBox>
+        <StyledFreeBookGrid>
           <FreeBook />
-        </StyledFreeBookBox>
+        </StyledFreeBookGrid>
 
-        <Grid container justifyContent="space-between">
-          <Grid size={2}>
-            <Typography variant="h1">Catalog</Typography>
-          </Grid>
-
-          <Grid container spacing="20px" size={8}>
-            <Grid size={4}>
-              <GenresFilter
-                genres={genres}
-                selectedGenres={searchParams.get('genres')?.split(',') || []}
-              />
+          <StyledCatalogHeaderGrid container>
+            <Grid size={2}>
+              <Typography variant="h1">Catalog</Typography>
             </Grid>
 
-            <Grid size={4}>
-              <PriceRangeFilter
-                value={[
-                  Number(searchParams.get('minPrice')),
-                  Number(searchParams.get('maxPrice')) || Number(maxPrice),
-                ]}
-                maxPrice={maxPrice}
-              />
-            </Grid>
+            <Grid container spacing="20px" size={{ md: 8, sm: 12}}>
+              <Grid size={{sm: 4, xs: 12 }}>
+                <GenresFilter
+                  genres={genres}
+                  selectedGenres={searchParams.get('genres')?.split(',') || []}
+                />
+              </Grid>
 
-            <Grid size={4}>
-              <SortByFilter
-                sortNames={sortNames}
-                sortName={
-                  sortNames.find((sort) =>
-                    sort.id === Number(searchParams.get('sortId')))?.name
-                  || ''
-                }
-              />
+              <Grid size={{sm: 4, xs: 12 }}>
+                <PriceRangeFilter
+                  value={[
+                    Number(searchParams.get('minPrice')),
+                    Number(searchParams.get('maxPrice')) || Number(maxPrice),
+                  ]}
+                  maxPrice={maxPrice}
+                />
+              </Grid>
+
+              <Grid size={{sm: 4, xs: 12 }}>
+                <SortByFilter
+                  sortNames={sortNames}
+                  sortName={
+                    sortNames.find((sort) =>
+                      sort.id === Number(searchParams.get('sortId')))?.name
+                    || ''
+                  }
+                />
+              </Grid>
             </Grid>
-          </Grid>
-        </Grid>
+          </StyledCatalogHeaderGrid>
 
         {
           books.isLoading
@@ -151,6 +151,7 @@ export const Home = () => {
                   container
                   columnSpacing={2}
                   rowSpacing={8}
+                  justifyContent='center'
                 >
                   {
                     mergedBooks.map((book) => (
@@ -186,7 +187,7 @@ export const Home = () => {
   );
 };
 
-const StyledFreeBookBox = styled(Box)`
+const StyledFreeBookGrid = styled(Grid)`
   padding: 20px 0 60px 0;
 `;
 
@@ -227,4 +228,14 @@ const StyledProgressBox = styled(Box)`
   width: 100%;
   justify-content: center;
   padding: 40px;
+`;
+
+const StyledCatalogHeaderGrid = styled(Grid)`
+  display: flex;
+  justify-content: space-between;
+
+  @media (max-width: 1000px) {
+    flex-direction: column;
+    gap: 20px;
+  }
 `;

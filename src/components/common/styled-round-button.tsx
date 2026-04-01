@@ -47,6 +47,12 @@ export const StyledIconButton = styled(IconButton)`
   width: 100%;
   height: 48px;
 
+  @media (max-width: 600px) {
+  max-width: 32px;
+  width: 100%;
+  height: 32px;
+}
+
   &:hover {
     background-color: #2c506ed0;
   }
@@ -62,5 +68,4 @@ const StyledBadge = styled(Badge)(({theme}) =>`
  background-color: ${theme.palette.appColor.green};
  color: ${theme.palette.appColor.darkBlue}
 }
- 
 `);
