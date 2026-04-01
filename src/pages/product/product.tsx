@@ -17,6 +17,7 @@ import { styled, useTheme } from '@mui/material/styles';
 import { getBookApi } from '../../api/book-api';
 
 import { Comment, ProductBook } from './elements';
+import { getRecommendedApi } from '../../api/recommended-api';
 
 export const Product = () => {
   const dispatch = useAppDispatch();
@@ -87,12 +88,26 @@ export const Product = () => {
         if (result.book) {
           setBook(result.book);
         }
+
+        return;
+      };
+
+      const getRecommendedBook = async () => {
+        const result = await getRecommendedApi({
+          id,
+        });
+
+        if(result.recommended.length > 4) {
+          result.recommended.splice(4);
+        }
+
         setRecommended(result.recommended);
 
         return;
       };
 
       getProductData();
+      getRecommendedBook();
 
       dispatch(getCartBooks());
     }
