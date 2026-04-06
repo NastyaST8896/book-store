@@ -24,6 +24,11 @@ import { GenresFilter } from './elements/genres-filter.tsx';
 import { PriceRangeFilter } from './elements/price-range-filter.tsx';
 import { SortByFilter } from './elements/sort-by-filter.tsx';
 import { FreeBook } from './elements';
+import type { CartBookType } from '@redux/cart-books/slice.ts';
+
+type cartBooksObjType = {
+  [index: number]: CartBookType
+}
 
 const sortNames = [
   { id: 1, name: 'Price' },
@@ -74,14 +79,16 @@ export const Home = () => {
   }, [searchParams, dispatch]);
 
   const mergedBooks = useMemo(() => {
-    return books.books.map((book) => {
-      const cartBook = cartBooks.find((bookInCart) => {
-        return bookInCart.id === book.id;
-      });
-      // cartBooksObj[book.id]
+    const cartBooksObj: cartBooksObjType = {};
+    
+    cartBooks.forEach((bookInCart) => {
+      cartBooksObj[bookInCart.id] = bookInCart
+    })
 
-      if (cartBook) {
-        return { ...book, count: cartBook.count };
+    return books.books.map((book) => {
+
+      if (cartBooksObj[book.id]) {
+        return { ...book, count: cartBooksObj[book.id].count };
       }
 
       return book;
