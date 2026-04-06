@@ -9,6 +9,7 @@ import {
   Box,
   Container,
   Grid,
+  TextField,
   Typography,
   useMediaQuery
 } from '@mui/material';
@@ -18,6 +19,8 @@ import { getBookApi } from '../../api/book-api';
 
 import { Comment, ProductBook } from './elements';
 import { getRecommendedApi } from '../../api/recommended-api';
+import { StyledButton } from '@common/styled-button';
+import { socket } from '../../socket';
 
 export const Product = () => {
   const dispatch = useAppDispatch();
@@ -97,7 +100,7 @@ export const Product = () => {
           id,
         });
 
-        if(result.recommended.length > 4) {
+        if (result.recommended.length > 4) {
           result.recommended.splice(4);
         }
 
@@ -147,6 +150,10 @@ export const Product = () => {
     setBook(newBook);
   };
 
+  const handleCommentButtonCklick = () => {
+    socket.emit('new comment', 'comment text');
+  }
+
   return (
     <main>
       <Container maxWidth="md">
@@ -164,9 +171,18 @@ export const Product = () => {
               return <Comment key={comment.id} comment={comment} />
             })}
           </Box>
-
-
         </StyledCommentsBox>
+
+        <Box>
+          {/* <StyledTextField
+            label=''
+            multiline
+            rows={4}
+            defaultValue="Share a comment"
+          /> */}
+
+          <StyledButton onClick={handleCommentButtonCklick}>Post a comment</StyledButton>
+        </Box>
 
         <StyledBox>
           <Typography variant="h1">Recommendations</Typography>
@@ -192,7 +208,12 @@ export const Product = () => {
               container
               columnSpacing="20px"
             >
-              {mergedRecommendedBooks
+              {
+              /*limit_zie = 4;
+                if (tablet && tabletFrom) {
+                  limit_zie = 3
+                }*/
+              mergedRecommendedBooks
                 .filter((_, index) => index < 3)
                 .map((book) => (
                   <BookCard

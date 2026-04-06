@@ -94,11 +94,10 @@ export const BookCard = (props: BookCardProps) => {
   return (
     <Grid
       container
-      size={{ md: 3, sm: 4, xs: 6 }}
+      size={{ xl: 3, lg: 3, md: 3, sm: 4, xs: 6 }}
       sx={{ flexDirection: 'column' }}
       rowSpacing="30px"
-      height={{ lg: '709px', md: '583px', sm: '583px', xs: '391px' }}
-      width={{ lg: '305px', md: '250px', sm: '250px', xs: '135px' }}
+      alignItems='center'
     >
       <StyledCoverGrid
         onClick={handleBookClick}
