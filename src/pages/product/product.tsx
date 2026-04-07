@@ -163,26 +163,36 @@ export const Product = () => {
           onChange={handleBookChange}
         />
 
-        <StyledCommentsBox>
-          <Typography variant='h1'>Comments</Typography>
+        <StyledCommentContainerBox>
+          <StyledCommentsBox>
+            <Typography variant='h1'>Comments</Typography>
 
-          <Box>
-            {comments.map((comment) => {
-              return <Comment key={comment.id} comment={comment} />
-            })}
-          </Box>
-        </StyledCommentsBox>
+            <Box>
+              {comments.map((comment) => {
+                return <Comment key={comment.id} comment={comment} />
+              })}
+            </Box>
+          </StyledCommentsBox>
 
-        <Box>
-          {/* <StyledTextField
-            label=''
-            multiline
-            rows={4}
-            defaultValue="Share a comment"
-          /> */}
+          <StyledCommentInputBox
+            width={{ lg: '50%', sm: '75%', xs: '100%' }}
+          >
+            <StyledTextField
+              label=''
+              multiline
+              rows={4}
+              placeholder="Share a comment"
+              onChange={handleInputChange}
+            />
 
-          <StyledButton onClick={handleCommentButtonCklick}>Post a comment</StyledButton>
-        </Box>
+            <StyledButton
+              sx={{ maxWidth: '276px', width: '100%' }}
+              onClick={handleCommentButtonCklick}
+            >
+              Post a comment
+            </StyledButton>
+          </StyledCommentInputBox>
+        </StyledCommentContainerBox>
 
         <StyledBox>
           <Typography variant="h1">Recommendations</Typography>
@@ -209,18 +219,19 @@ export const Product = () => {
               columnSpacing="20px"
             >
               {
-              /*limit_zie = 4;
-                if (tablet && tabletFrom) {
-                  limit_zie = 3
-                }*/
-              mergedRecommendedBooks
-                .filter((_, index) => index < 3)
-                .map((book) => (
-                  <BookCard
-                    key={book.id}
-                    book={book}
-                  />
-                ))}
+                /*limit_zie = 4;
+                  if (tablet && tabletFrom) {
+                    limit_zie = 3
+                  }*/
+                mergedRecommendedBooks
+                  .filter((_, index) => index < 3)
+                  .map((book) => (
+                    <BookCard
+                      key={book.id}
+                      book={book}
+                    />
+                  ))
+              }
             </Grid>
           )}
 
@@ -240,7 +251,7 @@ export const Product = () => {
         </StyledBox>
 
       </Container>
-    </main>
+    </main >
   );
 };
 
@@ -255,4 +266,32 @@ const StyledBox = styled(Box)`
   flex-direction: column;
   gap: 60px;
   padding: 60px 0 80px 0;
+`;
+
+const StyledCommentInputBox = styled(Box)`
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  max-width: 738px;
+  width: 100%;
+`;
+
+const StyledTextField = styled(TextField)(({ theme }) => `
+  background-color: ${theme.palette.appColor.light};
+  border-radius: 16px;
+
+  & .MuiOutlinedInput-input {
+    color: ${theme.palette.appColor.darkBlue};
+  }
+
+  & .MuiOutlinedInput-notchedOutline {
+    border: none;
+  }
+`);
+
+const StyledCommentContainerBox = styled(Box)`
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+  padding: 60px 0;
 `;
