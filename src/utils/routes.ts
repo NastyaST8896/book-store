@@ -1,3 +1,4 @@
+
 export const IN_APP_ROUTES = {
   home: {
     path: '/',
@@ -73,5 +74,9 @@ export const IN_APP_ROUTES = {
     path: '/cart/books',
     pathName: 'cart-books'
   },
+  addBookComment: {
+    path: '/comments/add-comment',
+    pathName: 'add-comment'
+  }
 
 } as const;

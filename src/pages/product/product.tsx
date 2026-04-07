@@ -21,9 +21,12 @@ import { Comment, ProductBook } from './elements';
 import { getRecommendedApi } from '../../api/recommended-api';
 import { StyledButton } from '@common/styled-button';
 import { socket } from '../../socket';
+import { addBookCommentApi } from '../../api/comment-api';
 
 export const Product = () => {
   const dispatch = useAppDispatch();
+
+  const [commentText, setCommentText] = useState<string>('')
 
   const comments = [
     {
@@ -150,9 +153,24 @@ export const Product = () => {
     setBook(newBook);
   };
 
-  const handleCommentButtonCklick = () => {
-    socket.emit('new comment', 'comment text');
+  const handleInputChange = (e: React.ChangeEvent<
+    HTMLInputElement | HTMLTextAreaElement, Element
+  >) => {
+    e.preventDefault();
+    setCommentText(e.target.value);
   }
+
+  const handleCommentButtonCklick = (e: React.MouseEvent<
+    HTMLButtonElement, MouseEvent
+  >) => {
+    console.log(1);
+    e.preventDefault();
+    const addBookComment = async () => await addBookCommentApi(book.id, commentText);
+    addBookComment()
+    console.log(2);
+
+    socket.emit('new comment', 'comment text');
+  };
 
   return (
     <main>
