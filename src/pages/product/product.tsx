@@ -133,13 +133,29 @@ export const Product = () => {
     HTMLButtonElement, MouseEvent
   >) => {
     e.preventDefault();
-    const addBookComment = async () => {
-      await addBookCommentApi(book.id, commentText);
+    if (commentText !== '') {
+      const addBookComment = async () => {
+        await addBookCommentApi(book.id, commentText);
+      }
+      addBookComment();
+      setCommentText('');
+
+      socket.emit('new comment', commentText);
     }
-    addBookComment();
-    setCommentText('');
-    socket.emit('new comment', 'comment text');
   };
+
+  socket.on('new comment', () => {
+
+    const getBookComments = async () => {
+      const result = await getBookCommentsApi(book.id);
+
+      if (result.comments) {
+        setComments(result.comments);
+      }
+    };
+
+    getBookComments();
+  })
 
   return (
     <main>
