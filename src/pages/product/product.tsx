@@ -163,12 +163,12 @@ export const Product = () => {
   const handleCommentButtonCklick = (e: React.MouseEvent<
     HTMLButtonElement, MouseEvent
   >) => {
-    console.log(1);
     e.preventDefault();
-    const addBookComment = async () => await addBookCommentApi(book.id, commentText);
-    addBookComment()
-    console.log(2);
-
+    const addBookComment = async () => {
+      await addBookCommentApi(book.id, commentText);
+    }
+    addBookComment();
+    setCommentText('');
     socket.emit('new comment', 'comment text');
   };
 
@@ -200,6 +200,7 @@ export const Product = () => {
               multiline
               rows={4}
               placeholder="Share a comment"
+              value={commentText}
               onChange={handleInputChange}
             />
 
