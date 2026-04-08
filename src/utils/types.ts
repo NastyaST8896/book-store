@@ -92,9 +92,9 @@ export type ProductBookType = {
   price: string;
   booksRating: string;
   media: string;
-  description: string;
-  rating: number;
-  userRating: number;
+  description?: string;
+  rating?: number;
+  userRating?: number;
   count: number;
   availableCount: number;
 };

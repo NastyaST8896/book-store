@@ -37,70 +37,61 @@ export const Product = () => {
 
   const { id } = useParams();
 
-  const [book, setBook] = useState({
-    id: 0,
-    title: '',
-    author: '',
-    price: '',
-    booksRating: '0.0',
-    media: '',
-    description: '',
-    rating: 0,
-    userRating: 0.0,
-    count: 0,
-    availableCount: 1,
-  });
-
+  const [book, setBook] = useState<Book | null>(null);
 
   const [recommended, setRecommended] = useState<Book[]>([]);
 
   useEffect(() => {
-    if (id) {
-      const getProductData = async () => {
-        const result = await getBookApi({
-          id,
-          ...(user.user?.id && { userId: user.user?.id }),
-        });
-
-        if (result.book) {
-          setBook(result.book);
-        }
-
-        return;
-      };
-
-      const getRecommendedBook = async () => {
-        const result = await getRecommendedApi({ id });
-
-        if (result.recommended.length > 4) {
-          result.recommended.splice(4);
-        }
-
-        setRecommended(result.recommended);
-
-        return;
-      };
-
-      getProductData();
-      getRecommendedBook();
-
-      dispatch(getCartBooks());
+    if (!id) {
+      return
     }
+
+    const getProductData = async () => {
+      const result = await getBookApi({
+        id,
+        ...(user.user?.id && { userId: user.user?.id }),
+      });
+
+      if (result.book) {
+        setBook(result.book);
+      }
+
+      return;
+    };
+
+    const getRecommendedBook = async () => {
+      const result = await getRecommendedApi({ id });
+
+      if (result.recommended.length > 4) {
+        result.recommended.splice(4);
+      }
+
+      setRecommended(result.recommended);
+
+      return;
+    };
+
+    getProductData();
+    getRecommendedBook();
+
+    dispatch(getCartBooks());
   }, [dispatch, id]);
 
   useEffect(() => {
-
-    if (book.id !== 0) {
-      const getBookComments = async () => {
-        const result = await getBookCommentsApi(book.id);
-
-        if (result.comments) {
-          setComments(result.comments);
-        }
-      };
-
-      getBookComments();
+    if (!book) {
+      return
     }
+
+    const getBookComments = async () => {
+      const result = await getBookCommentsApi(book.id);
+
+      if (result.comments) {
+        setComments(result.comments);
+      }
+    };
+
+    getBookComments();
+
 
   }, [book])
 
@@ -118,16 +109,20 @@ export const Product = () => {
     });
   }, [cartBooks, recommended]);
 
-  const mergedBook = useMemo(() => {
+  const mergedBook: ProductBookType | null = useMemo(() => {
+    if (!book) {
+      return null;
+    }
+
     const cartBook = cartBooks.find((bookInCart) => {
-      return bookInCart.id === book.id;
+      return bookInCart.id === book?.id;
     });
 
     if (cartBook) {
       return { ...book, count: cartBook.count };
     }
 
-    if (!cartBook && book.count > 0) {
+    if (!cartBook && book?.count) {
       return { ...book, count: 0 };
     }
 
@@ -149,7 +144,7 @@ export const Product = () => {
     HTMLButtonElement, MouseEvent
   >) => {
     e.preventDefault();
-    if (commentText !== '') {
+    if (commentText !== '' && book) {
       const addBookComment = async () => {
         await addBookCommentApi(book.id, commentText);
       }
@@ -161,7 +156,9 @@ export const Product = () => {
   };
 
   socket.on('new comment', () => {
-
+    if (!book) {
+      return
+    }
     const getBookComments = async () => {
       const result = await getBookCommentsApi(book.id);
 
@@ -176,11 +173,14 @@ export const Product = () => {
   return (
     <main>
       <Container maxWidth="md">
+        {
+          mergedBook && (
+            <ProductBook
+              book={mergedBook}
+              onChange={handleBookChange}
+            />
+          )}
 
-        <ProductBook
-          book={mergedBook}
-          onChange={handleBookChange}
-        />
 
         <StyledCommentContainerBox>
           <StyledCommentsBox>
