@@ -1,23 +1,20 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
-import { BookCard } from '@common/book-card';
 import { getCartBooks } from '@redux/cart-books/thunk.ts';
 import { useAppDispatch, useAppSelector } from '@redux/hooks';
-import type { Book, ProductBookType } from '@utils/types';
+import type { CommentType, Book, ProductBookType } from '@utils/types';
 
 import {
   Box,
   Container,
-  Grid,
   TextField,
   Typography,
-  useMediaQuery
 } from '@mui/material';
-import { styled, useTheme } from '@mui/material/styles';
+import { styled } from '@mui/material/styles';
 
 import { getBookApi } from '../../api/book-api';
 
-import { Comment, ProductBook } from './elements';
+import { Comment, ProductBook, Recommendations } from './elements';
 import { getRecommendedApi } from '../../api/recommended-api';
 import { StyledButton } from '@common/styled-button';
 import { socket } from '../../socket';
@@ -28,33 +25,7 @@ export const Product = () => {
 
   const [commentText, setCommentText] = useState<string>('')
 
-  const comments = [
-    {
-      id: 1,
-      name: 'Floyd Miles',
-      date: 'Left a comment two days ago',
-      text: 'Love this so much! This book opened up a new world for me!'
-        + 'I advise everyone to get acquainted with the author of this book.'
-        + 'He is awesome!',
-      img: '/src/assets/img/floyd.svg',
-    },
-
-    {
-      id: 2,
-      name: 'Annette Black',
-      date: 'Left a comment two days ago',
-      text: 'This book is amazing! If you are a romantic person, read it.',
-      img: '/src/assets/img/annette.svg'
-    },
-  ]
-
-  const theme = useTheme();
-  const mobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const tabletFrom = useMediaQuery(theme.breakpoints.down('md'));
-  const tabletTo = useMediaQuery(theme.breakpoints.up('sm'));
-  const desktop = useMediaQuery(theme.breakpoints.up('md'));
-
-
+  const [comments, setComments] = useState<CommentType[]>([]);
 
   const cartBooks = useAppSelector((state) => {
     return state.cartBooks.books;
@@ -99,9 +70,7 @@ export const Product = () => {
       };
 
       const getRecommendedBook = async () => {
-        const result = await getRecommendedApi({
-          id,
-        });
+        const result = await getRecommendedApi({ id });
 
         if (result.recommended.length > 4) {
           result.recommended.splice(4);
@@ -213,61 +182,7 @@ export const Product = () => {
           </StyledCommentInputBox>
         </StyledCommentContainerBox>
 
-        <StyledBox>
-          <Typography variant="h1">Recommendations</Typography>
-
-          {mobile && (
-            <Grid
-              container
-              columnSpacing="20px"
-            >
-              {mergedRecommendedBooks
-                .filter((_, index) => index < 2)
-                .map((book) => (
-                  <BookCard
-                    key={book.id}
-                    book={book}
-                  />
-                ))}
-            </Grid>
-          )}
-
-          {tabletTo && tabletFrom && (
-            <Grid
-              container
-              columnSpacing="20px"
-            >
-              {
-                /*limit_zie = 4;
-                  if (tablet && tabletFrom) {
-                    limit_zie = 3
-                  }*/
-                mergedRecommendedBooks
-                  .filter((_, index) => index < 3)
-                  .map((book) => (
-                    <BookCard
-                      key={book.id}
-                      book={book}
-                    />
-                  ))
-              }
-            </Grid>
-          )}
-
-          {desktop && (
-            <Grid
-              container
-              columnSpacing="20px"
-            >
-              {mergedRecommendedBooks.map((book) => (
-                <BookCard
-                  key={book.id}
-                  book={book}
-                />
-              ))}
-            </Grid>
-          )}
-        </StyledBox>
+        <Recommendations recommendedBooks={mergedRecommendedBooks} />
 
       </Container>
     </main >
@@ -278,13 +193,6 @@ const StyledCommentsBox = styled(Box)`
   display: flex;
   flex-direction: column;
   gap: 50px;
-`;
-
-const StyledBox = styled(Box)`
-  display: flex;
-  flex-direction: column;
-  gap: 60px;
-  padding: 60px 0 80px 0;
 `;
 
 const StyledCommentInputBox = styled(Box)`
