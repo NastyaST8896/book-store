@@ -77,6 +77,10 @@ export const IN_APP_ROUTES = {
   addBookComment: {
     path: '/comments/add-comment',
     pathName: 'add-comment'
-  }
+  },
+  getBookComments: {
+    path: '/comments/get-comments',
+    pathName: 'get-comments'
+  },
 
 } as const;

@@ -5,7 +5,7 @@ type CommentType = {
   comment: {
     id: number,
     name: string,
-    date: string,
+    date: Date,
     text: string,
     img: string,
   },
@@ -17,12 +17,19 @@ export const Comment = (props: CommentType) => {
   const theme = useTheme();
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
 
+  const today = new Date();
+  const createCommentDate = new Date(comment.date);
+  const diffTime = today.getTime() - createCommentDate.getTime();
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24))
+
   if (mobile) {
     return (
       <StyledMobileCommentBox width={{ lg: '50%', sm: '75%', xs: '100%' }}>
 
         <StyledMobileInfoBox>
-          <StyledAvatarBox img={comment.img} />
+          <StyledAvatarBox
+            img={comment.img || 'src/assets/img/no-cover.webp'}
+          />
 
           <Box>
             <StyledNameTypography variant='subtitle1'>
@@ -30,7 +37,7 @@ export const Comment = (props: CommentType) => {
             </StyledNameTypography>
 
             <StyledTimeTypography variant='h2'>
-              {comment.date}
+              {String(comment.date)}
             </StyledTimeTypography>
           </Box>
         </StyledMobileInfoBox>
@@ -53,7 +60,12 @@ export const Comment = (props: CommentType) => {
         </StyledNameTypography>
 
         <StyledTimeTypography variant='h2'>
-          {comment.date}
+          {
+            diffDays ?
+            `Left a comment ${diffDays} days ago`
+            :
+            'Сomment added today'
+          }
         </StyledTimeTypography>
 
         <StyledCommentTextTypography>

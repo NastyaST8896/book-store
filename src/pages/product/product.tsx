@@ -18,7 +18,7 @@ import { Comment, ProductBook, Recommendations } from './elements';
 import { getRecommendedApi } from '../../api/recommended-api';
 import { StyledButton } from '@common/styled-button';
 import { socket } from '../../socket';
-import { addBookCommentApi } from '../../api/comment-api';
+import { addBookCommentApi, getBookCommentsApi } from '../../api/comment-api';
 
 export const Product = () => {
   const dispatch = useAppDispatch();
@@ -87,6 +87,22 @@ export const Product = () => {
       dispatch(getCartBooks());
     }
   }, [dispatch, id]);
+
+  useEffect(() => {
+
+    if (book.id !== 0) {
+      const getBookComments = async () => {
+        const result = await getBookCommentsApi(book.id);
+
+        if (result.comments) {
+          setComments(result.comments);
+        }
+      };
+
+      getBookComments();
+    }
+
+  }, [book])
 
   const mergedRecommendedBooks = useMemo(() => {
     return recommended.map((book) => {

@@ -14,9 +14,9 @@ export const getBookApi = async (params: { id: string, userId?: string }) => {
   >>(`/books/${params.id}`,
     {
       params:
-        {
-          userId: params.userId
-        }
+      {
+        userId: params.userId
+      }
     }
   );
 

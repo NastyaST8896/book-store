@@ -97,4 +97,12 @@ export type ProductBookType = {
   userRating: number;
   count: number;
   availableCount: number;
-}
+};
+
+export type CommentType = {
+  id: number,
+  name: string,
+  date: Date,
+  text: string,
+  img: string,
+};
