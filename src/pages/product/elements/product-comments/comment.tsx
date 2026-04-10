@@ -37,7 +37,12 @@ export const Comment = (props: CommentType) => {
             </StyledNameTypography>
 
             <StyledTimeTypography variant='h2'>
-              {String(comment.date)}
+              {
+                diffDays ?
+                  `Left a comment ${diffDays} days ago`
+                  :
+                  'Сomment added today'
+              }
             </StyledTimeTypography>
           </Box>
         </StyledMobileInfoBox>
@@ -53,7 +58,7 @@ export const Comment = (props: CommentType) => {
 
   return (
     <StyledCommentBox width={{ lg: '50%', sm: '75%', xs: '100%' }}>
-      <StyledAvatarBox img={comment.img} />
+      <StyledAvatarBox img={comment.img || 'src/assets/img/no-cover.webp'} />
       <StyledInfoBox>
         <StyledNameTypography variant='subtitle1'>
           {comment.name}
@@ -62,9 +67,9 @@ export const Comment = (props: CommentType) => {
         <StyledTimeTypography variant='h2'>
           {
             diffDays ?
-            `Left a comment ${diffDays} days ago`
-            :
-            'Сomment added today'
+              `Left a comment ${diffDays} days ago`
+              :
+              'Сomment added today'
           }
         </StyledTimeTypography>
 

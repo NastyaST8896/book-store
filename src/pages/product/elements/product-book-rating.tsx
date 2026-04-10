@@ -43,7 +43,7 @@ export const ProductBookRating = (props: ProductBookRatingProps) => {
 
   return (
     <StyledRatingContainerGrid container>
-      <StyledGeneralRatingGrid>
+      <StyledGeneralRatingGrid size={{lg: 1, md: 2, sm: 9}}>
         <StarIcon />
 
         <StyledRatingTypography variant="subtitle1">
@@ -53,7 +53,7 @@ export const ProductBookRating = (props: ProductBookRatingProps) => {
 
       <Grid>
         <StyledRating
-          value={user.user ? +book.userRating : 0}
+          value={(user.user && book.userRating) ? +book.userRating : 0}
           precision={1}
           size="large"
           onChange={handleRatingChange}
