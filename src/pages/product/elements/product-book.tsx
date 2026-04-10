@@ -3,10 +3,11 @@ import {
   Grid,
   IconButton,
   Typography,
+  useMediaQuery,
   type GridProps,
   type IconButtonProps
 } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import { styled, useTheme } from '@mui/material/styles';
 import { HeartIcon } from '@common/icons/heart-icon';
 import { useAppDispatch, useAppSelector } from '@redux/hooks';
 import { StyledButton } from '@common/styled-button';
@@ -26,6 +27,10 @@ type ProductBookProps = {
 
 export const ProductBook = (props: ProductBookProps) => {
   const { book, onChange } = props;
+
+  const theme = useTheme();
+  const toTablet = useMediaQuery(theme.breakpoints.down('md'));
+  const fromTablet = useMediaQuery(theme.breakpoints.up('md'));
 
   const [bookCount, setBookCount] = useState(book.count);
 
@@ -75,82 +80,168 @@ export const ProductBook = (props: ProductBookProps) => {
       .then(() => dispatch(getCartBooks()));
   };
 
+
   return (
     <StyledBookGrid container>
-      <StyledCoverGrid img={book.media}>
-        <StyledIconButton /*transparent={!book.isFavorite}*/>
-          <HeartIcon
-            fill="none"
+      {fromTablet && (
+        <StyledCoverGrid size={{ md: 6 }} img={book.media}>
+          <StyledIconButton /*transparent={!book.isFavorite}*/>
+            <HeartIcon
+              fill="none"
             /*fill={book.isFavorite ? 'white' : 'none'}*/
-          />
-        </StyledIconButton>
-      </StyledCoverGrid>
+            />
+          </StyledIconButton>
+        </StyledCoverGrid>
+      )}
 
-      <StyledBookInfoGrid>
+      <StyledBookInfoGrid size={{ md: 6 }}>
         <StyledInfoContainerGrid container>
-          <Grid>
-            <Typography variant="h1">{book.title}</Typography>
-            <StyledVariantH2Typography variant="h2">
-              {book.author}
-            </StyledVariantH2Typography>
-          </Grid>
+          {
+            toTablet && (
+              <StyledCoverGrid img={book.media}>
+                <StyledIconButton /*transparent={!book.isFavorite}*/>
+                  <HeartIcon
+                    fill="none"
+                  /*fill={book.isFavorite ? 'white' : 'none'}*/
+                  />
+                </StyledIconButton>
+              </StyledCoverGrid>
+            )
+          }
 
-          <ProductBookRating book={book} onChange={onChange} />
+          <StyledHederInfoBookGrid>
+            <Grid>
+              <Typography variant="h1">{book.title}</Typography>
+              <StyledVariantH2Typography variant="h2">
+                {book.author}
+              </StyledVariantH2Typography>
+            </Grid>
 
-          <StyledDescriptionGrid>
-            <StyledVariantH2Typography variant="h2">
-              Description
-            </StyledVariantH2Typography>
+            <ProductBookRating book={book} onChange={onChange} />
+          </StyledHederInfoBookGrid>
 
-            <StyledDescriptionTextTypography variant="subtitle2">
-              {book.description}
-            </StyledDescriptionTextTypography>
-          </StyledDescriptionGrid>
+          {
+            fromTablet && (
+              <StyledDescriptionGrid>
+                <StyledVariantH2Typography variant="h2">
+                  Description
+                </StyledVariantH2Typography>
+
+                <StyledDescriptionTextTypography variant="subtitle2">
+                  {book.description}
+                </StyledDescriptionTextTypography>
+              </StyledDescriptionGrid>
+            )
+          }
         </StyledInfoContainerGrid>
 
-        <StyledButtonsBox>
-          <StyledButtonBox>
-            <StyledButtonTypography variant="subtitle2">
-              Paperback
-            </StyledButtonTypography>
+        {
+          fromTablet && (
+            <StyledButtonsBox>
+              <StyledButtonBox>
+                <StyledButtonTypography variant="subtitle2">
+                  Paperback
+                </StyledButtonTypography>
 
-            <StyledButton
-              disabled
-              buttonHeight={50}
-              sx={{ fontSize: '20px' }}
-            >
-              Not available
-            </StyledButton>
-          </StyledButtonBox>
+                <StyledButtonBook
+                  disabled
+                  buttonHeight={50}
+                  sx={{ fontSize: '20px' }}
+                >
+                  Not available
+                </StyledButtonBook>
+              </StyledButtonBox>
 
-          <StyledButtonBox>
-            <StyledButtonTypography variant="subtitle2">
-              Hardcover
-            </StyledButtonTypography>
+              <StyledButtonBox>
+                <StyledButtonTypography variant="subtitle2">
+                  Hardcover
+                </StyledButtonTypography>
 
-            {book.count ? (
-              <StyledSpinnerBox>
-                <NumberSpinner
-                  min={0}
-                  max={book.availableCount}
-                  defaultValue={book.count}
-                  onChange={handleBooksCountChange}
-                />
-                <IconButton onClick={handleDeleteButton}>
-                  <DeleteIcon />
-                </IconButton>
-              </StyledSpinnerBox>
-            ) : (
-              <StyledButton
-                onClick={handleProductButtonClick}
-                buttonHeight={50}
-                sx={{ fontSize: '20px' }}
-              >
-                $ {book.price} USD
-              </StyledButton>
-            )}
-          </StyledButtonBox>
-        </StyledButtonsBox>
+                {book.count ? (
+                  <StyledSpinnerBox>
+                    <NumberSpinner
+                      min={0}
+                      max={book.availableCount}
+                      defaultValue={book.count}
+                      onChange={handleBooksCountChange}
+                    />
+                    <IconButton onClick={handleDeleteButton}>
+                      <DeleteIcon />
+                    </IconButton>
+                  </StyledSpinnerBox>
+                ) : (
+                  <StyledButtonBook
+                    onClick={handleProductButtonClick}
+                    buttonHeight={50}
+                    sx={{ fontSize: '20px' }}
+                  >
+                    $ {book.price} USD
+                  </StyledButtonBook>
+                )}
+              </StyledButtonBox>
+            </StyledButtonsBox>
+          )
+        }
+
+        {
+          toTablet && (
+            <Box>
+              <Box>
+                <StyledVariantH2Typography variant="h2">
+                  Description
+                </StyledVariantH2Typography>
+
+                <StyledDescriptionTextTypography variant="subtitle2">
+                  {book.description}
+                </StyledDescriptionTextTypography>
+              </Box>
+
+              <StyledButtonsBox>
+                <StyledButtonBox>
+                  <StyledButtonTypography variant="subtitle2">
+                    Paperback
+                  </StyledButtonTypography>
+
+                  <StyledButtonBook
+                    disabled
+                    buttonHeight={50}
+                    sx={{ fontSize: '20px' }}
+                  >
+                    Not available
+                  </StyledButtonBook>
+                </StyledButtonBox>
+
+                <StyledButtonBox>
+                  <StyledButtonTypography variant="subtitle2">
+                    Hardcover
+                  </StyledButtonTypography>
+
+                  {book.count ? (
+                    <StyledSpinnerBox>
+                      <NumberSpinner
+                        min={0}
+                        max={book.availableCount}
+                        defaultValue={book.count}
+                        onChange={handleBooksCountChange}
+                      />
+                      <IconButton onClick={handleDeleteButton}>
+                        <DeleteIcon />
+                      </IconButton>
+                    </StyledSpinnerBox>
+                  ) : (
+                    <StyledButtonBook
+                      onClick={handleProductButtonClick}
+                      buttonHeight={50}
+                      sx={{ fontSize: '20px' }}
+                    >
+                      $ {book.price} USD
+                    </StyledButtonBook>
+                  )}
+                </StyledButtonBox>
+              </StyledButtonsBox>
+            </Box>
+          )
+        }
       </StyledBookInfoGrid>
 
     </StyledBookGrid>
@@ -161,6 +252,11 @@ const StyledBookGrid = styled(Grid)`
   display: flex;
   justify-content: space-between;
   padding: 36px 0 60px 0;
+
+  @media(max-width: 1000px) {
+    flex-direction: row;
+
+  }
 `;
 
 const StyledCoverGrid = styled(
@@ -177,12 +273,38 @@ const StyledCoverGrid = styled(
   max-width: 522px;
   width: 100%;
   height: 780px;
+
+  @media(max-width: 1000px) {
+    max-width: 391px;
+    height: 584px
+  };
+
+  @media(max-width: 770px) {
+    max-width: 391px;
+    height: 584px
+  };
+
+  @media(max-width: 770px) {
+    max-width: 135px;
+    height: 202px
+  };
 `);
 
 const StyledBookInfoGrid = styled(Grid)`
   display: flex;
   flex-direction: column;
   gap: 80px;
+  padding:20px;
+
+  @media(max-width: 1000px) {
+    gap: 50px;
+    width: 100%
+  }
+`;
+
+const StyledHederInfoBookGrid = styled(Grid)`
+  width: 100%;
+
 `;
 
 const StyledInfoContainerGrid = styled(Grid)`
@@ -191,6 +313,11 @@ const StyledInfoContainerGrid = styled(Grid)`
   gap: 24px;
   max-width: 630px;
   width: 100%;
+
+  @media(max-width: 1000px) {
+    flex-direction: row;
+    max-width: none;
+  }
 `;
 
 const StyledVariantH2Typography = styled(Typography)`
@@ -211,6 +338,10 @@ const StyledDescriptionTextTypography = styled(Typography)`
 const StyledButtonsBox = styled(Box)`
   display: flex;
   gap: 82px;
+
+  @media(max-width: 1168px) {
+    gap: 20px;
+  }
 `;
 
 const StyledButtonBox = styled(Box)`
@@ -249,4 +380,14 @@ const StyledSpinnerBox = styled(Box)`
   padding: 8px;
   border-radius: 16px;
   gap: 40px
+`;
+
+const StyledButtonBook = styled(StyledButton)`
+  font-size: 18px;
+
+  &.MuiButton-root {
+    @media(max-width: 1042px) {
+    padding: 10px 23px;
+    }
+  }
 `;
