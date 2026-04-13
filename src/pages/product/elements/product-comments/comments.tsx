@@ -9,6 +9,7 @@ import {
 import { useEffect, useState } from 'react';
 import { socket } from '../../../../socket';
 import { Comment } from './comment';
+import { useAppSelector } from '@redux/hooks';
 
 type CommentsType = {
   book: Book | null,
@@ -16,6 +17,10 @@ type CommentsType = {
 
 export const Comments = (props: CommentsType) => {
   const { book } = props;
+
+  const user = useAppSelector((state) => {
+    return state.user.user;
+  });
 
   const [comments, setComments] = useState<CommentType[]>([]);
   const [commentText, setCommentText] = useState<string>('');
@@ -91,25 +96,30 @@ export const Comments = (props: CommentsType) => {
         </Box>
       </StyledCommentsBox>
 
-      <StyledCommentInputBox
-        width={{ lg: '50%', sm: '75%', xs: '100%' }}
-      >
-        <StyledTextField
-          label=''
-          multiline
-          rows={4}
-          placeholder="Share a comment"
-          value={commentText}
-          onChange={handleInputChange}
-        />
+      {
+        user && (
+          <StyledCommentInputBox
+            width={{ lg: '50%', sm: '75%', xs: '100%' }}
+          >
+            <StyledTextField
+              label=''
+              multiline
+              rows={4}
+              placeholder="Share a comment"
+              value={commentText}
+              onChange={handleInputChange}
+            />
 
-        <StyledButton
-          sx={{ maxWidth: '276px', width: '100%' }}
-          onClick={handleCommentButtonCklick}
-        >
-          Post a comment
-        </StyledButton>
-      </StyledCommentInputBox>
+            <StyledButton
+              sx={{ maxWidth: '276px', width: '100%' }}
+              onClick={handleCommentButtonCklick}
+            >
+              Post a comment
+            </StyledButton>
+          </StyledCommentInputBox>
+        )
+      }
+
     </StyledCommentContainerBox>
   );
 };
