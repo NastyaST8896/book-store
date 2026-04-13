@@ -5,8 +5,8 @@ import { setBookRating } from '@redux/books/thunk';
 import { useAppDispatch, useAppSelector } from '@redux/hooks';
 import type { ProductBookType } from '@utils/types';
 
-import { Grid, Rating, Typography } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import { Grid, Rating, Typography, useMediaQuery } from '@mui/material';
+import { styled, useTheme } from '@mui/material/styles';
 
 type ProductBookRatingProps = {
   book: ProductBookType,
@@ -20,6 +20,10 @@ export const ProductBookRating = (props: ProductBookRatingProps) => {
   });
 
   const dispatch = useAppDispatch();
+
+  const theme = useTheme();
+  const fromTablet = useMediaQuery(theme.breakpoints.up('md'));
+  const toTablet = useMediaQuery(theme.breakpoints.down('md'));
 
   const handleRatingChange = (
     _: SyntheticEvent<Element, Event>,
@@ -43,15 +47,15 @@ export const ProductBookRating = (props: ProductBookRatingProps) => {
 
   return (
     <StyledRatingContainerGrid container>
-      <StyledGeneralRatingGrid size={{lg: 1, md: 2, sm: 9}}>
+      <StyledGeneralRatingGrid size={{ lg: 2, md: 2, sm: 12}}>
         <StarIcon />
 
-        <StyledRatingTypography variant="subtitle1">
+        <StyledRatingTypography variant="subtitle2">
           {book.booksRating}
         </StyledRatingTypography>
       </StyledGeneralRatingGrid>
 
-      <Grid>
+      <Grid size={{ lg: 4, md: 4, sm: 12 }}>
         <StyledRating
           value={(user.user && book.userRating) ? +book.userRating : 0}
           precision={1}
@@ -59,15 +63,26 @@ export const ProductBookRating = (props: ProductBookRatingProps) => {
           onChange={handleRatingChange}
           readOnly={!user.user}
         />
+        {
+          toTablet && (
+            <StyledRatingTypography variant="subtitle2">
+              Rate this book
+            </StyledRatingTypography>
+          )
+        }
       </Grid>
 
-      <StyledRatingTextGrid>
-        <RatingArrowIcon />
+      {
+        fromTablet && (
+          <StyledRatingTextGrid size={{ lg: 4,  md: 4, sm: 12 }}>
+            <RatingArrowIcon />
 
-        <StyledRatingTypography variant="subtitle1">
-          Rate this book
-        </StyledRatingTypography>
-      </StyledRatingTextGrid>
+            <StyledRatingTypography variant="subtitle2">
+              Rate this book
+            </StyledRatingTypography>
+          </StyledRatingTextGrid>
+        )
+      }
     </StyledRatingContainerGrid>
   );
 };
@@ -76,7 +91,12 @@ const StyledRatingContainerGrid = styled(Grid)`
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 40px;
+  gap: 20px;
+
+  @media(max-width: 1000px) {
+    flex-direction: column;
+    align-items: flex-start;
+  };
 `;
 
 const StyledGeneralRatingGrid = styled(Grid)`

@@ -51,14 +51,20 @@ export const theme = createTheme({
     },
 
     h2: {
-      fontSize: '20px',
+      fontSize: '24px',
       fontWeight: '400',
+      '@media (max-width:1000px)': {
+        fontSize: '20px',
+      },
+      '@media (max-width:650px)': {
+        fontSize: '18px',
+      },
     },
 
     subtitle1: {
       fontSize: '16px',
       fontWeight: '500',
-      '@media (max-width:1000px)': {
+      '@media (max-width:650px)': {
         fontSize: '14px',
       },
     },

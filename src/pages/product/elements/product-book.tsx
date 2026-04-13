@@ -84,7 +84,10 @@ export const ProductBook = (props: ProductBookProps) => {
   return (
     <StyledBookGrid container>
       {fromTablet && (
-        <StyledCoverGrid size={{ md: 6 }} img={book.media}>
+        <StyledCoverGrid
+          size={5}
+          img={book.media}
+        >
           <StyledIconButton /*transparent={!book.isFavorite}*/>
             <HeartIcon
               fill="none"
@@ -94,38 +97,50 @@ export const ProductBook = (props: ProductBookProps) => {
         </StyledCoverGrid>
       )}
 
-      <StyledBookInfoGrid size={{ md: 6 }}>
+      <StyledBookInfoGrid size={{lg: 7, md: 7 }}>
         <StyledInfoContainerGrid container>
           {
             toTablet && (
-              <StyledCoverGrid img={book.media}>
-                <StyledIconButton /*transparent={!book.isFavorite}*/>
-                  <HeartIcon
-                    fill="none"
-                  /*fill={book.isFavorite ? 'white' : 'none'}*/
-                  />
-                </StyledIconButton>
-              </StyledCoverGrid>
+              <StyledInfoWidthCoverGrid container>
+                <StyledCoverGrid
+                  size={6}
+                  img={book.media}
+                >
+                </StyledCoverGrid>
+
+                <StyledHederInfoBookGrid size={6}>
+                  <GridBookTitleAndAuthor>
+                    <Typography variant="h1">{book.title}</Typography>
+                    <Typography variant="h2">
+                      {book.author}
+                    </Typography>
+                  </GridBookTitleAndAuthor>
+
+                  <ProductBookRating book={book} onChange={onChange} />
+                </StyledHederInfoBookGrid>
+              </StyledInfoWidthCoverGrid>
             )
           }
 
-          <StyledHederInfoBookGrid>
-            <Grid>
-              <Typography variant="h1">{book.title}</Typography>
-              <StyledVariantH2Typography variant="h2">
-                {book.author}
-              </StyledVariantH2Typography>
-            </Grid>
+          {fromTablet && (
+            <StyledHederInfoBookGrid>
+              <GridBookTitleAndAuthor>
+                <Typography variant="h1">{book.title}</Typography>
+                <Typography variant="h2">
+                  {book.author}
+                </Typography>
+              </GridBookTitleAndAuthor>
 
-            <ProductBookRating book={book} onChange={onChange} />
-          </StyledHederInfoBookGrid>
+              <ProductBookRating book={book} onChange={onChange} />
+            </StyledHederInfoBookGrid>
+          )}
 
           {
             fromTablet && (
               <StyledDescriptionGrid>
-                <StyledVariantH2Typography variant="h2">
+                <Typography variant="h2">
                   Description
-                </StyledVariantH2Typography>
+                </Typography>
 
                 <StyledDescriptionTextTypography variant="subtitle2">
                   {book.description}
@@ -139,7 +154,7 @@ export const ProductBook = (props: ProductBookProps) => {
           fromTablet && (
             <StyledButtonsBox>
               <StyledButtonBox>
-                <StyledButtonTypography variant="subtitle2">
+                <StyledButtonTypography variant="subtitle1">
                   Paperback
                 </StyledButtonTypography>
 
@@ -153,7 +168,7 @@ export const ProductBook = (props: ProductBookProps) => {
               </StyledButtonBox>
 
               <StyledButtonBox>
-                <StyledButtonTypography variant="subtitle2">
+                <StyledButtonTypography variant="subtitle1">
                   Hardcover
                 </StyledButtonTypography>
 
@@ -185,20 +200,20 @@ export const ProductBook = (props: ProductBookProps) => {
 
         {
           toTablet && (
-            <Box>
-              <Box>
-                <StyledVariantH2Typography variant="h2">
+            <StyledInfoBookBox>
+              <StyledDescriptionBox>
+                <Typography variant="h2">
                   Description
-                </StyledVariantH2Typography>
+                </Typography>
 
                 <StyledDescriptionTextTypography variant="subtitle2">
                   {book.description}
                 </StyledDescriptionTextTypography>
-              </Box>
+              </StyledDescriptionBox>
 
               <StyledButtonsBox>
                 <StyledButtonBox>
-                  <StyledButtonTypography variant="subtitle2">
+                  <StyledButtonTypography variant="subtitle1">
                     Paperback
                   </StyledButtonTypography>
 
@@ -212,7 +227,7 @@ export const ProductBook = (props: ProductBookProps) => {
                 </StyledButtonBox>
 
                 <StyledButtonBox>
-                  <StyledButtonTypography variant="subtitle2">
+                  <StyledButtonTypography variant="subtitle1">
                     Hardcover
                   </StyledButtonTypography>
 
@@ -229,17 +244,17 @@ export const ProductBook = (props: ProductBookProps) => {
                       </IconButton>
                     </StyledSpinnerBox>
                   ) : (
-                    <StyledButtonBook
+                    <StyledButtonBookText
                       onClick={handleProductButtonClick}
                       buttonHeight={50}
                       sx={{ fontSize: '20px' }}
                     >
                       $ {book.price} USD
-                    </StyledButtonBook>
+                    </StyledButtonBookText>
                   )}
                 </StyledButtonBox>
               </StyledButtonsBox>
-            </Box>
+            </StyledInfoBookBox>
           )
         }
       </StyledBookInfoGrid>
@@ -253,9 +268,9 @@ const StyledBookGrid = styled(Grid)`
   justify-content: space-between;
   padding: 36px 0 60px 0;
 
+
   @media(max-width: 1000px) {
     flex-direction: row;
-
   }
 `;
 
@@ -269,25 +284,9 @@ const StyledCoverGrid = styled(
   background-size: cover;
   background-position: center center;
   border-radius: 16px;
-  min-width: 135px;
   max-width: 522px;
-  width: 100%;
-  height: 780px;
-
-  @media(max-width: 1000px) {
-    max-width: 391px;
-    height: 584px
-  };
-
-  @media(max-width: 770px) {
-    max-width: 391px;
-    height: 584px
-  };
-
-  @media(max-width: 770px) {
-    max-width: 135px;
-    height: 202px
-  };
+  max-height: 779px;
+  aspect-ratio: 1/1.5;
 `);
 
 const StyledBookInfoGrid = styled(Grid)`
@@ -295,16 +294,26 @@ const StyledBookInfoGrid = styled(Grid)`
   flex-direction: column;
   gap: 80px;
   padding:20px;
+  max-width: 680px;
+  width: 100%;
 
   @media(max-width: 1000px) {
     gap: 50px;
-    width: 100%
+    padding: 0;
   }
 `;
 
 const StyledHederInfoBookGrid = styled(Grid)`
+  display: flex;
+  flex-direction: column;
   width: 100%;
+  gap: 30px;
 
+  @media(max-width: 1000px) {
+    max-width: 50%;
+    gap: 20px;
+    padding: 0 20px;
+  }
 `;
 
 const StyledInfoContainerGrid = styled(Grid)`
@@ -315,23 +324,17 @@ const StyledInfoContainerGrid = styled(Grid)`
   width: 100%;
 
   @media(max-width: 1000px) {
-    flex-direction: row;
-    max-width: none;
+  max-width: none;
   }
-`;
-
-const StyledVariantH2Typography = styled(Typography)`
-  font-size: 24px;
 `;
 
 const StyledDescriptionGrid = styled(Grid)`
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
 `;
 
 const StyledDescriptionTextTypography = styled(Typography)`
-  font-size: 16px;
   white-space: pre-wrap;
 `;
 
@@ -351,7 +354,8 @@ const StyledButtonBox = styled(Box)`
 `;
 
 const StyledButtonTypography = styled(Typography)`
-  font-size: 16px;
+  color: #344966;
+  font-weight: 400;
 `;
 
 const StyledIconButton = styled(
@@ -390,4 +394,35 @@ const StyledButtonBook = styled(StyledButton)`
     padding: 10px 23px;
     }
   }
+`;
+
+const StyledButtonBookText = styled(StyledButtonBook)`
+  font-size: 20px;
+  
+  @media (max-width: 650px) {
+    font-size: 12px;
+  };
+`;
+
+const GridBookTitleAndAuthor = styled(Grid)`
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+`;
+
+const StyledDescriptionBox = styled(Box)`
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+`;
+
+const StyledInfoBookBox = styled(Box)`
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+`;
+
+const StyledInfoWidthCoverGrid = styled(Grid)`
+  display: flex;
+  width: 100%;
 `;
