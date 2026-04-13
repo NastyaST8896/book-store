@@ -60,28 +60,25 @@ export const Comments = (props: CommentsType) => {
       }
       addBookComment();
       setCommentText('');
-
-      // socket.emit('new comment', commentText);
     }
   };
 
-  // socket.on('new comment', () => {
-  //   if (!book) {
-  //     return
-  //   };
+  socket.on("new comment", () => {
+    if (!book) {
+      return
+    };
 
-  //   const getBookComments = async () => {
-  //     const result = await getBookCommentsApi(book.id);
+    const getBookComments = async () => {
+      const result = await getBookCommentsApi(book.id);
+      if (result.comments) {
+        setComments(result.comments);
+      }
 
-  //     if (result.comments) {
-  //       setComments(result.comments);
-  //     }
+      return;
+    };
 
-  //     return;
-  //   };
-
-  //   getBookComments();
-  // });
+    getBookComments();
+  });
 
 
   return (
