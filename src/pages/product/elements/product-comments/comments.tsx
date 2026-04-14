@@ -7,7 +7,7 @@ import {
   getBookCommentsApi
 } from '../../../../api/comment-api';
 import { useEffect, useState } from 'react';
-import { socket } from '../../../../socket';
+import { getSocket } from '../../../../socket';
 import { Comment } from './comment';
 import { useAppSelector } from '@redux/hooks';
 
@@ -17,6 +17,8 @@ type CommentsType = {
 
 export const Comments = (props: CommentsType) => {
   const { book } = props;
+
+  const socket = getSocket();
 
   const user = useAppSelector((state) => {
     return state.user.user;
@@ -63,7 +65,7 @@ export const Comments = (props: CommentsType) => {
     }
   };
 
-  socket.on("new comment", () => {
+  socket?.on("new comment", () => {
     if (!book) {
       return
     };
@@ -79,7 +81,6 @@ export const Comments = (props: CommentsType) => {
 
     getBookComments();
   });
-
 
   return (
     <StyledCommentContainerBox>
