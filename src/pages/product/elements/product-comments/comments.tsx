@@ -52,6 +52,18 @@ export const Comments = (props: CommentsType) => {
     setCommentText(e.target.value);
   };
 
+  const handleKeyDown = (e:React.KeyboardEvent<HTMLDivElement>) => {
+   if(e.code === 'Enter') {
+    if (commentText !== '' && book) {
+      const addBookComment = async () => {
+        await addBookCommentApi(book.id, commentText);
+      }
+      addBookComment();
+      setCommentText('');
+    }
+   }
+  } 
+
   const handleCommentButtonCklick = (e: React.MouseEvent<
     HTMLButtonElement, MouseEvent
   >) => {
@@ -106,6 +118,7 @@ export const Comments = (props: CommentsType) => {
               placeholder="Share a comment"
               value={commentText}
               onChange={handleInputChange}
+              onKeyDown={handleKeyDown}
             />
 
             <StyledButton
