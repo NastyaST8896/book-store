@@ -21,6 +21,7 @@ import {
   useMediaQuery
 } from '@mui/material';
 import { styled, useTheme } from '@mui/material/styles';
+import { NotificationIcon } from '@common/icons/notification-icon';
 
 const queryFilters = [
   'genres',
