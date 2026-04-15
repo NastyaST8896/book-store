@@ -1,25 +1,35 @@
 import { io, Socket } from 'socket.io-client';
 
-let socket: Socket | null = null;
+const token = localStorage.getItem('accessToken');
 
-export const initSocket = (userId: number) => {
-  if (socket) {
-    socket.disconnect();
-  }
+export class SocketManager {
+  private static socket: Socket | null = null;
 
-  socket = io('http://localhost:3000/', {
-    query: {
-      userId
+  public static initSocket(userId: number): Socket {
+    if (this.socket) {
+      this.socket.disconnect();
     }
-  });
 
-  return socket;
-};
+    this.socket = io('http://localhost:3000/', {
+      query: {
+        userId,
+      },
+      extraHeaders: {
+        authorization: `bearer ${token}`
+      }
+    });
 
-export const getSocket = () => socket;
-export const disconnectSocket = () => {
-  if(socket) {
-    socket.disconnect();
-    socket = null;
+    return this.socket;
   }
-}
+
+  public static getSocket(): Socket | null {
+    return this.socket;
+  }
+
+  public static disconnectSocket() {
+    if (this.socket) {
+      this.socket.disconnect();
+      this.socket = null;
+    }
+  }
+};

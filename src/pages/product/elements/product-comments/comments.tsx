@@ -7,7 +7,7 @@ import {
   getBookCommentsApi
 } from '../../../../api/comment-api';
 import { useEffect, useState } from 'react';
-import { getSocket } from '../../../../socket';
+import { SocketManager } from '../../../../socket';
 import { Comment } from './comment';
 import { useAppSelector } from '@redux/hooks';
 
@@ -18,7 +18,7 @@ type CommentsType = {
 export const Comments = (props: CommentsType) => {
   const { book } = props;
 
-  const socket = getSocket();
+  const socket = SocketManager.getSocket();
 
   const user = useAppSelector((state) => {
     return state.user.user;

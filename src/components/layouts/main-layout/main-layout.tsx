@@ -2,14 +2,12 @@ import { Link, Outlet } from 'react-router';
 
 import { Footer, Header } from './elements';
 import { ToastContainer, toast, type ToastContentProps } from 'react-toastify';
-import { disconnectSocket, initSocket } from '../../../socket';
+import { SocketManager} from '../../../socket';
 import { useAppSelector } from '@redux/hooks';
 import { useEffect } from 'react';
-import type { Socket } from 'socket.io-client';
 import { styled } from '@mui/material';
 
 export const MainLayout = () => {
-  let socket: Socket;
 
   const userId = useAppSelector((state) => {
     return state.user.user?.id;
@@ -33,17 +31,21 @@ export const MainLayout = () => {
 
   useEffect(() => {
     if (userId) {
-      socket = initSocket(+userId);
+      SocketManager.initSocket(+userId);
+      const socket = SocketManager.getSocket();
 
-      socket.on('connect', () => {
+      socket?.on('connect', () => {
         console.log('Connected');
 
         socket?.on("new comment toast", (book) => {
           toast(<Msg book={book} />);
         })
+
+        socket.on('disconnect', () => {
+          console.log('Disconnected');
+          socket?.off("new comment toast")
+        })
       });
-    } else {
-      disconnectSocket();
     };
   }, [userId])
 
