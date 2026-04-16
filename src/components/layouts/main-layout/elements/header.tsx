@@ -1,4 +1,4 @@
-import { type ChangeEvent, useEffect, useState } from 'react';
+import React, { type ChangeEvent, useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router';
 import Logo from '@assets/img/logo.svg';
 import Search from '@assets/img/search.svg';
@@ -17,11 +17,15 @@ import {
   FilledInput,
   Grid,
   InputAdornment,
+  List,
+  Popover,
   Typography,
-  useMediaQuery
+  useMediaQuery,
+  type ButtonProps
 } from '@mui/material';
 import { styled, useTheme } from '@mui/material/styles';
 import { NotificationIcon } from '@common/icons/notification-icon';
+import { NotificationItem } from './notification-item';
 
 const queryFilters = [
   'genres',
@@ -39,6 +43,34 @@ export const Header = () => {
   const cartBooks = useAppSelector((state) => {
     return state.cartBooks.books;
   });
+
+  const [
+    anchorNotificationEl,
+    setAnchorNotificationEl
+  ] = React.useState<HTMLElement | null>(null);
+
+  // const [comments, setComments] = useState([]);
+
+  const comments = [
+    {
+      id: 224,
+      name: 'Floyd Miles',
+      date: '2026-04-10 16:46:37.064',
+      bookTitle: 'milk and honey',
+      text: "Love this so much! This book opened up a new world for me! I advise everyone to get acquainted with the author of this book. He is awesome!",
+      img: "http://localhost:3000/uploads/file-1774266841944.png",
+      bookId: 13,
+    },
+    {
+      id: 159,
+      name: 'Annette Black',
+      date: '2026-04-10 16:46:37.064',
+      bookTitle: 'The Psychlogy of Money',
+      text: "This book is amazing! If you are a romantic person, read it.",
+      img: "http://localhost:3000/uploads/file-1775646186944.png",
+      bookId: 2,
+    },
+  ];
 
   const allCount = cartBooks.map((book) => {
     return book.count;
@@ -85,6 +117,15 @@ export const Header = () => {
     setInputValue(event.target.value);
   };
 
+  const handleNotificationButtonClick: ButtonProps['onClick'] = (event) => {
+    setAnchorNotificationEl(event.currentTarget);
+  };
+
+  const handleNotificationClose = () => {
+    setAnchorNotificationEl(null);
+
+  }
+
   return (
     <StyledHeader>
       <Container maxWidth="md">
@@ -116,9 +157,34 @@ export const Header = () => {
                     <StyledBox>
                       <StyledAuthLink to="#">
                         <StyledRoundButton
-                          icon={<NotificationIcon fill="white"/>}
-                          count={1}
+                          icon={<NotificationIcon fill="white" />}
+                          count={comments.length}
+                          onClick={handleNotificationButtonClick}
                         />
+                        <StyledPriceRangePopover
+                          open={Boolean(anchorNotificationEl)}
+                          anchorEl={anchorNotificationEl}
+                          onClose={handleNotificationClose}
+                          anchorOrigin={
+                            { horizontal: 'left', vertical: 'bottom' }
+                          }
+                          disableScrollLock={true}
+                          marginThreshold={null}
+                        >
+                          <StyledList>
+                            {comments.map((comment, index) => (
+                              <React.Fragment key={comment.id}>
+                                <NotificationItem comment={comment} />
+
+                                {
+                                  index !== (comments.length - 1)
+                                  &&
+                                  <StyledLineBox />
+                                }
+                              </React.Fragment>
+                            ))}
+                          </StyledList>
+                        </StyledPriceRangePopover>
                       </StyledAuthLink>
                       <StyledAuthLink to={IN_APP_ROUTES.cart.path}>
                         <StyledRoundButton
@@ -205,10 +271,35 @@ export const Header = () => {
                     <StyledBox>
                       <StyledAuthLink to="#">
                         <StyledRoundButton
-                          icon={<NotificationIcon fill="white"/>}
-                          count={1}
+                          icon={<NotificationIcon fill="white" />}
+                          count={comments.length}
+                          onClick={handleNotificationButtonClick}
                         />
                       </StyledAuthLink>
+                      <StyledPriceRangePopover
+                        open={Boolean(anchorNotificationEl)}
+                        anchorEl={anchorNotificationEl}
+                        onClose={handleNotificationClose}
+                        anchorOrigin={
+                          { horizontal: 'left', vertical: 'bottom' }
+                        }
+                        disableScrollLock={true}
+                        marginThreshold={null}
+                      >
+                        <StyledList>
+                          {comments.map((comment, index) => (
+                            <React.Fragment key={comment.id}>
+                              <NotificationItem comment={comment} />
+
+                              {
+                                index !== (comments.length - 1)
+                                &&
+                                <StyledLineBox />
+                              }
+                            </React.Fragment>
+                          ))}
+                        </StyledList>
+                      </StyledPriceRangePopover>
                       <StyledAuthLink to={IN_APP_ROUTES.cart.path}>
                         <StyledRoundButton
                           icon={<CartIcon />}
@@ -229,7 +320,7 @@ export const Header = () => {
                       >
                         Log In/
                       </StyledLink>
-                      
+
                       <StyledLink
                         to={IN_APP_ROUTES.register.path}
                       >
@@ -359,6 +450,72 @@ const StyledAuthLink = styled(Link)`
 `;
 
 const StyledCatalogLink = styled(Link)(({ theme }) => `
-   text-decoration: none;
+  text-decoration: none;
   color: ${theme.palette.appColor.darkBlue};
+`);
+
+const StyledPriceRangePopover = styled(Popover)(({ theme }) => `
+  & .MuiPaper-root {
+    background-color: ${theme.palette.appColor.darkBlue};
+    margin-top: 16px;
+    border-radius: 16px;
+    overflow: visible;
+    box-shadow: none;
+    max-width: 305px;
+    width: 100%;
+    padding: 0 8px;
+    
+      & .MuiCheckbox-root {
+        padding: 5px 15px;
+      }
+
+    &::before {
+      content: "";
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 20px;
+      width: 20px;
+      height: 20px;
+      background: ${theme.palette.appColor.darkBlue};
+      transform: translateY(-50%) rotate(45deg);
+      z-index: 0;
+    }
+  }
+  
+  & .MuiButtonBase-root {
+      padding: 15px 15px 10px 15px;
+      
+      & .MuiListItemIcon-root {
+        display: block;
+        max-width: 34px;
+        min-width: auto;
+      }
+      
+      & .MuiListItemText-root {
+      display: flex;
+      justify-content: start;
+      color: ${theme.palette.appColor.darkBlue};
+      
+      & .MuiTypography-root {
+       font-weight: 500;
+       font-size: 16px;
+      }
+    }
+  }
+`);
+
+const StyledList = styled(List)(({ theme }) => `
+  &. MuiList-root {
+    width: 100%;
+    max-width: 360px;
+    background-color: ${theme.palette.appColor.light};
+  }
+`);
+
+const StyledLineBox = styled(Box)(({ theme }) => `
+  height: 1px;
+  width: 100%;
+  background-color: ${theme.palette.appColor.lightGrey};
+  margin: 10px 0;
 `);
