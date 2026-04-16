@@ -10,6 +10,7 @@ import { useEffect, useState } from 'react';
 import { SocketManager } from '../../../../socket';
 import { Comment } from './comment';
 import { useAppSelector } from '@redux/hooks';
+import { useSearchParams } from 'react-router';
 
 type CommentsType = {
   book: Book | null,
@@ -17,6 +18,8 @@ type CommentsType = {
 
 export const Comments = (props: CommentsType) => {
   const { book } = props;
+
+  const [searchParams] = useSearchParams();
 
   const socket = SocketManager.getSocket();
 
@@ -45,6 +48,27 @@ export const Comments = (props: CommentsType) => {
 
   }, [book]);
 
+  useEffect(() => {
+    const commentId = searchParams.get('comment');
+    if(!commentId) {
+      return
+    }
+
+    if (commentId) {
+      const tryScroll = (attempt = 0) => {
+        const comment = document.getElementById(commentId);
+        if (comment) {
+          comment?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else if (attempt < 10) {
+          setTimeout(() => tryScroll(attempt + 1), 100);
+        }
+      };
+
+      tryScroll();
+    }
+  }, [searchParams]);
+
+
   const handleInputChange = (e: React.ChangeEvent<
     HTMLInputElement | HTMLTextAreaElement, Element
   >) => {
@@ -52,17 +76,17 @@ export const Comments = (props: CommentsType) => {
     setCommentText(e.target.value);
   };
 
-  const handleKeyDown = (e:React.KeyboardEvent<HTMLDivElement>) => {
-   if(e.code === 'Enter') {
-    if (commentText !== '' && book) {
-      const addBookComment = async () => {
-        await addBookCommentApi(book.id, commentText);
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.code === 'Enter') {
+      if (commentText !== '' && book) {
+        const addBookComment = async () => {
+          await addBookCommentApi(book.id, commentText);
+        }
+        addBookComment();
+        setCommentText('');
       }
-      addBookComment();
-      setCommentText('');
     }
-   }
-  } 
+  }
 
   const handleCommentButtonCklick = (e: React.MouseEvent<
     HTMLButtonElement, MouseEvent
