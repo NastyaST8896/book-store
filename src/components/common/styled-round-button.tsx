@@ -7,6 +7,8 @@ type StyledIconButtonProps = {
   icon: React.JSX.Element,
   count?: number,
   asLink?: boolean;
+  onClick?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+
 } & (LinkProps | ButtonProps);
 
 type LinkProps = {
@@ -20,23 +22,23 @@ type ButtonProps = {
 
 
 export const StyledRoundButton = (props: StyledIconButtonProps) => {
-  const { icon, count } = props;
+  const { icon, count, onClick } = props;
 
   return (
     count ? (
       <StyledBadge
-      badgeContent={count}
-      color='primary'
-      overlap="circular"
-    >
-    <StyledIconButton>
-      {icon}
-    </StyledIconButton>
-    </StyledBadge>
+        badgeContent={count}
+        color='primary'
+        overlap="circular"
+      >
+        <StyledIconButton onClick={onClick}>
+          {icon}
+        </StyledIconButton>
+      </StyledBadge>
     ) : (
       <StyledIconButton>
-      {icon}
-    </StyledIconButton>
+        {icon}
+      </StyledIconButton>
     )
   );
 };
@@ -58,7 +60,7 @@ export const StyledIconButton = styled(IconButton)`
   }
 `;
 
-const StyledBadge = styled(Badge)(({theme}) =>`
+const StyledBadge = styled(Badge)(({ theme }) => `
 &.MuiBadge-root {
   max-width: 54px;
   width: 100%;
