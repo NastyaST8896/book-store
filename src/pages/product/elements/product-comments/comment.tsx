@@ -24,7 +24,10 @@ export const Comment = (props: CommentType) => {
 
   if (mobile) {
     return (
-      <StyledMobileCommentBox width={{ lg: '50%', sm: '75%', xs: '100%' }}>
+      <StyledMobileCommentBox
+        width={{ lg: '50%', sm: '75%', xs: '100%' }}
+        id={String(comment.id)}
+      >
 
         <StyledMobileInfoBox>
           <StyledAvatarBox
@@ -57,7 +60,10 @@ export const Comment = (props: CommentType) => {
   }
 
   return (
-    <StyledCommentBox width={{ lg: '50%', sm: '75%', xs: '100%' }}>
+    <StyledCommentBox
+      width={{ lg: '50%', sm: '75%', xs: '100%' }}
+      id={String(comment.id)}
+    >
       <StyledAvatarBox img={comment.img || 'src/assets/img/no-cover.webp'} />
       <StyledInfoBox>
         <StyledNameTypography variant='subtitle1'>
