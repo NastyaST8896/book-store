@@ -57,7 +57,7 @@ export const Header = () => {
       name: 'Floyd Miles',
       date: '2026-04-10 16:46:37.064',
       bookTitle: 'milk and honey',
-      text: "Love this so much! This book opened up a new world for me! I advise everyone to get acquainted with the author of this book. He is awesome!",
+      text: "Love this so much! This book opened up a new world for me!",
       img: "http://localhost:3000/uploads/file-1774266841944.png",
       bookId: 13,
     },
@@ -123,7 +123,6 @@ export const Header = () => {
 
   const handleNotificationClose = () => {
     setAnchorNotificationEl(null);
-
   }
 
   return (
@@ -174,7 +173,10 @@ export const Header = () => {
                           <StyledList>
                             {comments.map((comment, index) => (
                               <React.Fragment key={comment.id}>
-                                <NotificationItem comment={comment} />
+                                <NotificationItem
+                                  handleNotificationClose={handleNotificationClose}
+                                  comment={comment}
+                                />
 
                                 {
                                   index !== (comments.length - 1)
@@ -289,7 +291,10 @@ export const Header = () => {
                         <StyledList>
                           {comments.map((comment, index) => (
                             <React.Fragment key={comment.id}>
-                              <NotificationItem comment={comment} />
+                              <NotificationItem
+                                handleNotificationClose={handleNotificationClose}
+                                comment={comment}
+                              />
 
                               {
                                 index !== (comments.length - 1)

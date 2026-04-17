@@ -19,11 +19,12 @@ type NotificationItemType = {
     text: string,
     img: string,
     bookId: number,
-  }
+  },
+  handleNotificationClose: () => void
 }
 
 export const NotificationItem = (props: NotificationItemType) => {
-  const { comment } = props;
+  const { comment, handleNotificationClose} = props;
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const location = useLocation();
@@ -41,10 +42,12 @@ export const NotificationItem = (props: NotificationItemType) => {
     if (location.pathname !== `/product/${comment.bookId}`) {
       navigate(`/product/${comment.bookId}?${params.toString()}`);
     }
+
+      handleNotificationClose();
   }
 
   return (
-    <StyledListItem alignItems="flex-start" onClick={handleNotificationClick}>
+    <StyledListItem alignItems="flex-start" onClick={(handleNotificationClick)}>
       <ListItemAvatar>
         <Avatar alt={comment.name} src={comment.img} />
       </ListItemAvatar>
