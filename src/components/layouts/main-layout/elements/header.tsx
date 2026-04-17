@@ -26,6 +26,7 @@ import {
 import { styled, useTheme } from '@mui/material/styles';
 import { NotificationIcon } from '@common/icons/notification-icon';
 import { NotificationItem } from './notification-item';
+import { SocketManager } from '../../../../socket';
 
 const queryFilters = [
   'genres',
@@ -59,28 +60,13 @@ export const Header = () => {
     setAnchorNotificationEl
   ] = React.useState<HTMLElement | null>(null);
 
-  // const [comments, setComments] = useState([]);
+  const [comments, setComments] = useState<BookCommentNotificationData[]>([]);
 
-  const comments = [
-    {
-      id: 224,
-      name: 'Floyd Miles',
-      date: '2026-04-10 16:46:37.064',
-      bookTitle: 'milk and honey',
-      text: "Love this so much! This book opened up a new world for me!",
-      img: "http://localhost:3000/uploads/file-1774266841944.png",
-      bookId: 13,
-    },
-    {
-      id: 159,
-      name: 'Annette Black',
-      date: '2026-04-10 16:46:37.064',
-      bookTitle: 'The Psychlogy of Money',
-      text: "This book is amazing! If you are a romantic person, read it.",
-      img: "http://localhost:3000/uploads/file-1775646186944.png",
-      bookId: 2,
-    },
-  ];
+  const socket = SocketManager.getSocket();
+
+  socket?.on('book comment notification', (commentData: BookCommentNotificationData) => {
+    setComments([...comments, commentData]);
+  });
 
   const allCount = cartBooks.map((book) => {
     return book.count;
