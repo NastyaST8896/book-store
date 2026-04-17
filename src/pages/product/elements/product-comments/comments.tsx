@@ -54,11 +54,24 @@ export const Comments = (props: CommentsType) => {
       return
     }
 
+    const highliteComment = (comment: HTMLElement) => {
+      document.querySelectorAll('.active').forEach((el) => {
+        el.classList.remove('active');
+      });
+
+      comment.classList.add('active');
+
+      setTimeout(() => {
+        comment.classList.remove('active')
+      }, 2000);
+    };
+
     if (commentId) {
       const tryScroll = (attempt = 0) => {
         const comment = document.getElementById(commentId);
         if (comment) {
           comment?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          highliteComment(comment);
         } else if (attempt < 10) {
           setTimeout(() => tryScroll(attempt + 1), 100);
         }

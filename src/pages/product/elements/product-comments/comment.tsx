@@ -97,6 +97,10 @@ const StyledCommentBox = styled(Box)(({ theme }) => `
   max-width: 738px;
   width: 100%;
   margin-bottom: 10px;
+
+  &.active {
+    background-color: ${theme.palette.appColor.green};
+  }
 `);
 
 const StyledAvatarBox = styled(
@@ -147,6 +151,10 @@ const StyledMobileCommentBox = styled(Box)(({ theme }) => `
   max-width: 738px;
   width: 100%;
   margin-bottom: 10px;
+
+  &.active {
+    background-color: ${theme.palette.appColor.green};
+  }
 `);
 
 const StyledMobileInfoBox = styled(Box)`
