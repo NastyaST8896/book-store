@@ -35,6 +35,16 @@ const queryFilters = [
   'searchValue',
 ];
 
+type BookCommentNotificationData = {
+  id: number,
+  name: string,
+  date: string,
+  bookTitle: string,
+  text: string,
+  img: string,
+  bookId: number,
+}
+
 export const Header = () => {
   const auth = useAppSelector((state) => {
     return state.user;
