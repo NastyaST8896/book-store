@@ -1,11 +1,9 @@
 import {
   Avatar,
-  Box,
   ListItem,
   ListItemAvatar,
   ListItemText,
   styled,
-  Typography
 } from "@mui/material"
 import React from "react"
 import { useLocation, useNavigate, useSearchParams } from "react-router"
@@ -24,8 +22,8 @@ type NotificationItemType = {
 }
 
 export const NotificationItem = (props: NotificationItemType) => {
-  const { comment, handleNotificationClose} = props;
-  const [searchParams] = useSearchParams();
+  const { comment, handleNotificationClose } = props;
+  const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -37,36 +35,36 @@ export const NotificationItem = (props: NotificationItemType) => {
   const handleNotificationClick = () => {
     const params = new URLSearchParams(searchParams);
     params.delete('comment');
-    params.append('comment', String(comment.id));
 
     if (location.pathname !== `/product/${comment.bookId}`) {
       navigate(`/product/${comment.bookId}?${params.toString()}`);
+    } else {
+      params.append('comment', String(comment.id));
+      setSearchParams(params);
     }
 
-      handleNotificationClose();
+    handleNotificationClose();
   }
 
   return (
-    <StyledListItem alignItems="flex-start" onClick={(handleNotificationClick)}>
+    <StyledListItem key={`comment-${comment.id}`} alignItems="flex-start" onClick={(handleNotificationClick)}>
       <ListItemAvatar>
         <Avatar alt={comment.name} src={comment.img} />
       </ListItemAvatar>
-      <ListItemText
+      <StyledListItemText
         primary={comment.name}
         secondary={
           <React.Fragment>
-            <StyledNotificationTypography variant="body2">
-              {
-                diffDays ?
-                  `Left a comment ${diffDays} days ago`
-                  :
-                  'Сomment added today'
-              }
-              <br />
-              {comment.bookTitle}
-            </StyledNotificationTypography>
-
-            <StyledCommentTextBox>{comment.text}</StyledCommentTextBox>
+            {
+              diffDays ?
+                `Left a comment ${diffDays} days ago`
+                :
+                'Сomment added today'
+            }
+            <br />
+            {comment.bookTitle}
+            <br />
+            {comment.text}
           </React.Fragment>
         }
       />
@@ -74,18 +72,14 @@ export const NotificationItem = (props: NotificationItemType) => {
   )
 }
 
-const StyledCommentTextBox = styled(Box)`
-  text-overflow: ellipsis; 
-  white-space: nowrap; 
-  overflow: hidden;
-`;
-
-const StyledNotificationTypography = styled(Typography)(({ theme }) => `
-  color: ${theme.palette.text.primary};
-  display: inline;
-`);
-
 const StyledListItem = styled(ListItem)(({ theme }) => `
   background-color: ${theme.palette.appColor.light};
   border-radius: 10px;
+  cursor: pointer;
 `);
+
+const StyledListItemText = styled(ListItemText)`
+  white-space: nowrap; 
+  overflow: hidden;
+  text-overflow: ellipsis; 
+`;
