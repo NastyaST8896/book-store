@@ -80,6 +80,25 @@ export const Header = () => {
   const [inputValue, setInputValue] = useState('');
   const searchValue = useDebounce<string>(inputValue.trim()) || null;
 
+  useEffect(() => {
+    if (!auth) {
+      return
+    }
+
+    const getBookNotifications = async () => {
+      const result = await getCommentBooksNotificationsApi();
+
+      console.log(result)
+      if (result) {
+        setComments(result.booksNotifications);
+      }
+    };
+
+    getBookNotifications();
+
+
+  }, [auth]);
+
   useEffect(function () {
 
     if (searchParams.get('searchValue') !== searchValue) {
