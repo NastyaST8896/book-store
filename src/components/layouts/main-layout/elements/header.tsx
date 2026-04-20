@@ -174,6 +174,12 @@ export const Header = () => {
                           anchorOrigin={
                             { horizontal: 'left', vertical: 'bottom' }
                           }
+                          transformOrigin={
+                          {
+                            vertical: 'top',
+                            horizontal: 'center'
+                          }
+                        }
                           disableScrollLock={true}
                           marginThreshold={null}
                         >
@@ -291,6 +297,12 @@ export const Header = () => {
                         onClose={handleNotificationClose}
                         anchorOrigin={
                           { horizontal: 'left', vertical: 'bottom' }
+                        }
+                        transformOrigin={
+                          {
+                            vertical: 'top',
+                            horizontal: 'center'
+                          }
                         }
                         disableScrollLock={true}
                         marginThreshold={null}
@@ -486,7 +498,7 @@ const StyledPriceRangePopover = styled(Popover)(({ theme }) => `
       display: block;
       position: absolute;
       top: 0;
-      left: 20px;
+      right: 117px;
       width: 20px;
       height: 20px;
       background: ${theme.palette.appColor.darkBlue};
