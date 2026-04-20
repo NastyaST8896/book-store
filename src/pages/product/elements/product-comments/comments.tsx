@@ -19,7 +19,7 @@ type CommentsType = {
 export const Comments = (props: CommentsType) => {
   const { book } = props;
 
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const socket = SocketManager.getSocket();
 
@@ -50,7 +50,7 @@ export const Comments = (props: CommentsType) => {
 
   useEffect(() => {
     const commentId = searchParams.get('comment');
-    if(!commentId) {
+    if (!commentId) {
       return
     }
 
@@ -62,7 +62,11 @@ export const Comments = (props: CommentsType) => {
       comment.classList.add('active');
 
       setTimeout(() => {
-        comment.classList.remove('active')
+        comment.classList.remove('active');
+        const params = new URLSearchParams(searchParams);
+        params.delete('comment');
+        setSearchParams(params);
+
       }, 2000);
     };
 
