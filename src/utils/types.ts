@@ -106,3 +106,13 @@ export type CommentType = {
   text: string,
   img: string,
 };
+
+export type BookCommentNotificationData = {
+  id: number,
+  name: string,
+  date: string,
+  bookTitle: string,
+  text: string,
+  img: string,
+  bookId: number,
+}

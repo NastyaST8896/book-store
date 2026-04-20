@@ -27,6 +27,8 @@ import { styled, useTheme } from '@mui/material/styles';
 import { NotificationIcon } from '@common/icons/notification-icon';
 import { NotificationItem } from './notification-item';
 import { SocketManager } from '../../../../socket';
+import type { BookCommentNotificationData } from '@utils/types';
+import { getCommentBooksNotificationsApi } from '../../../../api/notification-api';
 
 const queryFilters = [
   'genres',
@@ -35,16 +37,6 @@ const queryFilters = [
   'sortId',
   'searchValue',
 ];
-
-type BookCommentNotificationData = {
-  id: number,
-  name: string,
-  date: string,
-  bookTitle: string,
-  text: string,
-  img: string,
-  bookId: number,
-}
 
 export const Header = () => {
   const auth = useAppSelector((state) => {
