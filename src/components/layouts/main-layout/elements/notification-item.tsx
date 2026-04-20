@@ -35,11 +35,11 @@ export const NotificationItem = (props: NotificationItemType) => {
   const handleNotificationClick = () => {
     const params = new URLSearchParams(searchParams);
     params.delete('comment');
+     params.append('comment', String(comment.id));
 
     if (location.pathname !== `/product/${comment.bookId}`) {
       navigate(`/product/${comment.bookId}?${params.toString()}`);
     } else {
-      params.append('comment', String(comment.id));
       setSearchParams(params);
     }
 
@@ -47,7 +47,11 @@ export const NotificationItem = (props: NotificationItemType) => {
   }
 
   return (
-    <StyledListItem key={`comment-${comment.id}`} alignItems="flex-start" onClick={(handleNotificationClick)}>
+    <StyledListItem
+      key={`comment-${comment.id}`}
+      alignItems="flex-start"
+      onClick={(handleNotificationClick)}
+    >
       <ListItemAvatar>
         <Avatar alt={comment.name} src={comment.img} />
       </ListItemAvatar>
