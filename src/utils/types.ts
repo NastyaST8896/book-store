@@ -78,6 +78,7 @@ export type PaginationType = {
 
 export type BooksApiParams = {
   page?: string,
+  limit?: string
   genres?: string,
   maxPrice?: string,
   minPrice?: string,
@@ -115,4 +116,5 @@ export type BookCommentNotificationData = {
   text: string,
   img: string,
   bookId: number,
+  isRead: boolean
 }

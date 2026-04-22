@@ -1,5 +1,5 @@
 import { IN_APP_ROUTES } from '@utils/routes';
-import type { CommentType, CommonResponseType } from '@utils/types';
+import type { BooksApiParams, CommentType, CommonResponseType, PaginationType } from '@utils/types';
 
 import { api } from './api';
 
@@ -12,12 +12,21 @@ export const addBookCommentApi = async (bookId: number, text: string) => {
   return response.status
 };
 
-export const getBookCommentsApi = async (bookId: number) => {
+export const getBookCommentsApi = async (
+  bookId: number,
+  params: BooksApiParams
+) => {
   const response = await api.get<CommonResponseType<
-  { comments: CommentType[] }
-  >>(`/comments/${bookId}`);
+    { comments: CommentType[] },
+    { pagination: PaginationType }
+  >>(`/comments/${bookId}`,
+    {
+      params:
+      {
+        page: params.page,
+      }
+    }
+  );
 
-  return {
-    comments: response.data.data.comments,
-  }
+  return response.data;
 }

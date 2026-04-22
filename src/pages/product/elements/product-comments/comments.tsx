@@ -11,6 +11,7 @@ import { SocketManager } from '../../../../socket';
 import { Comment } from './comment';
 import { useAppSelector } from '@redux/hooks';
 import { useSearchParams } from 'react-router';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 type CommentsType = {
   book: Book | null,
@@ -29,23 +30,28 @@ export const Comments = (props: CommentsType) => {
 
   const [comments, setComments] = useState<CommentType[]>([]);
   const [commentText, setCommentText] = useState<string>('');
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [isloading, setIsLoading] = useState(false);
 
-  useEffect(() => {
+  const getBookComments = async () => {
     if (!book) {
       return
     }
+    setIsLoading(true);
+    const result = await getBookCommentsApi(book.id, { page: String(page) });
 
-    const getBookComments = async () => {
-      const result = await getBookCommentsApi(book.id);
+    if (!result.data.comments.length) {
+      setHasMore(false);
+    } else {
+      setComments([...result.data.comments]);
+      setPage((prev) => prev + 1);
+    }
+    setIsLoading(false);
+  };
 
-      if (result.comments) {
-        setComments(result.comments);
-      }
-    };
-
+  useEffect(() => {
     getBookComments();
-
-
   }, [book]);
 
   useEffect(() => {
@@ -85,6 +91,13 @@ export const Comments = (props: CommentsType) => {
     }
   }, [searchParams]);
 
+  const getMoreBookComments = () => {
+
+
+    if (!isloading && hasMore) {
+      getBookComments();
+    }
+  }
 
   const handleInputChange = (e: React.ChangeEvent<
     HTMLInputElement | HTMLTextAreaElement, Element
@@ -119,19 +132,7 @@ export const Comments = (props: CommentsType) => {
   };
 
   socket?.on("new comment", () => {
-    if (!book) {
-      return
-    };
-
-    const getBookComments = async () => {
-      const result = await getBookCommentsApi(book.id);
-      if (result.comments) {
-        setComments(result.comments);
-      }
-
-      return;
-    };
-
+    setPage(1);
     getBookComments();
   });
 
@@ -140,10 +141,28 @@ export const Comments = (props: CommentsType) => {
       <StyledCommentsBox>
         <Typography variant='h1'>Comments</Typography>
 
-        <Box>
-          {comments.map((comment) => {
-            return <Comment key={comment.id} comment={comment} />
-          })}
+        <Box
+          id="scrollableDiv"
+          style={{
+            height: 460,
+            overflow: 'auto',
+            display: 'flex',
+            flexDirection: 'column-reverse',
+          }}>
+          <StyledInfiniteScroll
+            dataLength={comments.length}
+            next={getMoreBookComments}
+            inverse={true}
+            hasMore={hasMore}
+            loader={<h4>Loading...</h4>}
+            scrollableTarget="scrollableDiv"
+          >
+            {
+              comments.map((comment) => {
+                return <Comment key={comment.id} comment={comment} />
+              })
+            }
+          </StyledInfiniteScroll>
         </Box>
       </StyledCommentsBox>
 
@@ -188,6 +207,19 @@ const StyledCommentInputBox = styled(Box)`
   gap: 30px;
   max-width: 738px;
   width: 100%;
+`;
+
+const StyledInfiniteScroll = styled(InfiniteScroll)`
+  display: flex; 
+  flex-direction: column-reverse;
+
+  &.infinite-scroll-component__outerdiv {
+    max-width: 748px;
+  };
+
+  &.infinite-scroll-component {
+    max-width: 748px;
+  };
 `;
 
 const StyledTextField = styled(TextField)(({ theme }) => `

@@ -28,7 +28,9 @@ import { NotificationIcon } from '@common/icons/notification-icon';
 import { NotificationItem } from './notification-item';
 import { SocketManager } from '../../../../socket';
 import type { BookCommentNotificationData } from '@utils/types';
-import { getCommentBooksNotificationsApi } from '../../../../api/notification-api';
+import {
+  getCommentBooksNotificationsApi
+} from '../../../../api/notification-api';
 
 const queryFilters = [
   'genres',
@@ -56,9 +58,11 @@ export const Header = () => {
 
   const socket = SocketManager.getSocket();
 
-  socket?.on('book comment notification', (commentData: BookCommentNotificationData) => {
-    setComments([...comments, commentData]);
-  });
+  socket?.on(
+    'book comment notification',
+    (commentData: BookCommentNotificationData) => {
+      setComments([...comments, commentData]);
+    });
 
   const allCount = cartBooks.map((book) => {
     return book.count;
@@ -99,7 +103,7 @@ export const Header = () => {
 
   }, [auth]);
 
-  useEffect(function () {
+  useEffect(() => {
 
     if (searchParams.get('searchValue') !== searchValue) {
       queryFilters.forEach((filter) => searchParams.delete(filter));
@@ -175,11 +179,11 @@ export const Header = () => {
                             { horizontal: 'left', vertical: 'bottom' }
                           }
                           transformOrigin={
-                          {
-                            vertical: 'top',
-                            horizontal: 'center'
+                            {
+                              vertical: 'top',
+                              horizontal: 'center'
+                            }
                           }
-                        }
                           disableScrollLock={true}
                           marginThreshold={null}
                         >
@@ -187,7 +191,9 @@ export const Header = () => {
                             {comments.map((comment, index) => (
                               <React.Fragment key={comment.id}>
                                 <NotificationItem
-                                  handleNotificationClose={handleNotificationClose}
+                                  handleNotificationClose={
+                                    handleNotificationClose
+                                  }
                                   comment={comment}
                                 />
 
@@ -311,7 +317,9 @@ export const Header = () => {
                           {comments.map((comment, index) => (
                             <React.Fragment key={comment.id}>
                               <NotificationItem
-                                handleNotificationClose={handleNotificationClose}
+                                handleNotificationClose={
+                                  handleNotificationClose
+                                }
                                 comment={comment}
                               />
 
