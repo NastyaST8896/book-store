@@ -1,16 +1,10 @@
-import {
-  type MouseEventHandler,
-  useEffect,
-  useState,
-} from 'react';
+import { type MouseEventHandler } from 'react';
 import { useNavigate } from 'react-router';
-import type { NumberFieldRootProps } from '@base-ui/react';
 import { HeartIcon } from '@common/icons/heart-icon.tsx';
 import { StyledButton } from '@common/styled-button.tsx';
 import { addBookInCart, getCartBooks } from '@redux/cart-books/thunk';
 import { useAppDispatch, useAppSelector } from '@redux/hooks';
 import { formatPrice } from '@utils/formatters.ts';
-import { useDebounce } from '@utils/hooks';
 import type { Book } from '@utils/types.ts';
 
 import {
@@ -22,17 +16,12 @@ import {
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
-import { DeleteIcon } from './icons/delete-icon';
-import { NumberSpinner } from './number-spinner';
-
 type BookCardProps = {
   book: Book,
 };
 
 export const BookCard = (props: BookCardProps) => {
   const { book } = props;
-
-  const [booksCount, setBooksCount] = useState(book.count);
 
   const cart = useAppSelector((state) => {
     return state.cartBooks;
@@ -46,17 +35,6 @@ export const BookCard = (props: BookCardProps) => {
     navigate(`/product/${book.id}`);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
-
-  const debouncedBooksCount = useDebounce<number>(booksCount, 500);
-
-  useEffect(() => {
-    if (debouncedBooksCount !== book.count) {
-      dispatch(addBookInCart({ bookId: book.id, quantity: booksCount }))
-        .unwrap()
-        .then(() => dispatch(getCartBooks()));
-    }
-
-  }, [debouncedBooksCount, dispatch]);
 
   const handleIconButtonClick: MouseEventHandler<HTMLButtonElement> = (e) => {
     e.stopPropagation();
@@ -79,16 +57,6 @@ export const BookCard = (props: BookCardProps) => {
         dispatch(getCartBooks());
 
       });
-  };
-
-  const handleBooksCountChange: NumberFieldRootProps['onValueChange'] = (count) => {
-    setBooksCount(count || 0);
-  };
-
-  const handleDeleteButton = () => {
-    dispatch(addBookInCart({ bookId: book.id, quantity: 0 }))
-      .unwrap()
-      .then(() => dispatch(getCartBooks()));
   };
 
   return (
@@ -173,17 +141,13 @@ export const BookCard = (props: BookCardProps) => {
       </Grid>
 
       {book.count ? (
-        <StyledSpinnerGrid>
-          <NumberSpinner
-            min={0}
-            max={book.availableCount}
-            defaultValue={book.count}
-            onChange={handleBooksCountChange}
-          />
-          <IconButton onClick={handleDeleteButton}>
-            <DeleteIcon />
-          </IconButton>
-        </StyledSpinnerGrid>
+        <StyledButton
+          disabled
+          buttonHeight={48}
+          sx={{ fontSize: '20px' }}
+        >
+          Added to cart
+        </StyledButton>
       ) : (
         <StyledButton
           onClick={handleBookPriceButtonClick}
@@ -260,11 +224,3 @@ const StyledRating = styled(Rating)(({ theme }) => ({
     color: theme.palette.appColor.green
   }
 }));
-
-const StyledSpinnerGrid = styled(Grid)`
-  display: flex;
-  justify-content: space-evenly;
-  background-color: #3449665f;
-  padding: 6px 0;
-  border-radius: 16px;
-`;
