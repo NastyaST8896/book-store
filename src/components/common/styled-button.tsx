@@ -15,7 +15,18 @@ export const StyledButton = styled(
   color: theme.palette.appColor.light,
   padding: '10px 50px',
 
-   [theme.breakpoints.down(770)]: {
+  '&:disabled': {
+    backgroundColor: theme.palette.appColor.white,
+    border: `1px solid ${theme.palette.appColor.dark}`,
+    color: theme.palette.appColor.dark,
+    fontSize: '18px',
+  },
+
+  [theme.breakpoints.down(770)]: {
+
+    '&:disabled': {
+      fontSize: '14px'
+    },
     padding: '3px 20px',
     fontSize: '14px'
   }
