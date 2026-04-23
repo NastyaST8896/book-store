@@ -1,15 +1,23 @@
 import type {
   BookCommentNotificationData,
-  CommonResponseType
+  BooksApiParams,
+  CommonResponseType,
+  PaginationType
 } from "@utils/types";
 import { api } from "./api";
 
-export const getCommentBooksNotificationsApi = async () => {
+export const getCommentBooksNotificationsApi = async (params: BooksApiParams) => {
   const response = await api.get<CommonResponseType<
-    { booksNotifications: BookCommentNotificationData[] }
-  >>('/notifications/book-notifications');
+    { booksNotifications: BookCommentNotificationData[] },
+    { pagination: PaginationType }
+  >>('/notifications/book-notifications',
+    {
+      params:
+      {
+        page: params.page,
+      }
+    }
+  );
 
-  return {
-    booksNotifications: response.data.data.booksNotifications,
-  }
+  return response.data;
 }
