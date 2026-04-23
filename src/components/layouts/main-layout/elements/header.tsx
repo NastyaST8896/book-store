@@ -31,6 +31,7 @@ import type { BookCommentNotificationData } from '@utils/types';
 import {
   getCommentBooksNotificationsApi
 } from '../../../../api/notification-api';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 const queryFilters = [
   'genres',
@@ -55,14 +56,11 @@ export const Header = () => {
   ] = React.useState<HTMLElement | null>(null);
 
   const [comments, setComments] = useState<BookCommentNotificationData[]>([]);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const socket = SocketManager.getSocket();
-
-  socket?.on(
-    'book comment notification',
-    (commentData: BookCommentNotificationData) => {
-      setComments([...comments, commentData]);
-    });
 
   const allCount = cartBooks.map((book) => {
     return book.count;
@@ -84,23 +82,35 @@ export const Header = () => {
   const [inputValue, setInputValue] = useState('');
   const searchValue = useDebounce<string>(inputValue.trim()) || null;
 
-  useEffect(() => {
+  const getBookNotifications = async () => {
     if (!auth) {
       return
     }
 
-    const getBookNotifications = async () => {
-      const result = await getCommentBooksNotificationsApi();
+    setIsLoading(true);
 
-      console.log(result)
-      if (result) {
-        setComments(result.booksNotifications);
-      }
-    };
+    const result = await getCommentBooksNotificationsApi({ page: String(page) });
 
+    if (
+      result.meta?.pagination.currentPage === result.meta?.pagination.totalPages
+      ||
+      result.meta && (
+        result.meta?.pagination.currentPage > result.meta?.pagination.totalPages
+      )
+    ) {
+      setHasMore(false);
+    }
+
+    if (result) {
+      setComments(result.data.booksNotifications);
+      setPage((prev) => prev + 1);
+    }
+
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
     getBookNotifications();
-
-
   }, [auth]);
 
   useEffect(() => {
@@ -115,6 +125,16 @@ export const Header = () => {
       setSearchParams(searchParams);
     }
   }, [searchParams, searchValue, setSearchParams]);
+
+  const getMoreBooksCommentsNotifications = () => {
+    console.log(isLoading);
+    console.log(hasMore);
+
+
+    if (!isLoading && hasMore) {
+      getBookNotifications();
+    }
+  }
 
   const handleInputFocus = () => {
     if (location.pathname !== IN_APP_ROUTES.home.path) {
@@ -135,6 +155,13 @@ export const Header = () => {
   const handleNotificationClose = () => {
     setAnchorNotificationEl(null);
   }
+
+  socket?.on(
+    'book comment notification',
+    () => {
+      setPage(1);
+      getBookNotifications();
+    });
 
   return (
     <StyledHeader>
@@ -188,22 +215,41 @@ export const Header = () => {
                           marginThreshold={null}
                         >
                           <StyledList>
-                            {comments.map((comment, index) => (
-                              <React.Fragment key={comment.id}>
-                                <NotificationItem
-                                  handleNotificationClose={
-                                    handleNotificationClose
-                                  }
-                                  comment={comment}
-                                />
+                            <StyledScrollBox id="scrollableDiv">
+                              <StyledInfiniteScroll
+                                dataLength={comments.length}
+                                next={getMoreBooksCommentsNotifications}
+                                inverse={true}
+                                hasMore={hasMore}
+                                loader={<h4>Loading...</h4>}
+                                scrollableTarget="scrollableDiv"
+                                endMessage={
+                                  <StyledEndMessageBox>
+                                    <p style={{ textAlign: 'center' }}>
+                                      <b>You have seen it all</b>
+                                    </p>
+                                  </StyledEndMessageBox>
 
-                                {
-                                  index !== (comments.length - 1)
-                                  &&
-                                  <StyledLineBox />
                                 }
-                              </React.Fragment>
-                            ))}
+                              >
+                                {comments.map((comment, index) => (
+                                  <React.Fragment key={comment.id}>
+                                    <NotificationItem
+                                      handleNotificationClose={
+                                        handleNotificationClose
+                                      }
+                                      comment={comment}
+                                    />
+
+                                    {
+                                      index !== (comments.length - 1)
+                                      &&
+                                      <StyledLineBox />
+                                    }
+                                  </React.Fragment>
+                                ))}
+                              </StyledInfiniteScroll>
+                            </StyledScrollBox>
                           </StyledList>
                         </StyledPriceRangePopover>
                       </StyledAuthLink>
@@ -314,22 +360,40 @@ export const Header = () => {
                         marginThreshold={null}
                       >
                         <StyledList>
-                          {comments.map((comment, index) => (
-                            <React.Fragment key={comment.id}>
-                              <NotificationItem
-                                handleNotificationClose={
-                                  handleNotificationClose
-                                }
-                                comment={comment}
-                              />
-
-                              {
-                                index !== (comments.length - 1)
-                                &&
-                                <StyledLineBox />
+                          <StyledScrollBox id="scrollableDiv">
+                            <StyledInfiniteScroll
+                              dataLength={comments.length}
+                              next={getMoreBooksCommentsNotifications}
+                              inverse={true}
+                              hasMore={hasMore}
+                              loader={<h4>Loading...</h4>}
+                              scrollableTarget="scrollableDiv"
+                              endMessage={
+                                <StyledEndMessageBox>
+                                  <p style={{ textAlign: 'center' }}>
+                                    <b>You have seen it all</b>
+                                  </p>
+                                </StyledEndMessageBox>
                               }
-                            </React.Fragment>
-                          ))}
+                            >
+                              {comments.map((comment, index) => (
+                                <React.Fragment key={comment.id}>
+                                  <NotificationItem
+                                    handleNotificationClose={
+                                      handleNotificationClose
+                                    }
+                                    comment={comment}
+                                  />
+
+                                  {
+                                    index !== (comments.length - 1)
+                                    &&
+                                    <StyledLineBox />
+                                  }
+                                </React.Fragment>
+                              ))}
+                            </StyledInfiniteScroll>
+                          </StyledScrollBox>
                         </StyledList>
                       </StyledPriceRangePopover>
                       <StyledAuthLink to={IN_APP_ROUTES.cart.path}>
@@ -367,7 +431,7 @@ export const Header = () => {
           }
         </Grid>
       </Container>
-    </StyledHeader>
+    </StyledHeader >
   );
 };
 
@@ -543,6 +607,10 @@ const StyledList = styled(List)(({ theme }) => `
     max-width: 360px;
     background-color: ${theme.palette.appColor.light};
   }
+
+  & .MuiListItem-root {
+      width: 97%;
+    }
 `);
 
 const StyledLineBox = styled(Box)(({ theme }) => `
@@ -550,4 +618,34 @@ const StyledLineBox = styled(Box)(({ theme }) => `
   width: 100%;
   background-color: ${theme.palette.appColor.lightGrey};
   margin: 10px 0;
+`);
+
+const StyledScrollBox = styled(Box)`
+  height: 460px;
+  overflow: auto;
+  display: flex;
+  flex-direction: column-reverse;
+  max-width: 748px;
+`;
+
+const StyledInfiniteScroll = styled(InfiniteScroll)`
+  display: flex; 
+  flex-direction: column-reverse;
+  max-width: 748px;
+
+  &.infinite-scroll-component__outerdiv {
+    max-width: 748px;
+  };
+
+  &.infinite-scroll-component {
+    max-width: 748px;
+  };
+`;
+
+const StyledEndMessageBox = styled(Box)(({ theme }) => `
+  background-color: ${theme.palette.appColor.light};
+  border-radius: 10px;
+  width: 97%;
+  margin: 10px 0;
+  font-weight: 400
 `);
