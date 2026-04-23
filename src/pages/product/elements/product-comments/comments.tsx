@@ -1,5 +1,5 @@
 import { StyledButton } from '@common/styled-button';
-import { Box, TextField, Typography } from '@mui/material';
+import { Box, Button, TextField, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import type { Book, CommentType } from '@utils/types';
 import {
@@ -11,7 +11,6 @@ import { SocketManager } from '../../../../socket';
 import { Comment } from './comment';
 import { useAppSelector } from '@redux/hooks';
 import { useSearchParams } from 'react-router';
-import InfiniteScroll from 'react-infinite-scroll-component';
 
 type CommentsType = {
   book: Book | null,
@@ -37,11 +36,17 @@ export const Comments = (props: CommentsType) => {
   const getBookComments = async () => {
     if (!book) {
       return
-    }
+    } 
     setIsLoading(true);
     const result = await getBookCommentsApi(book.id, { page: String(page) });
 
-    if (!result.data.comments.length) {
+    if (
+      result.meta?.pagination.currentPage === result.meta?.pagination.totalPages
+      ||
+      result.meta && (
+        result.meta?.pagination.currentPage > result.meta?.pagination.totalPages
+      )
+    ) {
       setHasMore(false);
     } else {
       setComments([...result.data.comments]);
@@ -91,14 +96,6 @@ export const Comments = (props: CommentsType) => {
     }
   }, [searchParams]);
 
-  const getMoreBookComments = () => {
-
-
-    if (!isloading && hasMore) {
-      getBookComments();
-    }
-  }
-
   const handleInputChange = (e: React.ChangeEvent<
     HTMLInputElement | HTMLTextAreaElement, Element
   >) => {
@@ -131,6 +128,10 @@ export const Comments = (props: CommentsType) => {
     }
   };
 
+  const handleMoreCommentsButtonClick = () => {
+    getBookComments();
+  };
+
   socket?.on("new comment", () => {
     setPage(1);
     getBookComments();
@@ -141,29 +142,26 @@ export const Comments = (props: CommentsType) => {
       <StyledCommentsBox>
         <Typography variant='h1'>Comments</Typography>
 
-        <Box
-          id="scrollableDiv"
-          style={{
-            height: 460,
-            overflow: 'auto',
-            display: 'flex',
-            flexDirection: 'column-reverse',
-          }}>
-          <StyledInfiniteScroll
-            dataLength={comments.length}
-            next={getMoreBookComments}
-            inverse={true}
-            hasMore={hasMore}
-            loader={<h4>Loading...</h4>}
-            scrollableTarget="scrollableDiv"
-          >
-            {
-              comments.map((comment) => {
-                return <Comment key={comment.id} comment={comment} />
-              })
-            }
-          </StyledInfiniteScroll>
-        </Box>
+        <StyledMoreCommentsButton
+          onClick={handleMoreCommentsButtonClick}
+          disabled={hasMore ? false : true}
+        >
+          View previous comments
+        </StyledMoreCommentsButton>
+
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column-reverse',
+          maxWidth: '748px',
+          width: '100%'
+        }}>
+          {
+            comments.map((comment) => {
+              return <Comment key={comment.id} comment={comment} />
+            })
+          }
+        </div>
+
       </StyledCommentsBox>
 
       {
@@ -191,7 +189,7 @@ export const Comments = (props: CommentsType) => {
         )
       }
 
-    </StyledCommentContainerBox>
+    </StyledCommentContainerBox >
   );
 };
 
@@ -207,19 +205,6 @@ const StyledCommentInputBox = styled(Box)`
   gap: 30px;
   max-width: 738px;
   width: 100%;
-`;
-
-const StyledInfiniteScroll = styled(InfiniteScroll)`
-  display: flex; 
-  flex-direction: column-reverse;
-
-  &.infinite-scroll-component__outerdiv {
-    max-width: 748px;
-  };
-
-  &.infinite-scroll-component {
-    max-width: 748px;
-  };
 `;
 
 const StyledTextField = styled(TextField)(({ theme }) => `
@@ -240,8 +225,21 @@ const StyledCommentContainerBox = styled(Box)`
   flex-direction: column;
   gap: 50px;
   padding: 60px 0;
+`;
 
-  @media(max-width: 1000px) {
+const StyledMoreCommentsButton = styled(Button)`
+  text-transform: none;
+  max-width: 738px;
+  width: 100%;
+  padding: 10px;
+  border-radius: 16px;
+  background-color: #344966;
+  color: #FFFFFF;
+  font-size: 20px;
 
+  &:disabled {
+    background-color: #FFFFFF;
+    border: 1px solid #0D1821;
+    color: #0D1821;
   }
 `;

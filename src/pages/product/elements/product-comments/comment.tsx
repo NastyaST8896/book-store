@@ -25,7 +25,7 @@ export const Comment = (props: CommentType) => {
   if (mobile) {
     return (
       <StyledMobileCommentBox
-        sx={{width: '100%'}}
+        sx={{ lg: '50%', sm: '75%', xs: '100%' }}
         id={String(comment.id)}
       >
 
@@ -61,7 +61,7 @@ export const Comment = (props: CommentType) => {
 
   return (
     <StyledCommentBox
-      sx={{width: '100%'}}
+      sx={{ lg: '50%', sm: '75%', xs: '100%' }}
       id={String(comment.id)}
     >
       <StyledAvatarBox img={comment.img || 'src/assets/img/no-cover.webp'} />
