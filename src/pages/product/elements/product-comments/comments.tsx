@@ -41,8 +41,6 @@ export const Comments = (props: CommentsType) => {
     const result = await getBookCommentsApi(book.id, { page: String(page) });
 
     if (
-      result.meta?.pagination.currentPage === result.meta?.pagination.totalPages
-      ||
       result.meta && (
         result.meta?.pagination.currentPage > result.meta?.pagination.totalPages
       )
@@ -147,7 +145,7 @@ export const Comments = (props: CommentsType) => {
           disabled={hasMore ? false : true}
         >
           { hasMore && !isLoading && 'View previous comments' }
-          { hasMore && isLoading && 'Loading...' }
+          { isLoading && 'Loading...' }
           { !hasMore && !isLoading && 'No more comments' }
         </StyledMoreCommentsButton>
 
