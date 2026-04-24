@@ -31,6 +31,8 @@ import type { BookCommentNotificationData } from '@utils/types';
 import {
   getCommentBooksNotificationsApi
 } from '../../../../api/notification-api';
+import SimpleBar from 'simplebar-react';
+import 'simplebar-react/dist/simplebar.min.css';
 
 const queryFilters = [
   'genres',
@@ -127,11 +129,41 @@ export const Header = () => {
     }
   }, [searchParams, searchValue, setSearchParams]);
 
-  const getMoreBooksCommentsNotifications = () => {
-    if (!isLoading && hasMore) {
-      getBookNotifications();
+  const options = {
+    root: document.querySelector('.simpleBar'),
+    rootMargin: '0px 0px 75px 0px',
+    threshold: 0,
+  };
+
+  const target = document.querySelector('.target');
+
+  const createObserver = () => {
+    return new IntersectionObserver((entries, observer) => {
+      let isVisible = false;
+      entries.forEach(entry => {
+        if (entry.isIntersecting && !isVisible && !isLoading && hasMore) {
+          getBookNotifications();
+          isVisible = true;
+        }
+
+        if (!entry.isIntersecting && isVisible) {
+          isVisible = false;
+        }
+      })
+    }, options)
+  };
+
+    const observer = createObserver();
+
+    if (target) {
+      observer.observe(target);
     }
-  }
+
+  // const getMoreBooksCommentsNotifications = () => {
+  //   if (!isLoading && hasMore) {
+  //     getBookNotifications();
+  //   }
+  // }
 
   const handleInputFocus = () => {
     if (location.pathname !== IN_APP_ROUTES.home.path) {
@@ -212,9 +244,19 @@ export const Header = () => {
                           marginThreshold={null}
                         >
                           <StyledList>
-                                {comments.map((comment, index) => (
+                            <SimpleBar
+                              id='simpleBar'
+                              style={{ maxHeight: 400 }}
+                            >
+                              {
+                                comments.map((comment, index) => (
                                   <React.Fragment key={comment.id}>
                                     <NotificationItem
+                                      targetClassName={
+                                        (index === (comments.length - 2))
+                                          ? 'target'
+                                          : ''
+                                      }
                                       handleNotificationClose={
                                         handleNotificationClose
                                       }
@@ -227,7 +269,9 @@ export const Header = () => {
                                       <StyledLineBox />
                                     }
                                   </React.Fragment>
-                                ))}
+                                ))
+                              }
+                            </SimpleBar>
                           </StyledList>
                         </StyledPriceRangePopover>
                       </StyledAuthLink>
@@ -338,9 +382,16 @@ export const Header = () => {
                         marginThreshold={null}
                       >
                         <StyledList>
-                              {comments.map((comment, index) => (
+                          <SimpleBar id='simpleBar' style={{ maxHeight: 400 }}>
+                            {
+                              comments.map((comment, index) => (
                                 <React.Fragment key={comment.id}>
                                   <NotificationItem
+                                    targetClassName={
+                                      (index === (comments.length - 2))
+                                        ? 'target'
+                                        : ''
+                                    }
                                     handleNotificationClose={
                                       handleNotificationClose
                                     }
@@ -353,7 +404,9 @@ export const Header = () => {
                                     <StyledLineBox />
                                   }
                                 </React.Fragment>
-                              ))}
+                              ))
+                            }
+                          </SimpleBar>
                         </StyledList>
                       </StyledPriceRangePopover>
                       <StyledAuthLink to={IN_APP_ROUTES.cart.path}>
@@ -517,7 +570,7 @@ const StyledPriceRangePopover = styled(Popover)(({ theme }) => `
     border-radius: 16px;
     overflow: visible;
     box-shadow: none;
-    max-width: 305px;
+    max-width: 400px;
     width: 100%;
     padding: 0 8px;
     
@@ -530,7 +583,7 @@ const StyledPriceRangePopover = styled(Popover)(({ theme }) => `
       display: block;
       position: absolute;
       top: 0;
-      right: 117px;
+      right: 165px;
       width: 20px;
       height: 20px;
       background: ${theme.palette.appColor.darkBlue};

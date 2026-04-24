@@ -18,11 +18,12 @@ type NotificationItemType = {
     img: string,
     bookId: number,
   },
-  handleNotificationClose: () => void
+  handleNotificationClose: () => void,
+  targetClassName: string,
 }
 
 export const NotificationItem = (props: NotificationItemType) => {
-  const { comment, handleNotificationClose } = props;
+  const { comment, handleNotificationClose, targetClassName } = props;
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const location = useLocation();
@@ -45,6 +46,7 @@ export const NotificationItem = (props: NotificationItemType) => {
 
   return (
     <StyledListItem
+      className={targetClassName}
       key={`comment-${comment.id}`}
       alignItems="flex-start"
       onClick={(handleNotificationClick)}
