@@ -31,12 +31,12 @@ export const Comments = (props: CommentsType) => {
   const [commentText, setCommentText] = useState<string>('');
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-  const [isloading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const getBookComments = async () => {
     if (!book) {
       return
-    } 
+    }
     setIsLoading(true);
     const result = await getBookCommentsApi(book.id, { page: String(page) });
 
@@ -146,7 +146,9 @@ export const Comments = (props: CommentsType) => {
           onClick={handleMoreCommentsButtonClick}
           disabled={hasMore ? false : true}
         >
-          View previous comments
+          { hasMore && !isLoading && 'View previous comments' }
+          { hasMore && isLoading && 'Loading...' }
+          { !hasMore && !isLoading && 'No more comments' }
         </StyledMoreCommentsButton>
 
         <div style={{
