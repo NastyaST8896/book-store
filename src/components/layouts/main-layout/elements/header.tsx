@@ -31,7 +31,6 @@ import type { BookCommentNotificationData } from '@utils/types';
 import {
   getCommentBooksNotificationsApi
 } from '../../../../api/notification-api';
-import InfiniteScroll from 'react-infinite-scroll-component';
 
 const queryFilters = [
   'genres',
@@ -89,7 +88,9 @@ export const Header = () => {
 
     setIsLoading(true);
 
-    const result = await getCommentBooksNotificationsApi({ page: String(page) });
+    const result = await getCommentBooksNotificationsApi(
+      { page: String(page) }
+    );
 
     if (
       result.meta?.pagination.currentPage === result.meta?.pagination.totalPages
@@ -127,10 +128,6 @@ export const Header = () => {
   }, [searchParams, searchValue, setSearchParams]);
 
   const getMoreBooksCommentsNotifications = () => {
-    console.log(isLoading);
-    console.log(hasMore);
-
-
     if (!isLoading && hasMore) {
       getBookNotifications();
     }
@@ -215,23 +212,6 @@ export const Header = () => {
                           marginThreshold={null}
                         >
                           <StyledList>
-                            <StyledScrollBox id="scrollableDiv">
-                              <StyledInfiniteScroll
-                                dataLength={comments.length}
-                                next={getMoreBooksCommentsNotifications}
-                                inverse={true}
-                                hasMore={hasMore}
-                                loader={<h4>Loading...</h4>}
-                                scrollableTarget="scrollableDiv"
-                                endMessage={
-                                  <StyledEndMessageBox>
-                                    <p style={{ textAlign: 'center' }}>
-                                      <b>You have seen it all</b>
-                                    </p>
-                                  </StyledEndMessageBox>
-
-                                }
-                              >
                                 {comments.map((comment, index) => (
                                   <React.Fragment key={comment.id}>
                                     <NotificationItem
@@ -248,8 +228,6 @@ export const Header = () => {
                                     }
                                   </React.Fragment>
                                 ))}
-                              </StyledInfiniteScroll>
-                            </StyledScrollBox>
                           </StyledList>
                         </StyledPriceRangePopover>
                       </StyledAuthLink>
@@ -360,22 +338,6 @@ export const Header = () => {
                         marginThreshold={null}
                       >
                         <StyledList>
-                          <StyledScrollBox id="scrollableDiv">
-                            <StyledInfiniteScroll
-                              dataLength={comments.length}
-                              next={getMoreBooksCommentsNotifications}
-                              inverse={true}
-                              hasMore={hasMore}
-                              loader={<h4>Loading...</h4>}
-                              scrollableTarget="scrollableDiv"
-                              endMessage={
-                                <StyledEndMessageBox>
-                                  <p style={{ textAlign: 'center' }}>
-                                    <b>You have seen it all</b>
-                                  </p>
-                                </StyledEndMessageBox>
-                              }
-                            >
                               {comments.map((comment, index) => (
                                 <React.Fragment key={comment.id}>
                                   <NotificationItem
@@ -392,8 +354,6 @@ export const Header = () => {
                                   }
                                 </React.Fragment>
                               ))}
-                            </StyledInfiniteScroll>
-                          </StyledScrollBox>
                         </StyledList>
                       </StyledPriceRangePopover>
                       <StyledAuthLink to={IN_APP_ROUTES.cart.path}>
@@ -618,34 +578,4 @@ const StyledLineBox = styled(Box)(({ theme }) => `
   width: 100%;
   background-color: ${theme.palette.appColor.lightGrey};
   margin: 10px 0;
-`);
-
-const StyledScrollBox = styled(Box)`
-  height: 460px;
-  overflow: auto;
-  display: flex;
-  flex-direction: column-reverse;
-  max-width: 748px;
-`;
-
-const StyledInfiniteScroll = styled(InfiniteScroll)`
-  display: flex; 
-  flex-direction: column-reverse;
-  max-width: 748px;
-
-  &.infinite-scroll-component__outerdiv {
-    max-width: 748px;
-  };
-
-  &.infinite-scroll-component {
-    max-width: 748px;
-  };
-`;
-
-const StyledEndMessageBox = styled(Box)(({ theme }) => `
-  background-color: ${theme.palette.appColor.light};
-  border-radius: 10px;
-  width: 97%;
-  margin: 10px 0;
-  font-weight: 400
 `);
