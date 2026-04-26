@@ -1,20 +1,23 @@
+import { useCallback, useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router';
 import { StyledButton } from '@common/styled-button';
+import { useAppSelector } from '@redux/hooks';
+import type { Book, CommentType } from '@utils/types';
+
 import { Box, Button, TextField, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import type { Book, CommentType } from '@utils/types';
+
 import {
   addBookCommentApi,
   getBookCommentsApi
 } from '../../../../api/comment-api';
-import { useEffect, useState } from 'react';
 import { SocketManager } from '../../../../socket';
+
 import { Comment } from './comment';
-import { useAppSelector } from '@redux/hooks';
-import { useSearchParams } from 'react-router';
 
 type CommentsType = {
   book: Book | null,
-}
+};
 
 export const Comments = (props: CommentsType) => {
   const { book } = props;
@@ -32,13 +35,16 @@ export const Comments = (props: CommentsType) => {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
-  const getBookComments = async () => {
-    if (!book) {
-      return
+  const getBookComments = useCallback(async (resetPage = false) => {
+    if (!book || isLoading) {
+      return;
     }
     setIsLoading(true);
-    const result = await getBookCommentsApi(book.id, { page: String(page) });
+
+    const currentPage = resetPage ? 1 : page;
+    const result = await getBookCommentsApi(book.id, { page: String(currentPage) });
 
     if (
       result.meta && (
@@ -47,23 +53,32 @@ export const Comments = (props: CommentsType) => {
     ) {
       setHasMore(false);
     } else {
-      setComments([...result.data.comments]);
-      setPage((prev) => prev + 1);
+      if (resetPage) {
+        setComments([...result.data.comments]);
+        setPage(2);
+      } else {
+        setComments([...result.data.comments]);
+        setPage((prev) => prev + 1);
+      }
     }
     setIsLoading(false);
-  };
+  }, [book, page, isLoading]);
 
   useEffect(() => {
-    getBookComments();
-  }, [book]);
+    if(isInitialLoad && book) {
+      getBookComments(true);
+      setIsInitialLoad(false);
+    }
+  }, [book, getBookComments, isInitialLoad]);
 
   useEffect(() => {
     const commentId = searchParams.get('comment');
+
     if (!commentId) {
-      return
+      return;
     }
 
-    const highliteComment = (comment: HTMLElement) => {
+    const highlightComment = (comment: HTMLElement) => {
       document.querySelectorAll('.active').forEach((el) => {
         el.classList.remove('active');
       });
@@ -73,6 +88,7 @@ export const Comments = (props: CommentsType) => {
       setTimeout(() => {
         comment.classList.remove('active');
         const params = new URLSearchParams(searchParams);
+
         params.delete('comment');
         setSearchParams(params);
 
@@ -82,9 +98,10 @@ export const Comments = (props: CommentsType) => {
     if (commentId) {
       const tryScroll = (attempt = 0) => {
         const comment = document.getElementById(commentId);
+
         if (comment) {
           comment?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          highliteComment(comment);
+          highlightComment(comment);
         } else if (attempt < 10) {
           setTimeout(() => tryScroll(attempt + 1), 100);
         }
@@ -92,7 +109,24 @@ export const Comments = (props: CommentsType) => {
 
       tryScroll();
     }
-  }, [searchParams]);
+  }, [searchParams, setSearchParams]);
+
+  useEffect(() => {
+    if(!socket) {
+      return;
+    }
+
+    const handleNewComment = () => {
+      setPage(1);
+      getBookComments(true);
+    };
+
+    socket.on('new comment', handleNewComment);
+
+    return () => {
+      socket.off('new comment', handleNewComment);
+    };
+  }, [socket, getBookComments]);
 
   const handleInputChange = (e: React.ChangeEvent<
     HTMLInputElement | HTMLTextAreaElement, Element
@@ -106,47 +140,46 @@ export const Comments = (props: CommentsType) => {
       if (commentText !== '' && book) {
         const addBookComment = async () => {
           await addBookCommentApi(book.id, commentText);
-        }
+        };
+
         addBookComment();
         setCommentText('');
       }
     }
-  }
+  };
 
-  const handleCommentButtonCklick = (e: React.MouseEvent<
+  const handleCommentButtonClick = (e: React.MouseEvent<
     HTMLButtonElement, MouseEvent
   >) => {
     e.preventDefault();
     if (commentText !== '' && book) {
       const addBookComment = async () => {
         await addBookCommentApi(book.id, commentText);
-      }
+      };
+
       addBookComment();
       setCommentText('');
     }
   };
 
   const handleMoreCommentsButtonClick = () => {
-    getBookComments();
+    if (!isLoading && hasMore) {
+      getBookComments(false);
+    }
   };
-
-  socket?.on("new comment", () => {
-    setPage(1);
-    getBookComments();
-  });
 
   return (
     <StyledCommentContainerBox>
       <StyledCommentsBox>
-        <Typography variant='h1'>Comments</Typography>
+        <Typography variant="h1">Comments</Typography>
 
         <StyledMoreCommentsButton
           onClick={handleMoreCommentsButtonClick}
           disabled={hasMore ? false : true}
         >
-          { hasMore && !isLoading && 'View previous comments' }
-          { isLoading && 'Loading...' }
-          { !hasMore && !isLoading && 'No more comments' }
+          {hasMore && !isLoading && 'View previous comments'}
+          {isLoading && 'Loading...'}
+          {!hasMore && !isLoading && 'No more comments'}
         </StyledMoreCommentsButton>
 
         <div style={{
@@ -157,7 +190,7 @@ export const Comments = (props: CommentsType) => {
         }}>
           {
             comments.map((comment) => {
-              return <Comment key={comment.id} comment={comment} />
+              return <Comment key={comment.id} comment={comment} />;
             })
           }
         </div>
@@ -170,7 +203,7 @@ export const Comments = (props: CommentsType) => {
             width={{ lg: '50%', sm: '75%', xs: '100%' }}
           >
             <StyledTextField
-              label=''
+              label=""
               multiline
               rows={4}
               placeholder="Share a comment"
@@ -181,7 +214,7 @@ export const Comments = (props: CommentsType) => {
 
             <StyledButton
               sx={{ maxWidth: '276px', width: '100%' }}
-              onClick={handleCommentButtonCklick}
+              onClick={handleCommentButtonClick}
             >
               Post a comment
             </StyledButton>
@@ -189,7 +222,7 @@ export const Comments = (props: CommentsType) => {
         )
       }
 
-    </StyledCommentContainerBox >
+    </StyledCommentContainerBox>
   );
 };
 
