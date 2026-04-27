@@ -84,6 +84,7 @@ export type BooksApiParams = {
   minPrice?: string,
   sortBy?: string,
   searchValue?: string,
+  notificationId?: string,
 };
 
 export type ProductBookType = {
@@ -110,6 +111,7 @@ export type CommentType = {
 
 export type BookCommentNotificationData = {
   id: number,
+  notificationId?: number,
   name: string,
   date: string,
   bookTitle: string,

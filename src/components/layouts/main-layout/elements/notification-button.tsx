@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router';
 import { NotificationIcon } from '@common/icons/notification-icon.tsx';
 import { StyledRoundButton } from '@common/styled-round-button.tsx';
@@ -29,47 +29,46 @@ export const NotificationButton = () => {
   ] = React.useState<HTMLElement | null>(null);
 
   const [comments, setComments] = useState<BookCommentNotificationData[]>([]);
-  const [page, setPage] = useState(1);
+  const [targetComment, setTargetComment] = useState(0);
+  const [totalCommentCount, setTotalCommentCount] = useState(0);
   const [hasMore, setHasMore] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
-  const hasFetched = useRef<boolean>(false);
-
-
-  const getBookNotifications = useCallback(async () => {
-    if (!auth) {
-      return;
-    }
-
-    setIsLoading(true);
-
-    const result = await getCommentBooksNotificationsApi(
-      { page: String(page) }
-    );
-
-    if (
-      result.meta && (
-        result.meta?.pagination.currentPage > result.meta?.pagination.totalPages
-      )
-    ) {
-      setHasMore(false);
-
-      return;
-    }
-
-    if (result) {
-      setComments(result.data.booksNotifications);
-      setPage((prev) => prev + 1);
-    }
-
-    setIsLoading(false);
-  },[auth, page]);
 
   useEffect(() => {
-    if(!hasFetched.current) {
-      getBookNotifications();
-      hasFetched.current = true;
+
+    const getBookNotifications = async () => {
+      if (!auth) {
+        return;
+      }
+
+      if (targetComment === 0 && comments.length === 0) {
+        const result = await getCommentBooksNotificationsApi(
+          { notificationId: String(targetComment) }
+        );
+        const booksNotifications = result.data.booksNotifications;
+        const pagination = result.meta?.pagination;
+
+        if (
+          booksNotifications.length && pagination &&
+          (comments.length < pagination.totalAmount)
+        ) {
+          setComments(booksNotifications);
+          setTotalCommentCount(pagination.totalAmount);
+          const lastIndex = booksNotifications.length - 1;
+          const lastNotificationId =
+            booksNotifications[lastIndex].notificationId;
+          if (lastNotificationId) {
+            setTargetComment(lastNotificationId);
+          }
+        } else {
+          setHasMore(false)
+        }
+      }
+
+      return;
     }
-  }, [getBookNotifications]);
+
+    getBookNotifications();
+  }, []);
 
   const options = {
     root: document.querySelector('.simpleBar'),
@@ -80,12 +79,49 @@ export const NotificationButton = () => {
   const target = document.querySelector('.target');
 
   const createObserver = () => {
-    return new IntersectionObserver((entries) => {
+    return new IntersectionObserver((entries, observer) => {
       let isVisible = false;
 
-      entries.forEach(entry => {
-        if (entry.isIntersecting && !isVisible && !isLoading && hasMore) {
-          getBookNotifications();
+      entries.forEach(async (entry) => {
+        if (entry.isIntersecting && !isVisible) {
+
+          const result = await getCommentBooksNotificationsApi(
+            { notificationId: String(targetComment) }
+          );
+          const booksNotifications = result.data.booksNotifications;
+          const pagination = result.meta?.pagination;
+
+          if (
+            pagination?.totalAmount &&
+            (pagination.totalAmount > totalCommentCount)
+          ) {
+            setTotalCommentCount(pagination.totalAmount);
+            setHasMore(true);
+          }
+
+          if (booksNotifications.length && hasMore) {
+            setComments([...comments, ...booksNotifications]);
+
+            if (
+              (comments.length + booksNotifications.length) !==
+              pagination?.totalAmount
+            ) {
+              const lastIndex = booksNotifications.length - 1;
+              const lastNotificationId =
+                booksNotifications[lastIndex].notificationId;
+
+              if (lastNotificationId) {
+                setTargetComment(lastNotificationId);
+              }
+            } else {
+              setTargetComment(0);
+              setHasMore(false);
+            }
+
+
+            observer.unobserve(entry.target)
+          }
+
           isVisible = true;
         }
 
@@ -108,36 +144,46 @@ export const NotificationButton = () => {
 
   const handleNotificationClose = () => {
     setAnchorNotificationEl(null);
+    const allViewedElements = document.querySelectorAll('.viewed');
+    allViewedElements.forEach((viewedElement) => {
+      const changedComments = [...comments];
+      changedComments.map((comment) => {
+        if (comment.id === +viewedElement.id) {
+          comment.isRead = true;
+        }
+
+        return comment;
+      })
+      setComments(changedComments);
+      const viewedNotificationId = changedComments.filter((comment) => {
+        return comment.isRead === true;
+      })
+      console.log(viewedNotificationId);
+    })
   };
 
   useEffect(() => {
-    if(!socket) {
+    if (!socket) {
       return;
     }
 
-    const handleNewNotifications = () => {
-      setPage(1);
-      getBookNotifications();
-    };
+    const handleNewNotifications = (args: BookCommentNotificationData) => {
+      setComments([args, ...comments]);
+      setTotalCommentCount((prevTotalCommentCount) => prevTotalCommentCount + 1);
+    }
 
     socket.on('book comment notification', handleNewNotifications);
 
     return () => {
       socket.off('book comment notification', handleNewNotifications);
     };
-  }, [socket, getBookNotifications]);
-
-  // const getMoreBooksCommentsNotifications = () => {
-  //   if (!isLoading && hasMore) {
-  //     getBookNotifications();
-  //   }
-  // }
+  }, [socket]);
 
   return (
     <StyledAuthLink to="#">
       <StyledRoundButton
         icon={<NotificationIcon fill="white" />}
-        count={comments.length}
+        count={totalCommentCount}
         onClick={handleNotificationButtonClick}
       />
       <StyledPriceRangePopover
@@ -166,7 +212,7 @@ export const NotificationButton = () => {
                 <React.Fragment key={comment.id}>
                   <NotificationItem
                     targetClassName={
-                      (index === (comments.length - 2))
+                      (index === (comments.length - 1))
                         ? 'target'
                         : ''
                     }
