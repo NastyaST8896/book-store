@@ -5,19 +5,12 @@ import {
   ListItemText,
   styled,
 } from "@mui/material"
-import React from "react"
+import type { BookCommentNotificationData } from "@utils/types"
+import React, { useState } from "react"
 import { useLocation, useNavigate, useSearchParams } from "react-router"
 
 type NotificationItemType = {
-  comment: {
-    id: number,
-    name: string,
-    date: string,
-    bookTitle: string,
-    text: string,
-    img: string,
-    bookId: number,
-  },
+  comment: BookCommentNotificationData,
   handleNotificationClose: () => void,
   targetClassName: string,
 }
@@ -27,6 +20,7 @@ export const NotificationItem = (props: NotificationItemType) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const location = useLocation();
+  const [isViewed, setIsViewed] = useState(comment.isRead);
 
   const createCommentDate = new Date(comment.date);
 
@@ -36,6 +30,7 @@ export const NotificationItem = (props: NotificationItemType) => {
     params.append('comment', String(comment.id));
 
     if (location.pathname !== `/product/${comment.bookId}`) {
+      setSearchParams(params);
       navigate(`/product/${comment.bookId}?${params.toString()}`);
     } else {
       setSearchParams(params);
@@ -44,12 +39,18 @@ export const NotificationItem = (props: NotificationItemType) => {
     handleNotificationClose();
   }
 
+  const handleItemMouseOver = () => {
+    setIsViewed(true);
+  }
+
   return (
     <StyledListItem
-      className={targetClassName}
+      id={String(comment.id)}
+      className={`${targetClassName} ${isViewed && 'viewed'}`}
       key={`comment-${comment.id}`}
       alignItems="flex-start"
       onClick={(handleNotificationClick)}
+      onMouseOver={handleItemMouseOver}
     >
       <ListItemAvatar>
         <Avatar alt={comment.name} src={comment.img} />
@@ -79,6 +80,24 @@ const StyledListItem = styled(ListItem)(({ theme }) => `
   background-color: ${theme.palette.appColor.light};
   border-radius: 10px;
   cursor: pointer;
+
+  &::before {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    border-radius: 50%;
+    background-color: ${theme.palette.appColor.green};
+    width: 10px;
+    height: 10px;
+  }
+
+  &.viewed {
+    &::before {
+      display: none;
+    }
+  }
 `);
 
 const StyledListItemText = styled(ListItemText)`
