@@ -10,18 +10,28 @@ import { Box, type ButtonProps, List, Popover } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 import {
-  getCommentBooksNotificationsApi
+  getCommentBookNotificationApi,
+  getCommentBooksNotificationsApi,
+  patchNotificationIsReadApi
 } from '../../../../api/notification-api.ts';
 import { SocketManager } from '../../../../socket.ts';
 
 import { NotificationItem } from './notification-item.tsx';
+import { StyledButton } from '@common/styled-button.tsx';
+
+const socket = SocketManager.getSocket();
+
+  const options = {
+    root: document.querySelector('.simpleBar'),
+    rootMargin: '0px 0px 75px 0px',
+    threshold: 0,
+  };
 
 export const NotificationButton = () => {
   const auth = useAppSelector((state) => {
     return state.user;
   });
 
-  const socket = SocketManager.getSocket();
 
   const [
     anchorNotificationEl,
@@ -32,6 +42,7 @@ export const NotificationButton = () => {
   const [targetComment, setTargetComment] = useState(0);
   const [totalCommentCount, setTotalCommentCount] = useState(0);
   const [hasMore, setHasMore] = useState(true);
+  const [isShowNotViewed, setIsShowNotViewed] = useState(false);
 
   useEffect(() => {
 
@@ -70,11 +81,7 @@ export const NotificationButton = () => {
     getBookNotifications();
   }, []);
 
-  const options = {
-    root: document.querySelector('.simpleBar'),
-    rootMargin: '0px 0px 75px 0px',
-    threshold: 0,
-  };
+
 
   const target = document.querySelector('.target');
 
@@ -145,21 +152,38 @@ export const NotificationButton = () => {
   const handleNotificationClose = () => {
     setAnchorNotificationEl(null);
     const allViewedElements = document.querySelectorAll('.viewed');
+    const changedComments = [...comments];
+
     allViewedElements.forEach((viewedElement) => {
-      const changedComments = [...comments];
       changedComments.map((comment) => {
-        if (comment.id === +viewedElement.id) {
+        if (comment.id === +viewedElement.id && comment.isRead === false) {
           comment.isRead = true;
+          setTotalCommentCount((prev) => prev - 1);
         }
 
         return comment;
       })
       setComments(changedComments);
-      const viewedNotificationId = changedComments.filter((comment) => {
+    });
+
+    const viewedNotificationId = changedComments
+      .filter((comment) => {
         return comment.isRead === true;
       })
-      console.log(viewedNotificationId);
-    })
+      .map((notification) => {
+        if (notification.notificationId) {
+          return notification.notificationId
+        } else {
+          return null
+        }
+      });
+
+
+    const changedNotificationsIsRead = async () => {
+      await patchNotificationIsReadApi(viewedNotificationId)
+    }
+
+    changedNotificationsIsRead();
   };
 
   useEffect(() => {
@@ -167,9 +191,16 @@ export const NotificationButton = () => {
       return;
     }
 
-    const handleNewNotifications = (args: BookCommentNotificationData) => {
-      setComments([args, ...comments]);
-      setTotalCommentCount((prevTotalCommentCount) => prevTotalCommentCount + 1);
+    const handleNewNotifications = async (args: BookCommentNotificationData) => {
+      const result = await getCommentBookNotificationApi(
+        { commentId: String(args.id) }
+      );
+      setComments(
+        (prevComments) => [result.data.bookNotification, ...prevComments]
+      );
+      setTotalCommentCount(
+        (prevTotalCommentCount) => prevTotalCommentCount + 1
+      );
     }
 
     socket.on('book comment notification', handleNewNotifications);
@@ -178,6 +209,14 @@ export const NotificationButton = () => {
       socket.off('book comment notification', handleNewNotifications);
     };
   }, [socket]);
+
+  const handleAllButtonClick = () => {
+    setIsShowNotViewed(false);
+  }
+
+  const handleNotViewedButtonClick = () => {
+    setIsShowNotViewed(true);
+  }
 
   return (
     <StyledAuthLink to="#">
@@ -202,12 +241,39 @@ export const NotificationButton = () => {
         disableScrollLock={true}
         marginThreshold={null}
       >
+        <Box sx={{ padding: '5px' }}>
+          <StyledButton onClick={handleAllButtonClick}>All</StyledButton>
+          <StyledButton onClick={handleNotViewedButtonClick}>Not viewed</StyledButton>
+        </Box>
+
         <StyledList>
           <SimpleBar
             id="simpleBar"
-            style={{ maxHeight: 400 }}
+            style={{ maxHeight: 490 }}
           >
-            {
+            {isShowNotViewed ? (
+              comments.map((comment, index) => {
+                if (!comment.isRead) {
+                  return (
+                    <React.Fragment key={comment.id}>
+                      <NotificationItem
+
+                        targetClassName={
+                          (index === (comments.length - 1))
+                            ? 'target'
+                            : ''
+                        }
+                        handleNotificationClose={
+                          handleNotificationClose
+                        }
+                        comment={comment}
+                      />
+                    </React.Fragment>
+                  )
+                }
+                return;
+              })
+            ) : (
               comments.map((comment, index) => (
                 <React.Fragment key={comment.id}>
                   <NotificationItem
@@ -221,15 +287,9 @@ export const NotificationButton = () => {
                     }
                     comment={comment}
                   />
-
-                  {
-                    index !== (comments.length - 1)
-                    &&
-                    <StyledLineBox />
-                  }
                 </React.Fragment>
               ))
-            }
+            )}
           </SimpleBar>
         </StyledList>
       </StyledPriceRangePopover>
@@ -306,11 +366,4 @@ const StyledList = styled(List)(({ theme }) => `
   & .MuiListItem-root {
       width: 97%;
     }
-`);
-
-const StyledLineBox = styled(Box)(({ theme }) => `
-  height: 1px;
-  width: 100%;
-  background-color: ${theme.palette.appColor.lightGrey};
-  margin: 10px 0;
 `);

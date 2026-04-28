@@ -17,31 +17,31 @@ type NotificationItemType = {
 
 export const NotificationItem = (props: NotificationItemType) => {
   const { comment, handleNotificationClose, targetClassName } = props;
-  const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const location = useLocation();
   const [isViewed, setIsViewed] = useState(comment.isRead);
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const createCommentDate = new Date(comment.date);
 
   const handleNotificationClick = () => {
+    debugger;
     const params = new URLSearchParams(searchParams);
+
     params.delete('comment');
     params.append('comment', String(comment.id));
-
     if (location.pathname !== `/product/${comment.bookId}`) {
-      setSearchParams(params);
       navigate(`/product/${comment.bookId}?${params.toString()}`);
     } else {
       setSearchParams(params);
     }
 
     handleNotificationClose();
-  }
+  };
 
   const handleItemMouseOver = () => {
     setIsViewed(true);
-  }
+  };
 
   return (
     <StyledListItem
@@ -49,7 +49,7 @@ export const NotificationItem = (props: NotificationItemType) => {
       className={`${targetClassName} ${isViewed && 'viewed'}`}
       key={`comment-${comment.id}`}
       alignItems="flex-start"
-      onClick={(handleNotificationClick)}
+      onClick={handleNotificationClick}
       onMouseOver={handleItemMouseOver}
     >
       <ListItemAvatar>
@@ -80,6 +80,7 @@ const StyledListItem = styled(ListItem)(({ theme }) => `
   background-color: ${theme.palette.appColor.light};
   border-radius: 10px;
   cursor: pointer;
+  margin: 10px 0;
 
   &::before {
     content: "";

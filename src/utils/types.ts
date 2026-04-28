@@ -74,6 +74,7 @@ export type PaginationType = {
   prevPage: number | null;
   totalPages: number;
   totalAmount: number;
+  notViewedAmount?: number;
 };
 
 export type BooksApiParams = {
@@ -85,6 +86,7 @@ export type BooksApiParams = {
   sortBy?: string,
   searchValue?: string,
   notificationId?: string,
+  commentId?: string,
 };
 
 export type ProductBookType = {
