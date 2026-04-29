@@ -5,7 +5,7 @@ const token = localStorage.getItem('accessToken');
 export class SocketManager {
   private static socket: Socket | null = null;
 
-  public static initSocket(userId: number): Socket {
+  public static initSocket(userId: number) {
     if (this.socket) {
       this.socket.disconnect();
     }
@@ -19,7 +19,14 @@ export class SocketManager {
       }
     });
 
-    return this.socket;
+    return new Promise<void>((resolve, reject) => {
+      this.socket?.on('connect', () => {
+        console.log('Connected');
+        resolve();
+      });
+      this.socket?.on('connect_error', (error) => reject(error));
+    });
+
   }
 
   public static getSocket(): Socket | null {
@@ -28,8 +35,12 @@ export class SocketManager {
 
   public static disconnectSocket() {
     if (this.socket) {
-      this.socket.disconnect();
-      this.socket = null;
+      return new Promise<void>((resolve) => {
+        this.socket?.disconnect();
+        this.socket = null;
+        resolve();
+        console.log('Disconnected');
+      })
     }
   }
 };
