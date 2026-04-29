@@ -11,9 +11,9 @@ import {
   addBookCommentApi,
   getBookCommentsApi
 } from '../../../../api/comment-api';
-import { SocketManager } from '../../../../socket';
 
 import { Comment } from './comment';
+import { handleNewComment } from '../../../../api/bookSocketEvents';
 
 type CommentsType = {
   book: Book | null,
@@ -23,8 +23,6 @@ export const Comments = (props: CommentsType) => {
   const { book } = props;
 
   const [searchParams, setSearchParams] = useSearchParams();
-
-  const socket = SocketManager.getSocket();
 
   const user = useAppSelector((state) => {
     return state.user.user;
@@ -65,7 +63,7 @@ export const Comments = (props: CommentsType) => {
   }, [book, page, isLoading]);
 
   useEffect(() => {
-    if(isInitialLoad && book) {
+    if (isInitialLoad && book) {
       getBookComments(true);
       setIsInitialLoad(false);
     }
@@ -112,16 +110,11 @@ export const Comments = (props: CommentsType) => {
   }, [searchParams, setSearchParams]);
 
   useEffect(() => {
-    if(!socket) {
-      return;
-    }
-
-    const handleNewComment = () => {
-      setPage(1);
-      getBookComments(true);
-    };
-
-    socket.on('new comment', handleNewComment);
+    if (main.isConnected) {
+      const newComment = handleNewComment(() => {
+        setPage(1);
+        getBookComments(true);
+      });
 
     return () => {
       socket.off('new comment', handleNewComment);

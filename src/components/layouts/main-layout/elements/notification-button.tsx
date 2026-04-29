@@ -8,18 +8,16 @@ import SimpleBar from 'simplebar-react';
 
 import { Box, type ButtonProps, List, Popover } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { handleBookNewNotification } from '../../../../api/bookSocketEvents.ts'
 
 import {
   getCommentBookNotificationApi,
   getCommentBooksNotificationsApi,
   patchNotificationIsReadApi
 } from '../../../../api/notification-api.ts';
-import { SocketManager } from '../../../../socket.ts';
 
 import { NotificationItem } from './notification-item.tsx';
 import { StyledButton } from '@common/styled-button.tsx';
-
-const socket = SocketManager.getSocket();
 
   const options = {
     root: document.querySelector('.simpleBar'),
@@ -31,7 +29,6 @@ export const NotificationButton = () => {
   const auth = useAppSelector((state) => {
     return state.user;
   });
-
 
   const [
     anchorNotificationEl,
@@ -189,21 +186,22 @@ export const NotificationButton = () => {
   useEffect(() => {
     if (!socket) {
       return;
-    }
+    } else {
+      const getNewNotification = handleBookNewNotification(
+        async (args: BookCommentNotificationData) => {
+          const result = await getCommentBookNotificationApi(
+            { commentId: String(args.id) }
+          );
 
-    const handleNewNotifications = async (args: BookCommentNotificationData) => {
-      const result = await getCommentBookNotificationApi(
-        { commentId: String(args.id) }
-      );
-      setComments(
-        (prevComments) => [result.data.bookNotification, ...prevComments]
-      );
-      setTotalCommentCount(
-        (prevTotalCommentCount) => prevTotalCommentCount + 1
-      );
-    }
+          setComments(
+            (prevComments) => [result.data.bookNotification, ...prevComments]
+          );
 
-    socket.on('book comment notification', handleNewNotifications);
+          setTotalCommentCount(
+            (prevTotalCommentCount) => prevTotalCommentCount + 1
+          );
+        }
+      );
 
     return () => {
       socket.off('book comment notification', handleNewNotifications);

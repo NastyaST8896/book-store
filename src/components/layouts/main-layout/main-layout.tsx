@@ -6,6 +6,8 @@ import { SocketManager} from '../../../socket';
 import { useAppSelector } from '@redux/hooks';
 import { useEffect } from 'react';
 import { styled } from '@mui/material';
+import { connectToSocket, disconnectFromSocket } from '@redux/main/thunk';
+import { handleNewCommentToast } from '../../../api/bookSocketEvents';
 
 export const MainLayout = () => {
 
@@ -31,13 +33,10 @@ export const MainLayout = () => {
 
   useEffect(() => {
     if (userId) {
-      SocketManager.initSocket(+userId);
-      const socket = SocketManager.getSocket();
+      dispatch(connectToSocket(+userId));
 
-      socket?.on('connect', () => {
-        console.log('Connected');
-
-        socket?.on("new comment toast", (book) => {
+      const getNewCommentToast = handleNewCommentToast(
+        (book: { title: string, id: number }) => {
           toast(<Msg book={book} />);
         })
 
