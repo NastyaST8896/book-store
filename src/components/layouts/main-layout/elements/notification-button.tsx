@@ -240,8 +240,16 @@ export const NotificationButton = () => {
         marginThreshold={null}
       >
         <Box sx={{ padding: '5px' }}>
-          <StyledButton onClick={handleAllButtonClick}>All</StyledButton>
-          <StyledButton onClick={handleNotViewedButtonClick}>Not viewed</StyledButton>
+          <StyledButton
+            onClick={handleAllButtonClick}
+          >
+            All
+          </StyledButton>
+          <StyledButton
+            onClick={handleNotViewedButtonClick}
+          >
+            Not viewed
+          </StyledButton>
         </Box>
 
         <StyledList>
