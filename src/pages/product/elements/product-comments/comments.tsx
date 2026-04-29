@@ -22,6 +22,10 @@ type CommentsType = {
 export const Comments = (props: CommentsType) => {
   const { book } = props;
 
+  const main = useAppSelector((state) => {
+    return state.main;
+  })
+
   const [searchParams, setSearchParams] = useSearchParams();
 
   const user = useAppSelector((state) => {
@@ -116,10 +120,9 @@ export const Comments = (props: CommentsType) => {
         getBookComments(true);
       });
 
-    return () => {
-      socket.off('new comment', handleNewComment);
-    };
-  }, [socket, getBookComments]);
+      return newComment?.();
+    }
+  }, [main.isConnected]);
 
   const handleInputChange = (e: React.ChangeEvent<
     HTMLInputElement | HTMLTextAreaElement, Element

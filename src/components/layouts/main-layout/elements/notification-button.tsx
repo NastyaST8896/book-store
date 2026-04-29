@@ -19,11 +19,11 @@ import {
 import { NotificationItem } from './notification-item.tsx';
 import { StyledButton } from '@common/styled-button.tsx';
 
-  const options = {
-    root: document.querySelector('.simpleBar'),
-    rootMargin: '0px 0px 75px 0px',
-    threshold: 0,
-  };
+const options = {
+  root: document.querySelector('.simpleBar'),
+  rootMargin: '0px 0px 75px 0px',
+  threshold: 0,
+};
 
 export const NotificationButton = () => {
   const auth = useAppSelector((state) => {
@@ -40,6 +40,10 @@ export const NotificationButton = () => {
   const [totalCommentCount, setTotalCommentCount] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const [isShowNotViewed, setIsShowNotViewed] = useState(false);
+
+  const main = useAppSelector((state) => {
+    return state.main;
+  })
 
   useEffect(() => {
 
@@ -60,7 +64,7 @@ export const NotificationButton = () => {
           (comments.length < pagination.totalAmount)
         ) {
           setComments(booksNotifications);
-          setTotalCommentCount(pagination.totalAmount);
+          setTotalCommentCount(pagination.notViewedAmount);
           const lastIndex = booksNotifications.length - 1;
           const lastNotificationId =
             booksNotifications[lastIndex].notificationId;
@@ -99,7 +103,7 @@ export const NotificationButton = () => {
             pagination?.totalAmount &&
             (pagination.totalAmount > totalCommentCount)
           ) {
-            setTotalCommentCount(pagination.totalAmount);
+            setTotalCommentCount(pagination.notViewedAmount);
             setHasMore(true);
           }
 
@@ -184,7 +188,7 @@ export const NotificationButton = () => {
   };
 
   useEffect(() => {
-    if (!socket) {
+    if (!main.isConnected) {
       return;
     } else {
       const getNewNotification = handleBookNewNotification(
@@ -203,10 +207,9 @@ export const NotificationButton = () => {
         }
       );
 
-    return () => {
-      socket.off('book comment notification', handleNewNotifications);
-    };
-  }, [socket]);
+      return getNewNotification?.();
+    }
+  }, [main.isConnected]);
 
   const handleAllButtonClick = () => {
     setIsShowNotViewed(false);
