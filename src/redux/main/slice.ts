@@ -1,17 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
-import type { Socket } from "socket.io-client";
 import { connectToSocket, disconnectFromSocket } from "./thunk";
 
 type MainState = {
   isLoading: boolean,
   isConnected: boolean,
-  socket: Socket | null,
 }
 
 const initialState: MainState = {
   isLoading: false,
   isConnected: false,
-  socket: null,
 }
 
 export const socketSlice = createSlice({

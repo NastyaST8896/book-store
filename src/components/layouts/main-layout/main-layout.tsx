@@ -40,7 +40,7 @@ export const MainLayout = () => {
     if (userId) {
       dispatch(connectToSocket(+userId));
 
-      const getNewCommentToast = handleNewCommentToast(
+      const getNewCommentToast = () => handleNewCommentToast(
         (book: { title: string, id: number }) => {
           toast(<Msg book={book} />);
         });
@@ -51,9 +51,11 @@ export const MainLayout = () => {
         }
       }
 
+      const unsubscribe = getNewCommentToast();
+
       return (
-        getNewCommentToast?.(),
-        disconnectSocket?.()
+        disconnectSocket?.(),
+        unsubscribe
       )
     };
   }, [userId, dispatch])

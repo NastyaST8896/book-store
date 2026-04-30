@@ -30,6 +30,10 @@ export const NotificationButton = () => {
     return state.user;
   });
 
+  const main = useAppSelector((state) => {
+    return state.main;
+  });
+
   const [
     anchorNotificationEl,
     setAnchorNotificationEl
@@ -40,10 +44,6 @@ export const NotificationButton = () => {
   const [totalCommentCount, setTotalCommentCount] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const [isShowNotViewed, setIsShowNotViewed] = useState(false);
-
-  const main = useAppSelector((state) => {
-    return state.main;
-  })
 
   useEffect(() => {
 
@@ -146,6 +146,32 @@ export const NotificationButton = () => {
     observer.observe(target);
   }
 
+    useEffect(() => {
+    if (!main.isConnected) {
+      return;
+    } else {
+      const getNewNotification = () => handleBookNewNotification(
+        async (args: BookCommentNotificationData) => {
+          const result = await getCommentBookNotificationApi(
+            { commentId: String(args.id) }
+          );
+
+          setComments(
+            (prevComments) => [result.data.bookNotification, ...prevComments]
+          );
+
+          setNotViewedCommentCount(
+            (prevTotalCommentCount) => prevTotalCommentCount + 1
+          );
+        }
+      );
+
+      const unsubscribe = getNewNotification?.();
+
+      return unsubscribe;
+    }
+  }, [main.isConnected]);
+
   const handleNotificationButtonClick: ButtonProps['onClick'] = (event) => {
     setAnchorNotificationEl(event.currentTarget);
   };
@@ -186,30 +212,6 @@ export const NotificationButton = () => {
 
     changedNotificationsIsRead();
   };
-
-  useEffect(() => {
-    if (!main.isConnected) {
-      return;
-    } else {
-      const getNewNotification = handleBookNewNotification(
-        async (args: BookCommentNotificationData) => {
-          const result = await getCommentBookNotificationApi(
-            { commentId: String(args.id) }
-          );
-
-          setComments(
-            (prevComments) => [result.data.bookNotification, ...prevComments]
-          );
-
-          setTotalCommentCount(
-            (prevTotalCommentCount) => prevTotalCommentCount + 1
-          );
-        }
-      );
-
-      return getNewNotification?.();
-    }
-  }, [main.isConnected]);
 
   const handleAllButtonClick = () => {
     setIsShowNotViewed(false);

@@ -25,7 +25,6 @@ export const NotificationItem = (props: NotificationItemType) => {
   const createCommentDate = new Date(comment.date);
 
   const handleNotificationClick = () => {
-    debugger;
     const params = new URLSearchParams(searchParams);
 
     params.delete('comment');

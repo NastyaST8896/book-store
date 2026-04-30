@@ -114,15 +114,20 @@ export const Comments = (props: CommentsType) => {
   }, [searchParams, setSearchParams]);
 
   useEffect(() => {
-    if (main.isConnected) {
-      const newComment = handleNewComment(() => {
-        setPage(1);
-        getBookComments(true);
-      });
-
-      return newComment?.();
+    if (!main.isConnected) {
+      return;
     }
-  }, [main.isConnected]);
+    const newComment = () => handleNewComment(() => {
+      setPage(1);
+      getBookComments(true);
+      return;
+    });
+
+    const unsubscribe = newComment?.();
+
+    return unsubscribe;
+
+  }, [main.isConnected, getBookComments]);
 
   const handleInputChange = (e: React.ChangeEvent<
     HTMLInputElement | HTMLTextAreaElement, Element
