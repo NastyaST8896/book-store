@@ -26,6 +26,7 @@ const options = {
 };
 
 export const NotificationButton = () => {
+  
   const auth = useAppSelector((state) => {
     return state.user;
   });
@@ -41,7 +42,7 @@ export const NotificationButton = () => {
 
   const [comments, setComments] = useState<BookCommentNotificationData[]>([]);
   const [targetComment, setTargetComment] = useState(0);
-  const [totalCommentCount, setTotalCommentCount] = useState(0);
+  const [notViewedCommentCount, setNotViewedCommentCount] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const [isShowNotViewed, setIsShowNotViewed] = useState(false);
 
@@ -64,7 +65,7 @@ export const NotificationButton = () => {
           (comments.length < pagination.totalAmount)
         ) {
           setComments(booksNotifications);
-          setTotalCommentCount(pagination.notViewedAmount);
+          setNotViewedCommentCount(pagination.notViewedAmount);
           const lastIndex = booksNotifications.length - 1;
           const lastNotificationId =
             booksNotifications[lastIndex].notificationId;
@@ -81,8 +82,6 @@ export const NotificationButton = () => {
 
     getBookNotifications();
   }, []);
-
-
 
   const target = document.querySelector('.target');
 
@@ -101,9 +100,9 @@ export const NotificationButton = () => {
 
           if (
             pagination?.totalAmount &&
-            (pagination.totalAmount > totalCommentCount)
+            (pagination.totalAmount > notViewedCommentCount)
           ) {
-            setTotalCommentCount(pagination.notViewedAmount);
+            setNotViewedCommentCount(pagination.notViewedAmount);
             setHasMore(true);
           }
 
@@ -185,7 +184,7 @@ export const NotificationButton = () => {
       changedComments.map((comment) => {
         if (comment.id === +viewedElement.id && comment.isRead === false) {
           comment.isRead = true;
-          setTotalCommentCount((prev) => prev - 1);
+          setNotViewedCommentCount((prev) => prev - 1);
         }
 
         return comment;
@@ -225,7 +224,7 @@ export const NotificationButton = () => {
     <StyledAuthLink to="#">
       <StyledRoundButton
         icon={<NotificationIcon fill="white" />}
-        count={totalCommentCount}
+        count={notViewedCommentCount}
         onClick={handleNotificationButtonClick}
       />
       <StyledPriceRangePopover
