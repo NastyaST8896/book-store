@@ -4,9 +4,11 @@ import { Footer, Header } from './elements';
 import { ToastContainer, toast, type ToastContentProps } from 'react-toastify';
 import { useAppDispatch, useAppSelector } from '@redux/hooks';
 import { useEffect } from 'react';
-import { styled } from '@mui/material';
+import { Button, styled } from '@mui/material';
 import { connectToSocket, disconnectFromSocket } from '@redux/main/thunk';
 import { handleNewCommentToast } from '../../../api/bookSocketEvents';
+import useSound from 'use-sound';
+import turningPages from '@assets/sounds/turning-pages.mp3';
 
 export const MainLayout = () => {
 
@@ -36,12 +38,15 @@ export const MainLayout = () => {
     );
   }
 
+  const [play] = useSound(turningPages);
+
   useEffect(() => {
     if (userId) {
       dispatch(connectToSocket(+userId));
 
       const getNewCommentToast = () => handleNewCommentToast(
         (book: { title: string, id: number }) => {
+          play();
           toast(<Msg book={book} />);
         });
 

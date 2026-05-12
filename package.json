@@ -24,7 +24,8 @@
     "react-router": "^7.13.0",
     "react-toastify": "^11.0.5",
     "simplebar-react": "^3.3.2",
-    "socket.io-client": "^4.8.3"
+    "socket.io-client": "^4.8.3",
+    "use-sound": "^5.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
