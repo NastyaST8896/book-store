@@ -4,7 +4,7 @@ import { Footer, Header } from './elements';
 import { ToastContainer, toast, type ToastContentProps } from 'react-toastify';
 import { useAppDispatch, useAppSelector } from '@redux/hooks';
 import { useEffect } from 'react';
-import { Button, styled } from '@mui/material';
+import { styled } from '@mui/material';
 import { connectToSocket, disconnectFromSocket } from '@redux/main/thunk';
 import { handleNewCommentToast } from '../../../api/bookSocketEvents';
 import useSound from 'use-sound';

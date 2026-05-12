@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router';
 import { NotificationIcon } from '@common/icons/notification-icon.tsx';
 import { StyledRoundButton } from '@common/styled-round-button.tsx';
@@ -19,32 +19,24 @@ import {
 import { NotificationItem } from './notification-item.tsx';
 import { StyledButton } from '@common/styled-button.tsx';
 
-const options = {
-  root: document.querySelector('.simpleBar'),
-  rootMargin: '0px 0px 75px 0px',
-  threshold: 0,
-};
-
 export const NotificationButton = () => {
-  
+
   const auth = useAppSelector((state) => {
     return state.user;
   });
 
   const main = useAppSelector((state) => {
     return state.main;
-  });
-
+  })
+  // Af7dK?c!eJ8u*UV
   const [
     anchorNotificationEl,
     setAnchorNotificationEl
   ] = React.useState<HTMLElement | null>(null);
 
   const [comments, setComments] = useState<BookCommentNotificationData[]>([]);
-  const [targetComment, setTargetComment] = useState(0);
-  const [notViewedCommentCount, setNotViewedCommentCount] = useState(0);
-  const [hasMore, setHasMore] = useState(true);
-  const [isShowNotViewed, setIsShowNotViewed] = useState(false);
+  const [notViewedCommentsCount, setNotViewedCommentCount] = useState(0);
+  const commentRef = useRef(null);
 
   useEffect(() => {
 
@@ -53,9 +45,9 @@ export const NotificationButton = () => {
         return;
       }
 
-      if (targetComment === 0 && comments.length === 0) {
+      if (comments.length === 0) {
         const result = await getCommentBooksNotificationsApi(
-          { notificationId: String(targetComment) }
+          { notificationId: String(0) }
         );
         const booksNotifications = result.data.booksNotifications;
         const pagination = result.meta?.pagination;
@@ -66,14 +58,6 @@ export const NotificationButton = () => {
         ) {
           setComments(booksNotifications);
           setNotViewedCommentCount(pagination.notViewedAmount);
-          const lastIndex = booksNotifications.length - 1;
-          const lastNotificationId =
-            booksNotifications[lastIndex].notificationId;
-          if (lastNotificationId) {
-            setTargetComment(lastNotificationId);
-          }
-        } else {
-          setHasMore(false)
         }
       }
 
@@ -83,69 +67,7 @@ export const NotificationButton = () => {
     getBookNotifications();
   }, []);
 
-  const target = document.querySelector('.target');
-
-  const createObserver = () => {
-    return new IntersectionObserver((entries, observer) => {
-      let isVisible = false;
-
-      entries.forEach(async (entry) => {
-        if (entry.isIntersecting && !isVisible) {
-
-          const result = await getCommentBooksNotificationsApi(
-            { notificationId: String(targetComment) }
-          );
-          const booksNotifications = result.data.booksNotifications;
-          const pagination = result.meta?.pagination;
-
-          if (
-            pagination?.totalAmount &&
-            (pagination.totalAmount > notViewedCommentCount)
-          ) {
-            setNotViewedCommentCount(pagination.notViewedAmount);
-            setHasMore(true);
-          }
-
-          if (booksNotifications.length && hasMore) {
-            setComments([...comments, ...booksNotifications]);
-
-            if (
-              (comments.length + booksNotifications.length) !==
-              pagination?.totalAmount
-            ) {
-              const lastIndex = booksNotifications.length - 1;
-              const lastNotificationId =
-                booksNotifications[lastIndex].notificationId;
-
-              if (lastNotificationId) {
-                setTargetComment(lastNotificationId);
-              }
-            } else {
-              setTargetComment(0);
-              setHasMore(false);
-            }
-
-
-            observer.unobserve(entry.target)
-          }
-
-          isVisible = true;
-        }
-
-        if (!entry.isIntersecting && isVisible) {
-          isVisible = false;
-        }
-      });
-    }, options);
-  };
-
-  const observer = createObserver();
-
-  if (target) {
-    observer.observe(target);
-  }
-
-    useEffect(() => {
+  useEffect(() => {
     if (!main.isConnected) {
       return;
     } else {
@@ -157,10 +79,6 @@ export const NotificationButton = () => {
 
           setComments(
             (prevComments) => [result.data.bookNotification, ...prevComments]
-          );
-
-          setNotViewedCommentCount(
-            (prevTotalCommentCount) => prevTotalCommentCount + 1
           );
         }
       );
@@ -177,54 +95,26 @@ export const NotificationButton = () => {
 
   const handleNotificationClose = () => {
     setAnchorNotificationEl(null);
-    const allViewedElements = document.querySelectorAll('.viewed');
-    const changedComments = [...comments];
-
-    allViewedElements.forEach((viewedElement) => {
-      changedComments.map((comment) => {
-        if (comment.id === +viewedElement.id && comment.isRead === false) {
-          comment.isRead = true;
-          setNotViewedCommentCount((prev) => prev - 1);
-        }
-
-        return comment;
-      })
-      setComments(changedComments);
-    });
-
-    const viewedNotificationId = changedComments
-      .filter((comment) => {
-        return comment.isRead === true;
-      })
-      .map((notification) => {
-        if (notification.notificationId) {
-          return notification.notificationId
-        } else {
-          return null
-        }
-      });
-
-
-    const changedNotificationsIsRead = async () => {
-      await patchNotificationIsReadApi(viewedNotificationId)
-    }
-
-    changedNotificationsIsRead();
   };
 
-  const handleAllButtonClick = () => {
-    setIsShowNotViewed(false);
-  }
+  const setIsReadForComments = (id: number) => {
+    const newComments = [...comments];
+    newComments.map((comment) => {
+      if (comment.id === id) {
+        comment.isRead = true;
+      }
 
-  const handleNotViewedButtonClick = () => {
-    setIsShowNotViewed(true);
+      return comment;
+    })
+
+    setComments(newComments);
   }
 
   return (
     <StyledAuthLink to="#">
       <StyledRoundButton
         icon={<NotificationIcon fill="white" />}
-        count={notViewedCommentCount}
+        count={notViewedCommentsCount}
         onClick={handleNotificationButtonClick}
       />
       <StyledPriceRangePopover
@@ -244,14 +134,10 @@ export const NotificationButton = () => {
         marginThreshold={null}
       >
         <Box sx={{ padding: '5px' }}>
-          <StyledButton
-            onClick={handleAllButtonClick}
-          >
+          <StyledButton>
             All
           </StyledButton>
-          <StyledButton
-            onClick={handleNotViewedButtonClick}
-          >
+          <StyledButton>
             Not viewed
           </StyledButton>
         </Box>
@@ -261,45 +147,20 @@ export const NotificationButton = () => {
             id="simpleBar"
             style={{ maxHeight: 490 }}
           >
-            {isShowNotViewed ? (
-              comments.map((comment, index) => {
-                if (!comment.isRead) {
-                  return (
-                    <React.Fragment key={comment.id}>
-                      <NotificationItem
-
-                        targetClassName={
-                          (index === (comments.length - 1))
-                            ? 'target'
-                            : ''
-                        }
-                        handleNotificationClose={
-                          handleNotificationClose
-                        }
-                        comment={comment}
-                      />
-                    </React.Fragment>
-                  )
-                }
-                return;
-              })
-            ) : (
-              comments.map((comment, index) => (
+            {
+              comments.map((comment) => (
                 <React.Fragment key={comment.id}>
                   <NotificationItem
-                    targetClassName={
-                      (index === (comments.length - 1))
-                        ? 'target'
-                        : ''
-                    }
                     handleNotificationClose={
                       handleNotificationClose
                     }
                     comment={comment}
+                    ref={commentRef}
+                    setComments={() => setIsReadForComments}
                   />
                 </React.Fragment>
               ))
-            )}
+            }
           </SimpleBar>
         </StyledList>
       </StyledPriceRangePopover>

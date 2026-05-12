@@ -12,11 +12,12 @@ import { useLocation, useNavigate, useSearchParams } from "react-router"
 type NotificationItemType = {
   comment: BookCommentNotificationData,
   handleNotificationClose: () => void,
-  targetClassName: string,
+  ref: React.RefObject<HTMLLIElement | null>,
+  setComments: () => (id: number) => void,
 }
 
 export const NotificationItem = (props: NotificationItemType) => {
-  const { comment, handleNotificationClose, targetClassName } = props;
+  const { comment, handleNotificationClose, ref, setComments } = props;
   const navigate = useNavigate();
   const location = useLocation();
   const [isViewed, setIsViewed] = useState(comment.isRead);
@@ -39,17 +40,26 @@ export const NotificationItem = (props: NotificationItemType) => {
   };
 
   const handleItemMouseOver = () => {
-    setIsViewed(true);
+    if (!ref.current) {
+      return;
+    }
+
+    console.log(ref.current);
+
+    ref.current.classList.add('viewed');
+    console.log(ref.current.id)
+      const setIsReadComments = setComments();
+      setIsReadComments(+ref.current.id);
   };
 
   return (
     <StyledListItem
       id={String(comment.id)}
-      className={`${targetClassName} ${isViewed && 'viewed'}`}
       key={`comment-${comment.id}`}
       alignItems="flex-start"
       onClick={handleNotificationClick}
       onMouseOver={handleItemMouseOver}
+      ref={ref}
     >
       <ListItemAvatar>
         <Avatar alt={comment.name} src={comment.img} />
