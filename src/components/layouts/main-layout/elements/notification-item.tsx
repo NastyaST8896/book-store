@@ -6,22 +6,23 @@ import {
   styled,
 } from "@mui/material"
 import type { BookCommentNotificationData } from "@utils/types"
-import React, { useState } from "react"
+import React, { useRef, useState } from "react"
 import { useLocation, useNavigate, useSearchParams } from "react-router"
 
 type NotificationItemType = {
   comment: BookCommentNotificationData,
   handleNotificationClose: () => void,
-  ref: React.RefObject<HTMLLIElement | null>,
   setComments: () => (id: number) => void,
 }
 
 export const NotificationItem = (props: NotificationItemType) => {
-  const { comment, handleNotificationClose, ref, setComments } = props;
+  const { comment, handleNotificationClose, setComments } = props;
   const navigate = useNavigate();
   const location = useLocation();
   const [isViewed, setIsViewed] = useState(comment.isRead);
   const [searchParams, setSearchParams] = useSearchParams();
+  const commentRef = useRef<HTMLLIElement | null>(null);
+
 
   const createCommentDate = new Date(comment.date);
 
@@ -40,16 +41,14 @@ export const NotificationItem = (props: NotificationItemType) => {
   };
 
   const handleItemMouseOver = () => {
-    if (!ref.current) {
+    if (!commentRef.current) {
       return;
     }
 
-    console.log(ref.current);
+    commentRef.current.classList.add('viewed');
 
-    ref.current.classList.add('viewed');
-    console.log(ref.current.id)
       const setIsReadComments = setComments();
-      setIsReadComments(+ref.current.id);
+      setIsReadComments(+commentRef.current.id);
   };
 
   return (
@@ -59,7 +58,7 @@ export const NotificationItem = (props: NotificationItemType) => {
       alignItems="flex-start"
       onClick={handleNotificationClick}
       onMouseOver={handleItemMouseOver}
-      ref={ref}
+      ref={commentRef}
     >
       <ListItemAvatar>
         <Avatar alt={comment.name} src={comment.img} />

@@ -36,8 +36,7 @@ export const NotificationButton = () => {
 
   const [comments, setComments] = useState<BookCommentNotificationData[]>([]);
   const [notViewedCommentsCount, setNotViewedCommentCount] = useState(0);
-  const commentRef = useRef(null);
-
+  
   useEffect(() => {
 
     const getBookNotifications = async () => {
@@ -155,7 +154,6 @@ export const NotificationButton = () => {
                       handleNotificationClose
                     }
                     comment={comment}
-                    ref={commentRef}
                     setComments={() => setIsReadForComments}
                   />
                 </React.Fragment>
