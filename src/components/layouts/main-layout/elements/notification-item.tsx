@@ -13,13 +13,21 @@ type NotificationItemType = {
   comment: BookCommentNotificationData,
   handleNotificationClose: () => void,
   setComments: () => (id: number) => void,
+  lastCommentId: number;
+  setElement: React.Dispatch<React.SetStateAction<HTMLElement | null>>,
+
 }
 
 export const NotificationItem = (props: NotificationItemType) => {
-  const { comment, handleNotificationClose, setComments } = props;
+  const {
+    comment,
+    handleNotificationClose,
+    setComments,
+    lastCommentId,
+    setElement
+  } = props;
   const navigate = useNavigate();
   const location = useLocation();
-  const [isViewed, setIsViewed] = useState(comment.isRead);
   const [searchParams, setSearchParams] = useSearchParams();
   const commentRef = useRef<HTMLLIElement | null>(null);
 
@@ -47,8 +55,8 @@ export const NotificationItem = (props: NotificationItemType) => {
 
     commentRef.current.classList.add('viewed');
 
-      const setIsReadComments = setComments();
-      setIsReadComments(+commentRef.current.id);
+    const setIsReadComments = setComments();
+    setIsReadComments(+commentRef.current.id);
   };
 
   return (
@@ -58,7 +66,13 @@ export const NotificationItem = (props: NotificationItemType) => {
       alignItems="flex-start"
       onClick={handleNotificationClick}
       onMouseOver={handleItemMouseOver}
-      ref={commentRef}
+      ref={(el) => {
+        commentRef.current = el;
+
+        if (lastCommentId === comment.id) {
+         setElement(el);
+        }
+      }}
     >
       <ListItemAvatar>
         <Avatar alt={comment.name} src={comment.img} />

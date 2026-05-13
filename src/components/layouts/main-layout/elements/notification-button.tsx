@@ -33,7 +33,15 @@ export const NotificationButton = () => {
   const [
     anchorNotificationEl,
     setAnchorNotificationEl
-  ] = React.useState<HTMLElement | null>(null);
+  ] = useState<HTMLElement | null>(null);
+
+  const popoverRef = useRef(null);
+
+  const [isIntersecting, setElement] = useIntersectionObserver({
+    root: popoverRef.current,
+    rootMargin: '10px',
+    threshold: 0
+  })
 
   const [comments, setComments] = useState<BookCommentNotificationData[]>([]);
   const [notViewedCommentsCount, setNotViewedCommentCount] = useState(0);
@@ -119,6 +127,7 @@ export const NotificationButton = () => {
         }
         disableScrollLock={true}
         marginThreshold={null}
+        ref={popoverRef}
       >
         <Box sx={{ padding: '5px' }}>
           <StyledButton>
@@ -143,6 +152,8 @@ export const NotificationButton = () => {
                     }
                     comment={comment}
                     setComments={() => setIsReadForComments}
+                    lastCommentId={comments[comments.length - 1].id}
+                    setElement={setElement}
                   />
                 </React.Fragment>
               ))
