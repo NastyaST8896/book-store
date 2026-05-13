@@ -122,3 +122,9 @@ export type BookCommentNotificationData = {
   bookId: number,
   isRead: boolean
 }
+
+export type getBookNotificationsAgrType = {
+  comments: BookCommentNotificationData[],
+  setComments: React.Dispatch<React.SetStateAction<BookCommentNotificationData[]>>,
+  setNotViewedCommentCount: React.Dispatch<React.SetStateAction<number>>,
+}
