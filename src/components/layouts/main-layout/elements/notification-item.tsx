@@ -6,7 +6,7 @@ import {
   styled,
 } from "@mui/material"
 import type { BookCommentNotificationData } from "@utils/types"
-import React, { useRef, useState } from "react"
+import React, { useRef} from "react"
 import { useLocation, useNavigate, useSearchParams } from "react-router"
 
 type NotificationItemType = {

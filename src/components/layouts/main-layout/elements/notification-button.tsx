@@ -8,16 +8,18 @@ import SimpleBar from 'simplebar-react';
 
 import { Box, type ButtonProps, List, Popover } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { handleBookNewNotification } from '../../../../api/bookSocketEvents.ts'
+import { handleBookNewNotification } from '@api/bookSocketEvents.ts'
 
 import {
   getCommentBookNotificationApi,
   getCommentBooksNotificationsApi,
   patchNotificationIsReadApi
-} from '../../../../api/notification-api.ts';
+} from '@api/notification-api.ts';
 
 import { NotificationItem } from './notification-item.tsx';
 import { StyledButton } from '@common/styled-button.tsx';
+import { useIntersectionObserver } from '@utils/hooks.ts';
+import { getBookNotifications } from '@api/api-callers.ts';
 
 export const NotificationButton = () => {
 
@@ -28,7 +30,7 @@ export const NotificationButton = () => {
   const main = useAppSelector((state) => {
     return state.main;
   })
-  // Af7dK?c!eJ8u*UV
+
   const [
     anchorNotificationEl,
     setAnchorNotificationEl

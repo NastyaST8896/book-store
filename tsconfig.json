@@ -32,7 +32,8 @@
       "@assets/*": ["./src/assets/*"],
       "@common/*": ["./src/components/common/*"],
       "@redux/*": ["./src/redux/*"],
-      "@utils/*": ["./src/utils/*"]
+      "@utils/*": ["./src/utils/*"],
+      "@api/*": ["./src/api/*"],
     }
   },
   "include": [
