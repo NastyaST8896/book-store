@@ -12,7 +12,6 @@ import { handleBookNewNotification } from '@api/bookSocketEvents.ts'
 
 import {
   getCommentBookNotificationApi,
-  getCommentBooksNotificationsApi,
   patchNotificationIsReadApi
 } from '@api/notification-api.ts';
 
@@ -40,32 +39,11 @@ export const NotificationButton = () => {
   const [notViewedCommentsCount, setNotViewedCommentCount] = useState(0);
   
   useEffect(() => {
-
-    const getBookNotifications = async () => {
-      if (!auth) {
-        return;
-      }
-
-      if (comments.length === 0) {
-        const result = await getCommentBooksNotificationsApi(
-          { notificationId: String(0) }
-        );
-        const booksNotifications = result.data.booksNotifications;
-        const pagination = result.meta?.pagination;
-
-        if (
-          booksNotifications.length && pagination &&
-          (comments.length < pagination.totalAmount)
-        ) {
-          setComments(booksNotifications);
-          setNotViewedCommentCount(pagination.notViewedAmount);
-        }
-      }
-
+    if (!auth) {
       return;
     }
 
-    getBookNotifications();
+    getBookNotifications({ comments, setComments, setNotViewedCommentCount });
   }, []);
 
   useEffect(() => {
@@ -89,6 +67,14 @@ export const NotificationButton = () => {
       return unsubscribe;
     }
   }, [main.isConnected]);
+
+  useEffect(() => {
+    if (!auth && !isIntersecting) {
+      return;
+    }
+
+    getBookNotifications({ comments, setComments, setNotViewedCommentCount });
+  }, [isIntersecting])
 
   const handleNotificationButtonClick: ButtonProps['onClick'] = (event) => {
     setAnchorNotificationEl(event.currentTarget);
