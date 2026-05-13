@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import type { ObserverReturnValue, Options } from './types';
 
 export function useDebounce<T>(value: T, delay: number = 200): T {
   const [debouncedValue, setDebouncedValue] = useState<T>(value);

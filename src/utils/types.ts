@@ -128,3 +128,14 @@ export type getBookNotificationsAgrType = {
   setComments: React.Dispatch<React.SetStateAction<BookCommentNotificationData[]>>,
   setNotViewedCommentCount: React.Dispatch<React.SetStateAction<number>>,
 }
+
+export type Options = {
+  root: HTMLElement | null,
+  rootMargin: string,
+  threshold: number
+}
+
+export type ObserverReturnValue = [
+isIntersecting: boolean, 
+setElement: React.Dispatch<React.SetStateAction<HTMLElement | null>>,
+]
