@@ -67,6 +67,9 @@ export const NotificationButton = () => {
           setComments(
             (prevComments) => [result.data.bookNotification, ...prevComments]
           );
+          setNotViewedCommentCount(
+            (prevNotViewedCommentCount) => prevNotViewedCommentCount + 1
+          );
         }
       );
 
