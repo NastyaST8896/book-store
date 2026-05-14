@@ -195,6 +195,20 @@ export const NotificationButton = () => {
                   />
                 </React.Fragment>
               ))
+            ) : (
+              notViewedComments.map((comment) => (
+                <React.Fragment key={`${comment.id}-notViewed`}>
+                  <NotificationItem
+                    handleNotificationClose={
+                      handleNotificationClose
+                    }
+                    comment={comment}
+                    setComments={() => setIsReadForComments}
+                    lastCommentId={notViewedComments[notViewedComments.length - 1].id}
+                    setElement={setElement}
+                  />
+                </React.Fragment>
+              )))
             }
           </SimpleBar>
         </StyledList>
