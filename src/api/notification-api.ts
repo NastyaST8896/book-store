@@ -8,7 +8,7 @@ import { api } from "./api";
 export const getCommentBooksNotificationsApi = async (params: BooksApiParams) => {
   const response = await api.get<CommonResponseType<
     { booksNotifications: BookCommentNotificationData[] },
-    { pagination: { limit: number, totalAmount: number, notViewedAmount: number } }
+    { pagination: paginationBooksNotificationsType }
   >>('/notifications/book-notifications',
     {
       params:

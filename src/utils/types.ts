@@ -123,10 +123,20 @@ export type BookCommentNotificationData = {
   isRead: boolean
 }
 
+export type paginationBooksNotificationsType = {
+  limit: number, 
+  totalAmount: number, 
+  notViewedAmount: number,
+}
+
 export type getBookNotificationsAgrType = {
   comments: BookCommentNotificationData[],
   setComments: React.Dispatch<React.SetStateAction<BookCommentNotificationData[]>>,
   setNotViewedCommentCount: React.Dispatch<React.SetStateAction<number>>,
+  notificationsApi: (params: BooksApiParams) => Promise<CommonResponseType<
+  {booksNotifications: BookCommentNotificationData[]}, 
+  {pagination: paginationBooksNotificationsType}
+  >>
 }
 
 export type Options = {
