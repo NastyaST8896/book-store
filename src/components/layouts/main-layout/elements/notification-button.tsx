@@ -25,15 +25,21 @@ export const NotificationButton = () => {
   const auth = useAppSelector((state) => {
     return state.user;
   });
-
   const main = useAppSelector((state) => {
     return state.main;
   })
+  const [comments, setComments] = useState<BookCommentNotificationData[]>([]);
+  const [
+    notViewedComments,
+    setNotViewedComments
+  ] = useState<BookCommentNotificationData[]>([]);
 
+  const [notViewedCommentsCount, setNotViewedCommentCount] = useState(0);
   const [
     anchorNotificationEl,
     setAnchorNotificationEl
   ] = useState<HTMLElement | null>(null);
+  const [isAllComments, setIsAllComments] = useState(true);
 
   const popoverRef = useRef(null);
 
@@ -43,15 +49,24 @@ export const NotificationButton = () => {
     threshold: 0
   })
 
-  const [comments, setComments] = useState<BookCommentNotificationData[]>([]);
-  const [notViewedCommentsCount, setNotViewedCommentCount] = useState(0);
-  
   useEffect(() => {
     if (!auth) {
       return;
     }
 
-    getBookNotifications({ comments, setComments, setNotViewedCommentCount });
+    getBookNotifications({
+      comments,
+      setComments,
+      setNotViewedCommentCount,
+      notificationsApi: getCommentBooksNotificationsApi
+    });
+
+    getBookNotifications({
+      comments: notViewedComments,
+      setComments: setNotViewedComments,
+      setNotViewedCommentCount,
+      notificationsApi: getNotViewedBookCommentNotificationsApi
+    });
   }, []);
 
   useEffect(() => {
@@ -84,7 +99,19 @@ export const NotificationButton = () => {
       return;
     }
 
-    getBookNotifications({ comments, setComments, setNotViewedCommentCount });
+    getBookNotifications({
+      comments,
+      setComments,
+      setNotViewedCommentCount,
+      notificationsApi: getCommentBooksNotificationsApi
+    });
+
+    getBookNotifications({
+      comments: notViewedComments,
+      setComments: setNotViewedComments,
+      setNotViewedCommentCount,
+      notificationsApi: getNotViewedBookCommentNotificationsApi
+    });
   }, [isIntersecting])
 
   const handleNotificationButtonClick: ButtonProps['onClick'] = (event) => {

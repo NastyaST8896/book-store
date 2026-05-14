@@ -1,19 +1,18 @@
 import type { getBookNotificationsAgrType } from "@utils/types";
-import { getCommentBooksNotificationsApi } from "./notification-api";
 
 
 export const getBookNotifications:
   (arg: getBookNotificationsAgrType) => Promise<void> = async (arg) => {
-    const { comments, setComments, setNotViewedCommentCount } = arg;
+    const { comments, setComments, setNotViewedCommentCount, notificationsApi } = arg;
     let result;
 
     if (comments.length === 0) {
-      result = await getCommentBooksNotificationsApi(
+      result = await notificationsApi(
         { notificationId: String(0) }
       );
 
     } else {
-      result = await getCommentBooksNotificationsApi(
+      result = await notificationsApi(
         { notificationId: String(comments[comments.length - 1].notificationId) }
       );
     }
@@ -32,7 +31,9 @@ export const getBookNotifications:
           (prevComments) => [...prevComments, ...booksNotifications]
         );
 
-      setNotViewedCommentCount(pagination.notViewedAmount);
+        if(pagination.notViewedAmount){
+          setNotViewedCommentCount(pagination?.notViewedAmount);
+        }
     }
 
     return;
