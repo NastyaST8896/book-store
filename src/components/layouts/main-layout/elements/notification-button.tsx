@@ -84,6 +84,12 @@ export const NotificationButton = () => {
           setComments(
             (prevComments) => [result.data.bookNotification, ...prevComments]
           );
+          setNotViewedComments(
+            (prevNotViewedComments) => [
+              result.data.bookNotification,
+              ...prevNotViewedComments
+            ]
+          )
           setNotViewedCommentCount(
             (prevNotViewedCommentCount) => prevNotViewedCommentCount + 1
           );
@@ -125,10 +131,22 @@ export const NotificationButton = () => {
   };
 
   const setIsReadForComments = (id: number) => {
+
     const newComments = [...comments];
     const newNotViewedComments = [...notViewedComments];
 
     newComments.map((comment) => {
+      if (comment.id === id) {
+        comment.isRead = true;
+        setNotViewedCommentCount(
+          (prevNotViewedCommentCount) => prevNotViewedCommentCount - 1
+        )
+      }
+
+      return comment;
+    })
+
+    newNotViewedComments.map((comment) => {
       if (comment.id === id) {
         comment.isRead = true;
       }
@@ -137,6 +155,15 @@ export const NotificationButton = () => {
     })
 
     setComments(newComments);
+    setNotViewedComments(newNotViewedComments);
+  }
+
+  const handleNotViewedButtonClick = () => {
+    const newNotViewedComments = notViewedComments.filter((comment) => {
+      return !comment.isRead
+    })
+    setNotViewedComments(newNotViewedComments)
+    setIsAllComments(false)
   }
 
   return (
@@ -183,7 +210,7 @@ export const NotificationButton = () => {
             id="simpleBar"
             style={{ maxHeight: 490 }}
           >
-            {
+            {isAllComments ? (
               comments.map((comment) => (
                 <React.Fragment key={comment.id}>
                   <NotificationItem
