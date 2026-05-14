@@ -6,7 +6,7 @@ import {
   styled,
 } from "@mui/material"
 import type { BookCommentNotificationData } from "@utils/types"
-import React, { useRef} from "react"
+import React, { useRef } from "react"
 import { useLocation, useNavigate, useSearchParams } from "react-router"
 
 type NotificationItemType = {
@@ -30,7 +30,7 @@ export const NotificationItem = (props: NotificationItemType) => {
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
   const commentRef = useRef<HTMLLIElement | null>(null);
-
+  const viewedRef = useRef(false);
 
   const createCommentDate = new Date(comment.date);
 
@@ -55,8 +55,12 @@ export const NotificationItem = (props: NotificationItemType) => {
 
     commentRef.current.classList.add('viewed');
 
-    const setIsReadComments = setComments();
-    setIsReadComments(+commentRef.current.id);
+    if (!viewedRef.current) {
+      const setIsReadComments = setComments();
+      setIsReadComments(+commentRef.current.id);
+
+      viewedRef.current = true;
+    }
   };
 
   return (
@@ -66,11 +70,14 @@ export const NotificationItem = (props: NotificationItemType) => {
       alignItems="flex-start"
       onClick={handleNotificationClick}
       onMouseOver={handleItemMouseOver}
+      className={comment.isRead ? 'viewed' : ''}
       ref={(el) => {
         commentRef.current = el;
 
+        comment.isRead ? viewedRef.current = true : viewedRef.current = false;
+
         if (lastCommentId === comment.id) {
-         setElement(el);
+          setElement(el);
         }
       }}
     >
