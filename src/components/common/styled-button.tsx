@@ -22,6 +22,10 @@ export const StyledButton = styled(
     fontSize: '18px',
   },
 
+  '&.active': {
+    backgroundColor: theme.palette.appColor.green
+  },
+
   [theme.breakpoints.down(770)]: {
 
     '&:disabled': {

@@ -162,10 +162,16 @@ export const NotificationButton = () => {
         ref={popoverRef}
       >
         <Box sx={{ padding: '5px' }}>
-          <StyledButton>
+          <StyledButton
+            className={isAllComments ? 'active' : ''}
+            onClick={() => setIsAllComments(true)}
+          >
             All
           </StyledButton>
-          <StyledButton>
+          <StyledButton
+          className={isAllComments ? '' : 'active'} 
+          onClick={handleNotViewedButtonClick}
+          >
             Not viewed
           </StyledButton>
         </Box>
