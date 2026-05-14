@@ -126,6 +126,8 @@ export const NotificationButton = () => {
 
   const setIsReadForComments = (id: number) => {
     const newComments = [...comments];
+    const newNotViewedComments = [...notViewedComments];
+
     newComments.map((comment) => {
       if (comment.id === id) {
         comment.isRead = true;
