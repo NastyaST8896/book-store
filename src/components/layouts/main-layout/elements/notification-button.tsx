@@ -226,7 +226,7 @@ const StyledPriceRangePopover = styled(Popover)(({ theme }) => `
     box-shadow: none;
     max-width: 400px;
     width: 100%;
-    padding: 0 8px;
+    padding: 19px 8px 11px 19px;
     
       & .MuiCheckbox-root {
         padding: 5px 15px;
