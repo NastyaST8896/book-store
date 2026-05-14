@@ -11,7 +11,9 @@ import { styled } from '@mui/material/styles';
 import { handleBookNewNotification } from '@api/bookSocketEvents.ts'
 
 import {
+  getCommentBooksNotificationsApi,
   getCommentBookNotificationApi,
+  getNotViewedBookCommentNotificationsApi,
   patchNotificationIsReadApi
 } from '@api/notification-api.ts';
 

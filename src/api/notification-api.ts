@@ -2,6 +2,7 @@ import type {
   BookCommentNotificationData,
   BooksApiParams,
   CommonResponseType,
+  paginationBooksNotificationsType,
 } from "@utils/types";
 import { api } from "./api";
 
@@ -47,18 +48,18 @@ export const patchNotificationIsReadApi = async (notificationsId: (number|null)[
   return response.data;
 }
 
-// export const getNotViewedBookCommentNotificationsApi = async (params: BooksApiParams) => {
-//   const response = await api.get<CommonResponseType<
-//     { notViewedBooksNotifications: BookCommentNotificationData[] },
-//     { pagination: { limit: number, totalAmount: number } }
-//   >>('/notifications/not-viewed-notifications',
-//     {
-//       params:
-//       {
-//         notificationId: params.notificationId,
-//       }
-//     }
-//   );
+export const getNotViewedBookCommentNotificationsApi = async (params: BooksApiParams) => {
+  const response = await api.get<CommonResponseType<
+    { booksNotifications: BookCommentNotificationData[] },
+    { pagination: paginationBooksNotificationsType }
+  >>('/notifications/not-viewed-notifications',
+    {
+      params:
+      {
+        notificationId: params.notificationId,
+      }
+    }
+  );
 
-//   return response.data;
-// }
+  return response.data;
+}
