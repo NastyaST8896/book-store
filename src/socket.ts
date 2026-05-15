@@ -11,8 +11,8 @@ export class SocketManager {
     }
 
     this.socket = io('http://localhost:3000/', {
-      query: {
-        userId,
+      auth: {
+        token
       },
       extraHeaders: {
         authorization: `bearer ${token}`
