@@ -125,14 +125,6 @@ export const NotificationButton = () => {
     });
   }, [isIntersecting])
 
-  const handleNotificationButtonClick: ButtonProps['onClick'] = (event) => {
-    setAnchorNotificationEl(event.currentTarget);
-  };
-
-  const handleNotificationClose = () => {
-    setAnchorNotificationEl(null);
-  };
-
   const setIsReadForComments = (id: number) => {
 
     const newComments = [...comments];
@@ -161,7 +153,7 @@ export const NotificationButton = () => {
     setNotViewedComments(newNotViewedComments);
   }
 
-  const handleNotViewedButtonClick = async() => {
+  const handleNotViewedButtonClick = async () => {
     changeNotificationStatus({ notViewedComments });
 
     const newNotViewedComments = notViewedComments.filter((comment) => {
@@ -177,12 +169,15 @@ export const NotificationButton = () => {
         ref={notificationButtonRef}
         icon={<NotificationIcon fill="white" />}
         count={notViewedCommentsCount}
-        onClick={handleNotificationButtonClick}
+        onClick={() => {
+          setIsOpen(true);
+          setIsAllComments(true);
+        }}
       />
       <StyledPriceRangePopover
         open={isOpen}
         anchorEl={() => notificationButtonRef.current}
-        onClose={async() => {
+        onClose={async () => {
           changeNotificationStatus({ notViewedComments });
           setIsOpen(false);
         }}
@@ -199,16 +194,20 @@ export const NotificationButton = () => {
         marginThreshold={null}
         ref={popoverRef}
       >
-        <Box sx={{ padding: '5px' }}>
+        <Box sx={{ padding: '15px 15px 0 15px' }}>
           <StyledButton
             className={isAllComments ? 'active' : ''}
-            onClick={() => setIsAllComments(true)}
+            onClick={() => {
+              changeNotificationStatus({ notViewedComments });
+              setIsAllComments(true);
+              return;
+            }}
           >
             All
           </StyledButton>
           <StyledButton
-          className={isAllComments ? '' : 'active'} 
-          onClick={handleNotViewedButtonClick}
+            className={isAllComments ? '' : 'active'}
+            onClick={handleNotViewedButtonClick}
           >
             Not viewed
           </StyledButton>
@@ -217,15 +216,13 @@ export const NotificationButton = () => {
         <StyledList>
           <SimpleBar
             id="simpleBar"
-            style={{ maxHeight: 490 }}
+            style={{ maxHeight: 490, padding: '0 15px' }}
           >
             {isAllComments ? (
               comments.map((comment) => (
                 <React.Fragment key={comment.id}>
                   <NotificationItem
-                    handleNotificationClose={
-                      handleNotificationClose
-                    }
+                    handleNotificationClose={() => setIsOpen(false)}
                     comment={comment}
                     setComments={() => setIsReadForComments}
                     lastCommentId={comments[comments.length - 1].id}
@@ -237,12 +234,12 @@ export const NotificationButton = () => {
               notViewedComments.map((comment) => (
                 <React.Fragment key={`${comment.id}-notViewed`}>
                   <NotificationItem
-                    handleNotificationClose={
-                      handleNotificationClose
-                    }
+                    handleNotificationClose={() => setIsOpen(false)}
                     comment={comment}
                     setComments={() => setIsReadForComments}
-                    lastCommentId={notViewedComments[notViewedComments.length - 1].id}
+                    lastCommentId={
+                      notViewedComments[notViewedComments.length - 1].id
+                    }
                     setElement={setElement}
                   />
                 </React.Fragment>
@@ -264,7 +261,6 @@ const StyledPriceRangePopover = styled(Popover)(({ theme }) => `
     box-shadow: none;
     max-width: 400px;
     width: 100%;
-    padding: 19px 8px 11px 19px;
     
       & .MuiCheckbox-root {
         padding: 5px 15px;
@@ -281,6 +277,10 @@ const StyledPriceRangePopover = styled(Popover)(({ theme }) => `
       background: ${theme.palette.appColor.darkBlue};
       transform: translateY(-50%) rotate(45deg);
       z-index: 0;
+    }
+
+    & .MuiList-root {
+      padding: 15px 0;
     }
   }
   
@@ -322,6 +322,6 @@ const StyledList = styled(List)(({ theme }) => `
   }
 
   & .MuiListItem-root {
-      width: 97%;
+      width: 100%;
     }
 `);
