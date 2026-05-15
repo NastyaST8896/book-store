@@ -6,7 +6,7 @@ import { useAppSelector } from '@redux/hooks.ts';
 import type { BookCommentNotificationData } from '@utils/types.ts';
 import SimpleBar from 'simplebar-react';
 
-import { Box, type ButtonProps, List, Popover } from '@mui/material';
+import { Box, List, Popover } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { handleBookNewNotification } from '@api/bookSocketEvents.ts'
 
@@ -14,13 +14,15 @@ import {
   getCommentBooksNotificationsApi,
   getCommentBookNotificationApi,
   getNotViewedBookCommentNotificationsApi,
-  patchNotificationIsReadApi
 } from '@api/notification-api.ts';
 
 import { NotificationItem } from './notification-item.tsx';
 import { StyledButton } from '@common/styled-button.tsx';
 import { useIntersectionObserver } from '@utils/hooks.ts';
-import { getBookNotifications } from '@api/api-callers.ts';
+import {
+  changeNotificationStatus,
+  getBookNotifications
+} from '@api/api-callers.ts';
 
 export const NotificationButton = () => {
 
@@ -107,6 +109,8 @@ export const NotificationButton = () => {
       return;
     }
 
+    changeNotificationStatus({ notViewedComments })
+
     getBookNotifications({
       comments,
       setComments,
@@ -158,7 +162,9 @@ export const NotificationButton = () => {
     setNotViewedComments(newNotViewedComments);
   }
 
-  const handleNotViewedButtonClick = () => {
+  const handleNotViewedButtonClick = async() => {
+    changeNotificationStatus({ notViewedComments });
+
     const newNotViewedComments = notViewedComments.filter((comment) => {
       return !comment.isRead
     })

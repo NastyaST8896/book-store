@@ -32,10 +32,30 @@ export const getBookNotifications:
           (prevComments) => [...prevComments, ...booksNotifications]
         );
 
-        if(pagination.notViewedAmount){
-          setNotViewedCommentCount(pagination?.notViewedAmount);
-        }
+      if (pagination.notViewedAmount) {
+        setNotViewedCommentCount(pagination?.notViewedAmount);
+      }
     }
 
     return;
   }
+
+
+
+export const changeNotificationStatus = async (arg: changeNotificationStatusAgrType) => {
+  const { notViewedComments } = arg;
+
+  const notificationId = notViewedComments
+    .filter((comment) => {
+      return comment.isRead === true;
+    })
+    .map((comment) => {
+      return comment.notificationId
+    })
+
+  if (!notificationId.length) {
+    return;
+  }
+
+  await patchNotificationIsReadApi(notificationId);
+}
