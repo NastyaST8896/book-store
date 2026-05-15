@@ -139,6 +139,10 @@ export type getBookNotificationsAgrType = {
   >>
 }
 
+export type changeNotificationStatusAgrType = {
+    notViewedComments: BookCommentNotificationData[],
+}
+
 export type Options = {
   root: HTMLElement | null,
   rootMargin: string,

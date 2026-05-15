@@ -1,4 +1,5 @@
-import type { getBookNotificationsAgrType } from "@utils/types";
+import type { changeNotificationStatusAgrType, getBookNotificationsAgrType } from "@utils/types";
+import { patchNotificationIsReadApi } from "./notification-api";
 
 
 export const getBookNotifications:
