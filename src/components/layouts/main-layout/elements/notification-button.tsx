@@ -39,12 +39,11 @@ export const NotificationButton = () => {
   ] = useState<BookCommentNotificationData[]>([]);
 
   const [notViewedCommentsCount, setNotViewedCommentCount] = useState(0);
-  const [
-    anchorNotificationEl,
-    setAnchorNotificationEl
-  ] = useState<HTMLElement | null>(null);
   const [isAllComments, setIsAllComments] = useState(true);
 
+  const [isOpen, setIsOpen] = useState(false);
+
+  const notificationButtonRef = useRef(null);
   const popoverRef = useRef(null);
 
   const [isIntersecting, setElement] = useIntersectionObserver({
@@ -175,14 +174,18 @@ export const NotificationButton = () => {
   return (
     <StyledAuthLink to="#">
       <StyledRoundButton
+        ref={notificationButtonRef}
         icon={<NotificationIcon fill="white" />}
         count={notViewedCommentsCount}
         onClick={handleNotificationButtonClick}
       />
       <StyledPriceRangePopover
-        open={Boolean(anchorNotificationEl)}
-        anchorEl={anchorNotificationEl}
-        onClose={handleNotificationClose}
+        open={isOpen}
+        anchorEl={() => notificationButtonRef.current}
+        onClose={async() => {
+          changeNotificationStatus({ notViewedComments });
+          setIsOpen(false);
+        }}
         anchorOrigin={
           { horizontal: 'left', vertical: 'bottom' }
         }

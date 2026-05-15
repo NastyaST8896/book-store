@@ -113,7 +113,7 @@ export type CommentType = {
 
 export type BookCommentNotificationData = {
   id: number,
-  notificationId?: number,
+  notificationId: number,
   name: string,
   date: string,
   bookTitle: string,
@@ -141,7 +141,7 @@ export type getBookNotificationsAgrType = {
 
 export type changeNotificationStatusAgrType = {
     notViewedComments: BookCommentNotificationData[],
-}
+  }
 
 export type Options = {
   root: HTMLElement | null,

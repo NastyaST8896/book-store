@@ -37,7 +37,7 @@ export const getCommentBookNotificationApi = async (params: BooksApiParams) => {
   return response.data;
 }
 
-export const patchNotificationIsReadApi = async (notificationsId: (number|null)[]) => {
+export const patchNotificationIsReadApi = async (notificationsId: (number)[]) => {
   const response = await api.patch<CommonResponseType<{ status: string }>>(
     '/notifications/viewed',
     {

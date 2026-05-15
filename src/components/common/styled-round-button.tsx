@@ -8,6 +8,7 @@ type StyledIconButtonProps = {
   count?: number,
   asLink?: boolean;
   onClick?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+  ref?: React.RefObject<HTMLButtonElement | null>
 
 } & (LinkProps | ButtonProps);
 
@@ -22,7 +23,7 @@ type ButtonProps = {
 
 
 export const StyledRoundButton = (props: StyledIconButtonProps) => {
-  const { icon, count, onClick } = props;
+  const { icon, count, onClick, ref } = props;
 
   return (
     count ? (
@@ -31,12 +32,12 @@ export const StyledRoundButton = (props: StyledIconButtonProps) => {
         color='primary'
         overlap="circular"
       >
-        <StyledIconButton onClick={onClick}>
+        <StyledIconButton ref={ref} onClick={onClick}>
           {icon}
         </StyledIconButton>
       </StyledBadge>
     ) : (
-      <StyledIconButton>
+      <StyledIconButton ref={ref} onClick={onClick}>
         {icon}
       </StyledIconButton>
     )
