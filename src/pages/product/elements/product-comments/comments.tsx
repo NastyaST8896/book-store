@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router';
 import { StyledButton } from '@common/styled-button';
 import { useAppSelector } from '@redux/hooks';
 import type { Book, CommentType } from '@utils/types';
@@ -24,9 +23,7 @@ export const Comments = (props: CommentsType) => {
 
   const main = useAppSelector((state) => {
     return state.main;
-  })
-
-  const [searchParams, setSearchParams] = useSearchParams();
+  });
 
   const user = useAppSelector((state) => {
     return state.user.user;
@@ -46,11 +43,14 @@ export const Comments = (props: CommentsType) => {
     setIsLoading(true);
 
     const currentPage = resetPage ? 1 : page;
-    const result = await getBookCommentsApi(book.id, { page: String(currentPage) });
+    const result = await getBookCommentsApi(
+      book.id,
+      { page: String(currentPage) }
+    );
 
     if (
       result.meta && (
-        result.meta?.pagination.currentPage > result.meta?.pagination.totalPages
+        result.meta?.pagination.currentPage === result.meta?.pagination.totalPages
       )
     ) {
       setHasMore(false);
@@ -72,46 +72,6 @@ export const Comments = (props: CommentsType) => {
       setIsInitialLoad(false);
     }
   }, [book, getBookComments, isInitialLoad]);
-
-  useEffect(() => {
-    const commentId = searchParams.get('comment');
-
-    if (!commentId) {
-      return;
-    }
-
-    const highlightComment = (comment: HTMLElement) => {
-      document.querySelectorAll('.active').forEach((el) => {
-        el.classList.remove('active');
-      });
-
-      comment.classList.add('active');
-
-      setTimeout(() => {
-        comment.classList.remove('active');
-        const params = new URLSearchParams(searchParams);
-
-        params.delete('comment');
-        setSearchParams(params);
-
-      }, 2000);
-    };
-
-    if (commentId) {
-      const tryScroll = (attempt = 0) => {
-        const comment = document.getElementById(commentId);
-
-        if (comment) {
-          comment?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          highlightComment(comment);
-        } else if (attempt < 10) {
-          setTimeout(() => tryScroll(attempt + 1), 100);
-        }
-      };
-
-      tryScroll();
-    }
-  }, [searchParams, setSearchParams]);
 
   useEffect(() => {
     if (!main.isConnected) {

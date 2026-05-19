@@ -23,12 +23,13 @@ export const MainLayout = () => {
   })
 
   type Props = Partial<ToastContentProps> & {
-    book: { title: string, id: number };
+    book: { title: string, id: number, commentId: number };
   };
 
   function Msg({ book }: Props) {
+
     return (
-      <StyledLink to={`/product/${book.id}`}>
+      <StyledLink to={`http://localhost:5173/product/${book.id}?commentId=${book.commentId}`}>
         <p>
           New comment added to
           <br />
@@ -45,7 +46,7 @@ export const MainLayout = () => {
       dispatch(connectToSocket(+userId));
 
       const getNewCommentToast = () => handleNewCommentToast(
-        (book: { title: string, id: number }) => {
+        (book: { title: string, id: number, commentId: number }) => {
           play();
           toast(<Msg book={book} />);
         });

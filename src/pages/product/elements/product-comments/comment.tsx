@@ -1,5 +1,7 @@
 import { styled, useTheme } from '@mui/material/styles';
 import { Box, Typography, useMediaQuery, type BoxProps } from '@mui/material';
+import { useEffect, useRef } from 'react';
+import { useSearchParams } from 'react-router';
 
 type CommentType = {
   comment: {
@@ -14,6 +16,10 @@ type CommentType = {
 export const Comment = (props: CommentType) => {
   const { comment } = props;
 
+  const [searchParams] = useSearchParams();
+
+
+  const commentRef = useRef<HTMLDivElement>(null);
   const theme = useTheme();
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -22,9 +28,27 @@ export const Comment = (props: CommentType) => {
   const diffTime = today.getTime() - createCommentDate.getTime();
   const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24))
 
+  useEffect(() => {
+    const commentId = searchParams.get('commentId');
+
+    if (commentId && commentRef.current) {
+      commentRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+      });
+
+      commentRef.current.style.backgroundColor = theme.palette.appColor.grayscale;
+      setTimeout(() => {
+        if (commentRef.current)
+          commentRef.current.style.backgroundColor = theme.palette.appColor.light;
+      }, 2000);
+    }
+  }, [searchParams.get('commentId')])
+
   if (mobile) {
     return (
       <StyledMobileCommentBox
+        ref={searchParams.get('commentId') === String(comment.id) ? commentRef : null}
         sx={{ lg: '50%', sm: '75%', xs: '100%' }}
         id={String(comment.id)}
       >
@@ -63,6 +87,7 @@ export const Comment = (props: CommentType) => {
     <StyledCommentBox
       sx={{ lg: '50%', sm: '75%', xs: '100%' }}
       id={String(comment.id)}
+      ref={searchParams.get('commentId') === String(comment.id) ? commentRef : null}
     >
       <StyledAvatarBox img={comment.img || 'src/assets/img/no-cover.webp'} />
       <StyledInfoBox>
