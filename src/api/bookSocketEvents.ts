@@ -25,13 +25,13 @@ export const handleBookNewNotification = (cb: (data: BookCommentNotificationData
   }
 };
 
-export const handleNewCommentToast = (cb: (data: { title: string, id: number }) => void) => {
+export const handleNewCommentToast = (cb: (data: { title: string, id: number, commentId: number }) => void) => {
   const socket = SocketManager.getSocket();
   if (!socket) {
     return;
   }
 
-  const listener = (data: { title: string, id: number }) => {
+  const listener = (data: { title: string, id: number, commentId: number }) => {
     cb(data);
   };
 

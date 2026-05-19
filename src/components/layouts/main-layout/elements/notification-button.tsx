@@ -18,7 +18,7 @@ import {
 
 import { NotificationItem } from './notification-item.tsx';
 import { StyledButton } from '@common/styled-button.tsx';
-import { useIntersectionObserver } from '@utils/hooks.ts';
+import { useDebounce, useIntersectionObserver } from '@utils/hooks.ts';
 import {
   changeNotificationStatus,
   getBookNotifications
@@ -39,6 +39,8 @@ export const NotificationButton = () => {
   ] = useState<BookCommentNotificationData[]>([]);
 
   const [notViewedCommentsCount, setNotViewedCommentCount] = useState(0);
+  const [firstNotViewedCommentsCount, setFirstNotViewedCommentCount] = useState(0);
+  const debouncedCommentCount = useDebounce(notViewedCommentsCount, 500);
   const [isAllComments, setIsAllComments] = useState(true);
 
   const [isOpen, setIsOpen] = useState(false);
@@ -70,6 +72,8 @@ export const NotificationButton = () => {
       setNotViewedCommentCount,
       notificationsApi: getNotViewedBookCommentNotificationsApi
     });
+
+    setFirstNotViewedCommentCount(notViewedCommentsCount);
   }, []);
 
   useEffect(() => {
@@ -108,8 +112,6 @@ export const NotificationButton = () => {
       return;
     }
 
-    changeNotificationStatus({ notViewedComments })
-
     getBookNotifications({
       comments,
       setComments,
@@ -124,6 +126,12 @@ export const NotificationButton = () => {
       notificationsApi: getNotViewedBookCommentNotificationsApi
     });
   }, [isIntersecting])
+
+  useEffect(() => {
+    if(debouncedCommentCount !== firstNotViewedCommentsCount) {
+      changeNotificationStatus({ notViewedComments });
+    }
+  }, [debouncedCommentCount])
 
   const setIsReadForComments = (id: number) => {
 
@@ -154,7 +162,6 @@ export const NotificationButton = () => {
   }
 
   const handleNotViewedButtonClick = async () => {
-    changeNotificationStatus({ notViewedComments });
 
     const newNotViewedComments = notViewedComments.filter((comment) => {
       return !comment.isRead
@@ -178,7 +185,6 @@ export const NotificationButton = () => {
         open={isOpen}
         anchorEl={() => notificationButtonRef.current}
         onClose={async () => {
-          changeNotificationStatus({ notViewedComments });
           setIsOpen(false);
         }}
         anchorOrigin={
@@ -198,7 +204,6 @@ export const NotificationButton = () => {
           <StyledButton
             className={isAllComments ? 'active' : ''}
             onClick={() => {
-              changeNotificationStatus({ notViewedComments });
               setIsAllComments(true);
               return;
             }}
