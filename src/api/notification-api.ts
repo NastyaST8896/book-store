@@ -5,12 +5,13 @@ import type {
   paginationBooksNotificationsType,
 } from "@utils/types";
 import { api } from "./api";
+import { IN_APP_ROUTES } from "@utils/routes";
 
 export const getCommentBooksNotificationsApi = async (params: BooksApiParams) => {
   const response = await api.get<CommonResponseType<
     { booksNotifications: BookCommentNotificationData[] },
     { pagination: paginationBooksNotificationsType }
-  >>('/notifications/book-notifications',
+  >>(IN_APP_ROUTES.getBookNotifications.path,
     {
       params:
       {
@@ -25,7 +26,7 @@ export const getCommentBooksNotificationsApi = async (params: BooksApiParams) =>
 export const getCommentBookNotificationApi = async (params: BooksApiParams) => {
   const response = await api.get<CommonResponseType<
     { bookNotification: BookCommentNotificationData }
-  >>('/notifications/book-notification',
+  >>(IN_APP_ROUTES.getBookNotification.path,
     {
       params:
       {
@@ -39,7 +40,7 @@ export const getCommentBookNotificationApi = async (params: BooksApiParams) => {
 
 export const patchNotificationIsReadApi = async (notificationsId: (number)[]) => {
   const response = await api.patch<CommonResponseType<{ status: string }>>(
-    '/notifications/viewed',
+    IN_APP_ROUTES.setNotificationIsRead.path,
     {
       notificationsId: notificationsId,
     }
@@ -52,7 +53,7 @@ export const getNotViewedBookCommentNotificationsApi = async (params: BooksApiPa
   const response = await api.get<CommonResponseType<
     { booksNotifications: BookCommentNotificationData[] },
     { pagination: paginationBooksNotificationsType }
-  >>('/notifications/not-viewed-notifications',
+  >>(IN_APP_ROUTES.getNotViewedNotification.path,
     {
       params:
       {
