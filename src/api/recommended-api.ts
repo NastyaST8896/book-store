@@ -7,7 +7,7 @@ export const getRecommendedApi = async (params: { id: string}) => {
     {
       recommended: Book[]
     }
-  >>(`/api/books/${params.id}/recommended`);
+  >>(`/books/${params.id}/recommended`);
 
   return {
     recommended: response.data.data.recommended,

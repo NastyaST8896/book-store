@@ -29,7 +29,7 @@ export const MainLayout = () => {
   function Msg({ book }: Props) {
 
     return (
-      <StyledLink to={`http://localhost:5173/product/${book.id}?commentId=${book.commentId}`}>
+      <StyledLink to={`product/${book.id}?commentId=${book.commentId}`}>
         <p>
           New comment added to
           <br />
@@ -43,7 +43,7 @@ export const MainLayout = () => {
 
   useEffect(() => {
     if (userId) {
-      dispatch(connectToSocket(+userId));
+      dispatch(connectToSocket());
 
       const getNewCommentToast = () => handleNewCommentToast(
         (book: { title: string, id: number, commentId: number }) => {

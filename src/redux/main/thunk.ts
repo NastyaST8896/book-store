@@ -3,7 +3,7 @@ import { SocketManager } from "../../socket";
 
 export const connectToSocket = createAsyncThunk(
   'connectToSocket',
-  async function (userId: number) { SocketManager.initSocket(userId) }
+  async function () { SocketManager.initSocket() }
 );
 
 export const disconnectFromSocket = createAsyncThunk(

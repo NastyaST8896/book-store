@@ -1,54 +1,54 @@
 export const IN_APP_ROUTES = {
   home: {
-    path: '/api',
+    path: '/',
     pathName: 'home'
   },
   register: {
-    path: '/api/register',
+    path: '/register',
     pathName: 'registerUser'
   },
   login: {
-    path: '/api/login',
+    path: '/login',
     pathName: 'loginUser'
   },
   profile: {
-    path: '/api/profile',
+    path: '/profile',
     pathName: 'profileUser'
   },
   cart: {
-    path: '/api/cart',
+    path: '/cart',
     pathName: 'BooksCart'
   },
   checkAuth: {
-    path: '/api/check-auth',
+    path: '/check-auth',
     pathName: 'checkAuthUser'
   },
   getInfo: {
-    path: '/api/user/user-info',
+    path: '/user/user-info',
     pathName: 'getUserInfo'
   },
   changeName: {
-    path: '/api/user/change-name',
+    path: '/user/change-name',
     pathName: 'changeUserName'
   },
   changePassword: {
-    path: '/api/user/change-password',
+    path: '/user/change-password',
     pathName: 'changeUserPassword'
   },
   refreshToken: {
-    path: '/api/refresh',
+    path: '/refresh',
     pathName: 'refreshTokenUser'
   },
   changeAvatar: {
-    path: '/api/user/change-avatar',
+    path: '/user/change-avatar',
     pathName: 'changeUserAvatar'
   },
   getAvatar: {
-    path: '/api/user/get-avatar',
+    path: '/user/get-avatar',
     pathName: 'getAvatar'
   },
   getBooks: {
-    path: '/api/books',
+    path: '/books',
     pathName: 'books',
   },
   getBook: {
@@ -62,47 +62,47 @@ export const IN_APP_ROUTES = {
     },
   },
   setBookRating: {
-    path: '/api/books/rating',
+    path: '/books/rating',
     pathName: 'rating',
   },
   addBookInCart: {
-    path: '/api/cart/add-book',
+    path: '/cart/add-book',
     pathName: 'book-in-cart',
   },
   getCartBooks: {
-    path: '/api/cart/books',
+    path: '/cart/books',
     pathName: 'cart-books'
   },
   addBookComment: {
-    path: '/api/comments/add-comment',
+    path: '/comments/add-comment',
     pathName: 'add-comment'
   },
   getBookComments: {
-    path: '/api/comments/get-comments',
+    path: '/comments/get-comments',
     pathName: 'get-comments'
   },
   getBookGenres: {
-    path: '/api/books/genres',
+    path: '/books/genres',
     pathName: 'get-genres'
   },
   getBookNotifications: {
-    path: '/api/notifications/book-notifications',
+    path: '/notifications/book-notifications',
     pathName: 'get-book-notifications'
   },
   getBookNotification: {
-    path: '/api/notifications/book-notification',
+    path: '/notifications/book-notification',
     pathName: 'get-book-notification'
   },
   setNotificationIsRead: {
-    path: '/api/notifications/viewed',
+    path: '/notifications/viewed',
     pathName: 'viewed'
   },
   getNotViewedNotification:{
-    path: '/api/notifications/not-viewed-notifications',
+    path: '/notifications/not-viewed-notifications',
     pathName: 'get-not-viewed'
   },
   getMaxPrice:{
-    path: '/api/books/maxPrice',
+    path: '/books/maxPrice',
     pathName: 'get-maxPrice'
   },
 

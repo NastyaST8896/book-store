@@ -19,7 +19,7 @@ export const getBookCommentsApi = async (
   const response = await api.get<CommonResponseType<
     { comments: CommentType[] },
     { pagination: PaginationType }
-  >>(`/api/comments/${bookId}`,
+  >>(`/comments/${bookId}`,
     {
       params:
       {

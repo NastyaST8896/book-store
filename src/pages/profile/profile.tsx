@@ -154,7 +154,7 @@ export const Profile = () => {
           <StyledCoverGrid
             size={3}
             img={auth.avatar
-              ? `http://localhost:3000/${auth.avatar}`
+              ? `${import.meta.env.VITE_API_URL}/${auth.avatar}`
               : DefaultAvatar
             }
           >
