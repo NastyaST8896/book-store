@@ -5,12 +5,12 @@ const token = localStorage.getItem('accessToken');
 export class SocketManager {
   private static socket: Socket | null = null;
 
-  public static initSocket(userId: number) {
+  public static initSocket() {
     if (this.socket) {
       this.socket.disconnect();
     }
 
-    this.socket = io('http://localhost:3000/', {
+    this.socket = io(`${import.meta.env.VITE_API_URL}/`, {
       auth: {
         token
       },
