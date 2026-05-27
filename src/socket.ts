@@ -10,13 +10,14 @@ export class SocketManager {
       this.socket.disconnect();
     }
 
-    this.socket = io(`${import.meta.env.VITE_API_URL}/`, {
+    this.socket = io(`${import.meta.env.VITE_API_URL_WIDTHOUT_API}`, {
       auth: {
         token
       },
       extraHeaders: {
         authorization: `bearer ${token}`
-      }
+      },
+      transports: ['websocket', 'polling']
     });
 
     return new Promise<void>((resolve, reject) => {
