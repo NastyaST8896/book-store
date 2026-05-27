@@ -13,5 +13,8 @@ export default defineConfig({
       '@utils': path.resolve(__dirname, './src/utils'),
       '@api': path.resolve(__dirname, './src/api'),
     }
+  },
+  build: {
+    chunkSizeWarningLimit: 1000,
   }
 });
