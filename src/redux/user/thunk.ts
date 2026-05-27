@@ -171,10 +171,6 @@ export const changeUserAvatar = createAsyncThunk<
 
     formData.append('file', file);
 
-    for (const [key, value] of formData.entries()) {
-      console.log(key, value);
-    }
-
     const result = await changeAvatar(formData);
 
     return result.data.avatar;

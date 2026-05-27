@@ -9,7 +9,7 @@ export const addBookCommentApi = async (bookId: number, text: string) => {
     { bookId, text }
   );
 
-  return response.status
+  return response.data
 };
 
 export const getBookCommentsApi = async (
