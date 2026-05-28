@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { type SubmitHandler, useForm } from 'react-hook-form';
-import DefaultAvatar from '@assets/img/dafault-avatar.svg';
+import DefaultAvatar from '@assets/img/default-avatar.svg';
 import { AvatarIcon } from '@common/icons/avatar-icon';
 import { CameraIcon } from '@common/icons/camera-icon';
 import { HideIcon } from '@common/icons/hide-icon';
@@ -153,10 +153,8 @@ export const Profile = () => {
         <Grid container gap={3}>
           <StyledCoverGrid
             size={3}
-            img={auth.avatar
-              ? auth.avatar
-              : DefaultAvatar
-            }
+            //img={auth.avatar}
+            img={auth.avatar && import.meta.env.VITE_API_URL + '/' + auth.avatar}
           >
             <StyledRoundButtonBox>
               <StyledImgButton
@@ -380,21 +378,25 @@ const StyledConfirmButton = styled(Button)(({ theme }) => `
 const StyledCoverGrid = styled(
   (props: GridProps) => <Grid {...props} />,
   { shouldForwardProp: (prop) => prop !== 'img' }
-)<{ img?: string }>(({ img = 'src/assets/img/no-cover.webp' }) => (`
-  background-image: url(${img});
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  max-width: 305px;
-  width: 100%;
-  height: 305px;
-  border-radius: 16px;
-  background-color: #F0F4EF;
-  position: relative;
-`));
+)<{ img: string }>(({ img }) => {
+  const hasImage = !!img;
+
+  return {
+    backgroundImage: `url(${img || 'src/assets/img/default-avatar.svg'})`,
+    backgroundRepeat: 'no-repeat',
+    backgroundSize: hasImage ? 'cover' : 'auto',
+    backgroundPosition: 'center center',
+    display: 'flex',
+    alignItems: 'cente',
+    justifyContent: 'center',
+    maxWidth: '305px',
+    width: '100%',
+    height: '305px',
+    borderRadius: '16px',
+    backgroundColor: '#F0F4EF',
+    position: 'relative'
+  }
+});
 
 const StyledRoundButtonBox = styled(Box)`
   position: absolute;

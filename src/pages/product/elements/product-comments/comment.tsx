@@ -2,6 +2,7 @@ import { styled, useTheme } from '@mui/material/styles';
 import { Box, Typography, useMediaQuery, type BoxProps } from '@mui/material';
 import { useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router';
+import DefaultAvatar from '@assets/img/default-avatar.svg'
 
 type CommentType = {
   comment: {
@@ -54,9 +55,14 @@ export const Comment = (props: CommentType) => {
       >
 
         <StyledMobileInfoBox>
-          <StyledAvatarBox
-            img={comment.img || 'src/assets/img/no-cover.webp'}
-          />
+          {comment.img && (comment.img !== '') ? (
+            <StyledAvatarBox img={comment.img} />
+          ) : (
+            <StyledImgBox>
+              <StyledImg src={DefaultAvatar} alt="Default avatar" />
+            </StyledImgBox>
+
+          )}
 
           <Box>
             <StyledNameTypography variant='subtitle1'>
@@ -89,7 +95,14 @@ export const Comment = (props: CommentType) => {
       id={String(comment.id)}
       ref={searchParams.get('commentId') === String(comment.id) ? commentRef : null}
     >
-      <StyledAvatarBox img={comment.img || 'src/assets/img/no-cover.webp'} />
+      {comment.img && (comment.img !== '') ? (
+        <StyledAvatarBox img={comment.img} />
+      ) : (
+        <StyledImgBox>
+          <StyledImg src={DefaultAvatar} alt="Default avatar" />
+        </StyledImgBox>
+
+      )}
       <StyledInfoBox>
         <StyledNameTypography variant='subtitle1'>
           {comment.name}
@@ -131,7 +144,7 @@ const StyledCommentBox = styled(Box)(({ theme }) => `
 const StyledAvatarBox = styled(
   (props: BoxProps) => <Box {...props} />,
   { shouldForwardProp: (prop) => prop !== 'img' }
-)<{ img?: string }>(({ img = '/src/assets/img/no-cover.webp' }) => ({
+)<{ img?: string }>(({ img }) => ({
   height: '60px',
   width: '60px',
   backgroundImage: `url(${img})`,
@@ -141,6 +154,17 @@ const StyledAvatarBox = styled(
   borderRadius: '50%',
   flexShrink: 0,
 }));
+
+const StyledImgBox = styled(Box)`
+  height: 60px;
+  width: 60px;
+  border-radius: 50%;
+`;
+
+const StyledImg = styled('img')`
+    max-width: 100%;
+    object-fit: contain;
+`;
 
 const StyledInfoBox = styled(Box)`
   max-width: 516px;
