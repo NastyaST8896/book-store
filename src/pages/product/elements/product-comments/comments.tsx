@@ -54,6 +54,7 @@ export const Comments = (props: CommentsType) => {
       )
     ) {
       setHasMore(false);
+      setComments([...result.data.comments]);
     } else {
       if (resetPage) {
         setComments([...result.data.comments]);

@@ -124,8 +124,8 @@ export type BookCommentNotificationData = {
 }
 
 export type paginationBooksNotificationsType = {
-  limit: number, 
-  totalAmount: number, 
+  limit: number,
+  totalAmount: number,
   notViewedAmount: number,
 }
 
@@ -134,14 +134,16 @@ export type getBookNotificationsAgrType = {
   setComments: React.Dispatch<React.SetStateAction<BookCommentNotificationData[]>>,
   setNotViewedCommentCount: React.Dispatch<React.SetStateAction<number>>,
   notificationsApi: (params: BooksApiParams) => Promise<CommonResponseType<
-  {booksNotifications: BookCommentNotificationData[]}, 
-  {pagination: paginationBooksNotificationsType}
-  >>
+    { booksNotifications: BookCommentNotificationData[] },
+    { pagination: paginationBooksNotificationsType }
+  >>,
+
+  notViewedCommentsCount: number
 }
 
 export type changeNotificationStatusAgrType = {
-    notViewedComments: BookCommentNotificationData[],
-  }
+  notViewedComments: BookCommentNotificationData[],
+}
 
 export type Options = {
   root: HTMLElement | null,
@@ -150,6 +152,6 @@ export type Options = {
 }
 
 export type ObserverReturnValue = [
-isIntersecting: boolean, 
-setElement: React.Dispatch<React.SetStateAction<HTMLElement | null>>,
+  isIntersecting: boolean,
+  setElement: React.Dispatch<React.SetStateAction<HTMLElement | null>>,
 ]
