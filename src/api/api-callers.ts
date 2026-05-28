@@ -4,7 +4,13 @@ import { patchNotificationIsReadApi } from "./notification-api";
 
 export const getBookNotifications:
   (arg: getBookNotificationsAgrType) => Promise<void> = async (arg) => {
-    const { comments, setComments, setNotViewedCommentCount, notificationsApi } = arg;
+    const {
+      comments,
+      setComments,
+      setNotViewedCommentCount,
+      notificationsApi,
+      notViewedCommentsCount 
+    } = arg;
     let result;
 
     if (comments.length === 0) {
@@ -32,7 +38,7 @@ export const getBookNotifications:
           (prevComments) => [...prevComments, ...booksNotifications]
         );
 
-      if (pagination.notViewedAmount) {
+      if (pagination.notViewedAmount && notViewedCommentsCount === 0) {
         setNotViewedCommentCount(pagination?.notViewedAmount);
       }
     }

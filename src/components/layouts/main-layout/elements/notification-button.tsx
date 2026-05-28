@@ -63,14 +63,16 @@ export const NotificationButton = () => {
       comments,
       setComments,
       setNotViewedCommentCount,
-      notificationsApi: getCommentBooksNotificationsApi
+      notificationsApi: getCommentBooksNotificationsApi,
+      notViewedCommentsCount
     });
 
     getBookNotifications({
       comments: notViewedComments,
       setComments: setNotViewedComments,
       setNotViewedCommentCount,
-      notificationsApi: getNotViewedBookCommentNotificationsApi
+      notificationsApi: getNotViewedBookCommentNotificationsApi,
+      notViewedCommentsCount
     });
 
     setFirstNotViewedCommentCount(notViewedCommentsCount);
@@ -116,19 +118,22 @@ export const NotificationButton = () => {
       comments,
       setComments,
       setNotViewedCommentCount,
-      notificationsApi: getCommentBooksNotificationsApi
-    });
+      notificationsApi: getCommentBooksNotificationsApi,
+      notViewedCommentsCount
+    })
 
     getBookNotifications({
       comments: notViewedComments,
       setComments: setNotViewedComments,
       setNotViewedCommentCount,
-      notificationsApi: getNotViewedBookCommentNotificationsApi
-    });
-  }, [isIntersecting])
+      notificationsApi: getNotViewedBookCommentNotificationsApi,
+      notViewedCommentsCount
+    })
+
+  }, [isIntersecting]);
 
   useEffect(() => {
-    if(debouncedCommentCount !== firstNotViewedCommentsCount) {
+    if (debouncedCommentCount !== firstNotViewedCommentsCount || debouncedCommentCount === 0) {
       changeNotificationStatus({ notViewedComments });
     }
   }, [debouncedCommentCount])
