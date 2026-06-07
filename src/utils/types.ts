@@ -13,7 +13,7 @@ export type UserCheck = Omit<UserType, 'password'>;
 
 export type UserRegister = Pick<UserType, 'email' | 'id'>;
 
-export type UserWidthAvatar = UserCheck & {
+export type UserWithAvatar = UserCheck & {
   avatar: string,
 };
 

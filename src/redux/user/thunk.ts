@@ -4,7 +4,7 @@ import type {
   UserCheck, 
   UserRegister, 
   UserType, 
-  UserWidthAvatar 
+  UserWithAvatar
 } from '@utils/types';
 import type { Nullable, UserDataPayload } from '@utils/types';
 
@@ -112,7 +112,7 @@ export const checkAuthUser = createAsyncThunk<
 // };
 
 export const getUserInfo = createAsyncThunk<
-  { user: UserWidthAvatar },
+  { user: UserWithAvatar },
   void,
   { state: RootState }
 >(

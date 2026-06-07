@@ -1,12 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { type SubmitHandler, useForm } from 'react-hook-form';
-import DefaultAvatar from '@assets/img/default-avatar.svg';
 import { AvatarIcon } from '@common/icons/avatar-icon';
 import { CameraIcon } from '@common/icons/camera-icon';
 import { HideIcon } from '@common/icons/hide-icon';
 import { MailIcon } from '@common/icons/mail-icon';
 import { ViewIcon } from '@common/icons/view-icon';
-// import { StyledRoundButton } from '@common/styled-round-button';
 import {
   changeUserAvatar,
   changeUserName,
@@ -58,8 +56,8 @@ export const Profile = () => {
     setValue,
   } = useForm<ProfileFormType>({
     defaultValues: {
-      fullName: auth.user?.fullName || '',
-      email: auth.user?.email,
+      fullName: String(auth.user?.fullName) || '',
+      email: String(auth.user?.email) || '',
       oldPassword: '',
       newPassword: '',
       repeatPassword: ''
@@ -154,7 +152,7 @@ export const Profile = () => {
           <StyledCoverGrid
             size={3}
             //img={auth.avatar}
-            img={auth.avatar && import.meta.env.VITE_API_URL + '/' + auth.avatar}
+            img={(auth.avatar && import.meta.env.VITE_API_URL + '/' + auth.avatar) || ''}
           >
             <StyledRoundButtonBox>
               <StyledImgButton
@@ -321,7 +319,7 @@ const StyledMain = styled('main')`
 `;
 
 const StyledProfileInformationGrid = styled(Grid) <GridProps &
-{ noValidate?: string }
+  { noValidate?: string }
 >`
   display: flex;
   flex-direction: column;
@@ -395,7 +393,7 @@ const StyledCoverGrid = styled(
     borderRadius: '16px',
     backgroundColor: '#F0F4EF',
     position: 'relative'
-  }
+  };
 });
 
 const StyledRoundButtonBox = styled(Box)`

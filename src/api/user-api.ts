@@ -6,7 +6,7 @@ import type {
   UserNamePayload,
   UserPasswordPayload,
   UserRegister,
-  UserWidthAvatar} from '@utils/types';
+  UserWithAvatar} from '@utils/types';
 
 import type { LoginUserResponseType } from '../redux/user/thunk';
 
@@ -39,7 +39,7 @@ export const checkAuth = async () => {
 };
 
 export const getInfo = async () => {
-  const response = await api.get<CommonResponseType<{ user: UserWidthAvatar }>>(
+  const response = await api.get<CommonResponseType<{ user: UserWithAvatar }>>(
     IN_APP_ROUTES.getInfo.path
   );
 

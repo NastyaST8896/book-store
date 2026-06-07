@@ -10,7 +10,7 @@ export class SocketManager {
       this.socket.disconnect();
     }
 
-    this.socket = io(`${import.meta.env.VITE_API_URL_WIDTHOUT_API}`, {
+    this.socket = io(`${import.meta.env.VITE_API_URL_WITHOUT_API}`, {
       auth: {
         token
       },
